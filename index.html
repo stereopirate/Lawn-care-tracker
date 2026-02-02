@@ -54,16 +54,17 @@
     // Comprehensive Product Database - Top lawn care products from major retailers
     const PRODUCT_DATABASE = {
         mowers: [
-            { id: 'm1', name: 'Honda HRX217VKA', brand: 'Honda', type: 'Gas Self-Propelled', deck: '21"', features: 'Variable Speed, Versamow', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100, note: 'Every 25 hours under heavy load' } },
-            { id: 'm2', name: 'Toro Recycler 22"', brand: 'Toro', type: 'Gas Self-Propelled', deck: '22"', features: 'Personal Pace, SmartStow', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
-            { id: 'm11', name: 'Toro TimeMaster 30"', brand: 'Toro', type: 'Gas Self-Propelled', deck: '30"', features: 'Dual-Force Cutting, Personal Pace', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly', bladeService: 'yearly' } },
+            { id: 'm-other', name: 'Other (Specify)', brand: 'Other', type: 'Custom', deck: '', features: '', maintenanceSchedule: { oilChange: null, note: 'Custom mower - set your own maintenance schedule' } },
+            { id: 'm6', name: 'Craftsman M215', brand: 'Craftsman', type: 'Gas Push', deck: '21"', features: 'Briggs & Stratton, Side Discharge', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
             { id: 'm3', name: 'EGO Power+ LM2142SP', brand: 'EGO', type: 'Battery Self-Propelled', deck: '21"', features: '56V, LED Headlights', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
             { id: 'm4', name: 'Greenworks 25223', brand: 'Greenworks', type: 'Corded Electric', deck: '20"', features: '12 Amp, 3-in-1', maintenanceSchedule: { oilChange: null, note: 'Electric - no oil changes needed' } },
+            { id: 'm1', name: 'Honda HRX217VKA', brand: 'Honda', type: 'Gas Self-Propelled', deck: '21"', features: 'Variable Speed, Versamow', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100, note: 'Every 25 hours under heavy load' } },
             { id: 'm5', name: 'Husqvarna LC221RH', brand: 'Husqvarna', type: 'Gas Self-Propelled', deck: '21"', features: 'Honda Engine, High Wheels', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
-            { id: 'm6', name: 'Craftsman M215', brand: 'Craftsman', type: 'Gas Push', deck: '21"', features: 'Briggs & Stratton, Side Discharge', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
-            { id: 'm7', name: 'Ryobi 40V RY40190', brand: 'Ryobi', type: 'Battery Push', deck: '20"', features: '40V Lithium, Brushless', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
             { id: 'm8', name: 'John Deere JS46', brand: 'John Deere', type: 'Gas Self-Propelled', deck: '22"', features: 'Rear Wheel Drive, 190cc', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
             { id: 'm9', name: 'Makita XML08Z', brand: 'Makita', type: 'Battery Self-Propelled', deck: '21"', features: '36V x4, Commercial Grade', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+            { id: 'm7', name: 'Ryobi 40V RY40190', brand: 'Ryobi', type: 'Battery Push', deck: '20"', features: '40V Lithium, Brushless', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+            { id: 'm2', name: 'Toro Recycler 22"', brand: 'Toro', type: 'Gas Self-Propelled', deck: '22"', features: 'Personal Pace, SmartStow', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
+            { id: 'm11', name: 'Toro TimeMaster 30"', brand: 'Toro', type: 'Gas Self-Propelled', deck: '30"', features: 'Dual-Force Cutting, Personal Pace', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly', bladeService: 'yearly' } },
             { id: 'm10', name: 'Troy-Bilt TB330', brand: 'Troy-Bilt', type: 'Gas Self-Propelled', deck: '21"', features: 'TriAction Cutting, 163cc', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } }
         ],
         spreaders: [
@@ -77,6 +78,19 @@
             { id: 'sp8', name: 'Spyker P70-12010', brand: 'Spyker', type: 'Broadcast', capacity: '70 lbs', features: 'Enclosed Gears, Pro Series', maintenanceSchedule: { cleaning: 'after each use', gearbox: 'check oil annually' } },
             { id: 'sp9', name: 'Brinly BS36BH', brand: 'Brinly', type: 'Tow-Behind', capacity: '175 lbs', features: 'Pneumatic Tires, Heavy Duty', maintenanceSchedule: { cleaning: 'after each use', lubrication: 'seasonal', tires: 'check pressure' } },
             { id: 'sp10', name: 'Scotts Turf Builder EdgeGuard Mini', brand: 'Scotts', type: 'Broadcast', capacity: '5000 sq ft', features: 'Compact, EdgeGuard', maintenanceSchedule: { cleaning: 'after each use', note: 'Minimal maintenance' } }
+        ],
+        trimmers: [
+            { id: 't-other', name: 'Other (Specify)', brand: 'Other', type: 'Custom', engineType: '', lineSize: '' },
+            { id: 't1', name: 'Echo SRM-225', brand: 'Echo', type: 'Gas', engineType: 'Gas', lineSize: '.095"', features: '21.2cc, 2-Stroke' },
+            { id: 't2', name: 'Stihl FS 56 RC-E', brand: 'Stihl', type: 'Gas', engineType: 'Gas', lineSize: '.105"', features: '27.2cc, Easy2Start' },
+            { id: 't3', name: 'Husqvarna 128LD', brand: 'Husqvarna', type: 'Gas', engineType: 'Gas', lineSize: '.095"', features: '28cc, Detachable' },
+            { id: 't4', name: 'EGO Power+ ST1521S', brand: 'EGO', type: 'Battery', engineType: 'Electric', lineSize: '.095"', features: '56V, Powerload' },
+            { id: 't5', name: 'Makita XRU15Z', brand: 'Makita', type: 'Battery', engineType: 'Electric', lineSize: '.095"', features: '18V LXT' },
+            { id: 't6', name: 'DeWalt DCST972X1', brand: 'DeWalt', type: 'Battery', engineType: 'Electric', lineSize: '.080"', features: '60V Max Flex' },
+            { id: 't7', name: 'Ryobi RY40250', brand: 'Ryobi', type: 'Battery', engineType: 'Electric', lineSize: '.080"', features: '40V Brushless' },
+            { id: 't8', name: 'Black+Decker LST136', brand: 'Black+Decker', type: 'Battery', engineType: 'Electric', lineSize: '.065"', features: '40V, Auto-Feed' },
+            { id: 't9', name: 'Milwaukee 2825-21ST', brand: 'Milwaukee', type: 'Battery', engineType: 'Electric', lineSize: '.080"', features: 'M18 Fuel Quik-Lok' },
+            { id: 't10', name: 'Craftsman CMXGTAMD25CC', brand: 'Craftsman', type: 'Gas', engineType: 'Gas', lineSize: '.095"', features: '25cc, 2-Cycle' }
         ],
         fertilizers: [
             { id: 'f1', name: 'Scotts Turf Builder Lawn Food', brand: 'Scotts', npk: '32-0-4', coverage: '15000 sq ft', type: 'Slow-Release Nitrogen' },
@@ -525,6 +539,7 @@
         };
 
         const addEquipment = (equipmentData) => {
+            console.log('Adding equipment:', equipmentData);
             const newEquipment = {
                 id: Date.now(),
                 name: equipmentData.name,
@@ -537,6 +552,7 @@
                 createdAt: new Date().toISOString()
             };
             const updatedEquipment = [...equipment, newEquipment];
+            console.log('Updated equipment list:', updatedEquipment);
             setEquipment(updatedEquipment);
             localStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
         };
@@ -929,34 +945,70 @@
                 type: 'mowers', 
                 productId: '', 
                 currentHours: 0,
-                maintenanceInterval: 50
+                maintenanceInterval: 50,
+                customMowerName: '',
+                trimmerManufacturer: '',
+                trimmerEngineType: '',
+                trimmerLineSize: ''
             });
             const [expandedEquipment, setExpandedEquipment] = useState(null);
             
             const productTypes = {
                 mowers: { label: 'Lawn Mowers', products: PRODUCT_DATABASE.mowers },
                 spreaders: { label: 'Spreaders', products: PRODUCT_DATABASE.spreaders },
-                trimmers: { label: 'String Trimmers/Edgers', products: [] },
+                trimmers: { label: 'String Trimmers/Edgers', products: PRODUCT_DATABASE.trimmers },
                 other: { label: 'Other Equipment', products: [] }
             };
 
             const handleAddEquipment = (e) => {
                 e.preventDefault();
+                console.log('Form submitted:', localGarageForm);
+                
+                if (!localGarageForm.name) {
+                    alert('Please enter an equipment name');
+                    return;
+                }
+                
                 if (localGarageForm.name && localGarageForm.type) {
-                    const selectedProduct = selectedType === 'mowers' ? 
-                        PRODUCT_DATABASE.mowers.find(p => p.id === localGarageForm.productId) :
-                        selectedType === 'spreaders' ?
-                        PRODUCT_DATABASE.spreaders.find(p => p.id === localGarageForm.productId) :
+                    const selectedProduct = 
+                        selectedType === 'mowers' ? PRODUCT_DATABASE.mowers.find(p => p.id === localGarageForm.productId) :
+                        selectedType === 'spreaders' ? PRODUCT_DATABASE.spreaders.find(p => p.id === localGarageForm.productId) :
+                        selectedType === 'trimmers' ? PRODUCT_DATABASE.trimmers.find(p => p.id === localGarageForm.productId) :
                         null;
+                    
+                    // Use custom mower name if "Other" is selected
+                    let finalProduct = selectedProduct;
+                    if (selectedType === 'mowers' && localGarageForm.productId === 'm-other' && localGarageForm.customMowerName) {
+                        finalProduct = {
+                            ...selectedProduct,
+                            name: localGarageForm.customMowerName,
+                            brand: 'Other',
+                            customName: localGarageForm.customMowerName
+                        };
+                    }
+                    
+                    // Use custom trimmer details if "Other" is selected
+                    if (selectedType === 'trimmers' && localGarageForm.productId === 't-other') {
+                        finalProduct = {
+                            id: 't-other',
+                            name: localGarageForm.trimmerManufacturer || 'Custom Trimmer',
+                            brand: localGarageForm.trimmerManufacturer || 'Other',
+                            engineType: localGarageForm.trimmerEngineType,
+                            lineSize: localGarageForm.trimmerLineSize,
+                            type: 'Custom'
+                        };
+                    }
                     
                     addEquipment({
                         name: localGarageForm.name,
                         type: selectedType,
                         productId: localGarageForm.productId,
-                        product: selectedProduct,
-                        currentHours: parseFloat(localGarageForm.currentHours) || 0,
-                        maintenanceInterval: parseFloat(localGarageForm.maintenanceInterval) || null
+                        product: finalProduct,
+                        currentHours: selectedType === 'mowers' ? (parseFloat(localGarageForm.currentHours) || 0) : 0,
+                        maintenanceInterval: selectedType === 'mowers' ? (parseFloat(localGarageForm.maintenanceInterval) || null) : null
                     });
+                    
+                    alert(`✅ ${localGarageForm.name} added to your garage!`);
                     
                     // Reset form
                     setLocalGarageForm({ 
@@ -964,7 +1016,11 @@
                         type: 'mowers', 
                         productId: '', 
                         currentHours: 0,
-                        maintenanceInterval: 50
+                        maintenanceInterval: 50,
+                        customMowerName: '',
+                        trimmerManufacturer: '',
+                        trimmerEngineType: '',
+                        trimmerLineSize: ''
                     });
                     setSelectedType('mowers');
                 }
@@ -1007,14 +1063,18 @@
                                 </select>
                             </div>
 
-                            {selectedType !== 'trimmers' && selectedType !== 'other' && (
+                            {(selectedType === 'mowers' || selectedType === 'spreaders' || selectedType === 'trimmers') && (
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold mb-2 text-gray-700">Select Product (Optional)</label>
                                     <select
                                         value={localGarageForm.productId}
                                         onChange={(e) => {
                                             const productId = e.target.value;
-                                            const selectedProduct = (selectedType === 'mowers' ? PRODUCT_DATABASE.mowers : PRODUCT_DATABASE.spreaders).find(p => p.id === productId);
+                                            const selectedProduct = (
+                                                selectedType === 'mowers' ? PRODUCT_DATABASE.mowers :
+                                                selectedType === 'spreaders' ? PRODUCT_DATABASE.spreaders :
+                                                PRODUCT_DATABASE.trimmers
+                                            ).find(p => p.id === productId);
                                             
                                             // Auto-populate maintenance interval from product if available
                                             const maintenanceInterval = selectedProduct?.maintenanceSchedule?.oilChange || localGarageForm.maintenanceInterval;
@@ -1022,20 +1082,27 @@
                                             setLocalGarageForm({
                                                 ...localGarageForm, 
                                                 productId: productId,
-                                                maintenanceInterval: maintenanceInterval
+                                                maintenanceInterval: maintenanceInterval,
+                                                trimmerManufacturer: selectedProduct?.brand || '',
+                                                trimmerEngineType: selectedProduct?.engineType || '',
+                                                trimmerLineSize: selectedProduct?.lineSize || ''
                                             });
                                         }}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                     >
                                         <option value="">Choose a product...</option>
-                                        {(selectedType === 'mowers' ? PRODUCT_DATABASE.mowers : PRODUCT_DATABASE.spreaders).map(product => (
+                                        {(
+                                            selectedType === 'mowers' ? PRODUCT_DATABASE.mowers :
+                                            selectedType === 'spreaders' ? PRODUCT_DATABASE.spreaders :
+                                            PRODUCT_DATABASE.trimmers
+                                        ).map(product => (
                                             <option key={product.id} value={product.id}>
                                                 {product.brand} - {product.name}
                                             </option>
                                         ))}
                                     </select>
-                                    {localGarageForm.productId && (() => {
-                                        const selectedProduct = (selectedType === 'mowers' ? PRODUCT_DATABASE.mowers : PRODUCT_DATABASE.spreaders).find(p => p.id === localGarageForm.productId);
+                                    {localGarageForm.productId && selectedType === 'mowers' && (() => {
+                                        const selectedProduct = PRODUCT_DATABASE.mowers.find(p => p.id === localGarageForm.productId);
                                         if (selectedProduct?.maintenanceSchedule?.oilChange) {
                                             return (
                                                 <p className="text-xs text-green-600 mt-1">
@@ -1047,32 +1114,88 @@
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label className="block text-sm font-semibold mb-2 text-gray-700">Current Hours</label>
+                            {/* Custom Mower Name for "Other" */}
+                            {selectedType === 'mowers' && localGarageForm.productId === 'm-other' && (
+                                <div className="mb-4">
+                                    <label className="block text-sm font-semibold mb-2 text-gray-700">Mower Name/Model</label>
                                     <input
-                                        type="number"
-                                        step="0.1"
-                                        placeholder="0"
-                                        value={localGarageForm.currentHours}
-                                        onChange={(e) => setLocalGarageForm({...localGarageForm, currentHours: e.target.value})}
+                                        type="text"
+                                        placeholder="e.g., John Deere X350, Kubota GR2120"
+                                        value={localGarageForm.customMowerName}
+                                        onChange={(e) => setLocalGarageForm({...localGarageForm, customMowerName: e.target.value})}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">Starting hour meter reading</p>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-semibold mb-2 text-gray-700">Maintenance Interval</label>
-                                    <input
-                                        type="number"
-                                        step="1"
-                                        placeholder="50"
-                                        value={localGarageForm.maintenanceInterval}
-                                        onChange={(e) => setLocalGarageForm({...localGarageForm, maintenanceInterval: e.target.value})}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">Hours between service</p>
+                            )}
+
+                            {/* Trimmer Details */}
+                            {selectedType === 'trimmers' && localGarageForm.productId === 't-other' && (
+                                <>
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-semibold mb-2 text-gray-700">Manufacturer</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g., Echo, Stihl, Husqvarna"
+                                            value={localGarageForm.trimmerManufacturer}
+                                            onChange={(e) => setLocalGarageForm({...localGarageForm, trimmerManufacturer: e.target.value})}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold mb-2 text-gray-700">Engine Type</label>
+                                            <select
+                                                value={localGarageForm.trimmerEngineType}
+                                                onChange={(e) => setLocalGarageForm({...localGarageForm, trimmerEngineType: e.target.value})}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                            >
+                                                <option value="">Select...</option>
+                                                <option value="Gas">Gas</option>
+                                                <option value="Electric">Electric (Battery/Corded)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold mb-2 text-gray-700">Line Size (Optional)</label>
+                                            <input
+                                                type="text"
+                                                placeholder='e.g., .095", .080"'
+                                                value={localGarageForm.trimmerLineSize}
+                                                onChange={(e) => setLocalGarageForm({...localGarageForm, trimmerLineSize: e.target.value})}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {selectedType === 'mowers' && (
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold mb-2 text-gray-700">Current Hours</label>
+                                        <input
+                                            type="number"
+                                            step="0.1"
+                                            placeholder="0"
+                                            value={localGarageForm.currentHours}
+                                            onChange={(e) => setLocalGarageForm({...localGarageForm, currentHours: e.target.value})}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">Starting hour meter reading</p>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold mb-2 text-gray-700">Maintenance Interval</label>
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            placeholder="50"
+                                            value={localGarageForm.maintenanceInterval}
+                                            onChange={(e) => setLocalGarageForm({...localGarageForm, maintenanceInterval: e.target.value})}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">Hours between service</p>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             <button
                                 type="submit"
@@ -1223,48 +1346,52 @@
                                                     </div>
                                                 )}
                                                 
-                                                {/* Hour Meter Display */}
-                                                <div className="grid grid-cols-2 gap-2 mb-2">
-                                                    <div className="bg-white p-2 rounded border border-gray-200">
-                                                        <div className="text-xs text-gray-500">Current Hours</div>
-                                                        <div className="text-lg font-bold text-gray-900">{(item.currentHours || 0).toFixed(1)}</div>
-                                                    </div>
-                                                    <div className="bg-white p-2 rounded border border-gray-200">
-                                                        <div className="text-xs text-gray-500">Since Maintenance</div>
-                                                        <div className={`text-lg font-bold ${needsMaintenance ? 'text-red-600' : 'text-gray-900'}`}>
-                                                            {hoursSinceMaintenance.toFixed(1)}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                {/* Maintenance Status */}
-                                                {item.maintenanceInterval && (
-                                                    <div className="mb-2">
-                                                        {needsMaintenance ? (
-                                                            <div className="bg-red-50 border border-red-200 rounded p-2 text-xs text-red-700 font-medium">
-                                                                ⚠️ Maintenance Due! (Manufacturer interval: {item.maintenanceInterval}hrs)
+                                                {/* Hour Meter Display - Only for Mowers */}
+                                                {item.type === 'mowers' && (
+                                                    <>
+                                                        <div className="grid grid-cols-2 gap-2 mb-2">
+                                                            <div className="bg-white p-2 rounded border border-gray-200">
+                                                                <div className="text-xs text-gray-500">Current Hours</div>
+                                                                <div className="text-lg font-bold text-gray-900">{(item.currentHours || 0).toFixed(1)}</div>
                                                             </div>
-                                                        ) : (
-                                                            <div className="bg-green-50 border border-green-200 rounded p-2 text-xs text-green-700">
-                                                                ✅ Next service in {(item.maintenanceInterval - hoursSinceMaintenance).toFixed(1)} hours (Mfr interval: {item.maintenanceInterval}hrs)
+                                                            <div className="bg-white p-2 rounded border border-gray-200">
+                                                                <div className="text-xs text-gray-500">Since Maintenance</div>
+                                                                <div className={`text-lg font-bold ${needsMaintenance ? 'text-red-600' : 'text-gray-900'}`}>
+                                                                    {hoursSinceMaintenance.toFixed(1)}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {/* Maintenance Status */}
+                                                        {item.maintenanceInterval && (
+                                                            <div className="mb-2">
+                                                                {needsMaintenance ? (
+                                                                    <div className="bg-red-50 border border-red-200 rounded p-2 text-xs text-red-700 font-medium">
+                                                                        ⚠️ Maintenance Due! (Manufacturer interval: {item.maintenanceInterval}hrs)
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="bg-green-50 border border-green-200 rounded p-2 text-xs text-green-700">
+                                                                        ✅ Next service in {(item.maintenanceInterval - hoursSinceMaintenance).toFixed(1)} hours (Mfr interval: {item.maintenanceInterval}hrs)
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         )}
-                                                    </div>
+                                                        
+                                                        {/* Log Maintenance Button */}
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (confirm(`Log maintenance for ${item.name} at ${(item.currentHours || 0).toFixed(1)} hours?`)) {
+                                                                    logMaintenance(item.id);
+                                                                    alert(`✅ Maintenance logged! Hour meter will reset to 0 hours since last service.`);
+                                                                }
+                                                            }}
+                                                            className="w-full px-3 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs font-medium"
+                                                        >
+                                                            🔧 Log Maintenance
+                                                        </button>
+                                                    </>
                                                 )}
-                                                
-                                                {/* Log Maintenance Button */}
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (confirm(`Log maintenance for ${item.name} at ${(item.currentHours || 0).toFixed(1)} hours?`)) {
-                                                            logMaintenance(item.id);
-                                                            alert(`✅ Maintenance logged! Hour meter will reset to 0 hours since last service.`);
-                                                        }
-                                                    }}
-                                                    className="w-full px-3 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs font-medium"
-                                                >
-                                                    🔧 Log Maintenance
-                                                </button>
                                             </div>
                                         </div>
                                     );
