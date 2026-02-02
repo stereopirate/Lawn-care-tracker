@@ -1,33 +1,33 @@
 {
-  "name": "Lawn Care Tracker",
-  "short_name": "Lawn Care",
-  "description": "Track your lawn maintenance activities with weather integration and product database",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#16a34a",
-  "orientation": "portrait-primary",
-  "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "categories": ["productivity", "lifestyle"],
-  "screenshots": [
-    {
-      "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ]
+“name”: “Easy Green - Your Lawn Care Made Simple”,
+“short_name”: “Easy Green”,
+“description”: “Making your lawn dreams come true, one blade at a time. Track maintenance, get weather updates, and achieve the perfect lawn.”,
+“start_url”: “/”,
+“display”: “standalone”,
+“background_color”: “#ffffff”,
+“theme_color”: “#16a34a”,
+“orientation”: “portrait-primary”,
+“icons”: [
+{
+“src”: “/icon-192.png”,
+“sizes”: “192x192”,
+“type”: “image/png”,
+“purpose”: “any maskable”
+},
+{
+“src”: “/icon-512.png”,
+“sizes”: “512x512”,
+“type”: “image/png”,
+“purpose”: “any maskable”
+}
+],
+“categories”: [“productivity”, “lifestyle”],
+“screenshots”: [
+{
+“src”: “/screenshot-mobile.png”,
+“sizes”: “390x844”,
+“type”: “image/png”,
+“form_factor”: “narrow”
+}
+]
 }
