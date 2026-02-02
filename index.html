@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 2.7 - Updated: Feb 2, 2026 - Fixed Text Wrapping in Activity Buttons -->
+    <!-- Version 2.8 - Updated: Feb 2, 2026 - Dark Green Theme #20730D -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#16a34a">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
@@ -148,7 +148,7 @@
         mowing: {
             name: 'Mowing Lawn',
             icon: 'activity-mowing.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { 
                     name: 'mowerUsed', 
@@ -165,7 +165,7 @@
         fertilizer: {
             name: 'Applying Fertilizer',
             icon: 'activity-fertilizer.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { 
                     name: 'product', 
@@ -190,7 +190,7 @@
         trimming: {
             name: 'Trimming Beds',
             icon: 'activity-general.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { name: 'areas', label: 'Areas Trimmed', type: 'text', placeholder: 'e.g., Front beds, side yard' },
                 { name: 'toolUsed', label: 'Tool Used', type: 'select', options: ['String Trimmer', 'Edger', 'Hedge Trimmer', 'Hand Shears'] },
@@ -200,7 +200,7 @@
         watering: {
             name: 'Watering',
             icon: 'activity-watering.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { name: 'method', label: 'Method', type: 'select', options: ['Sprinkler System', 'Hose', 'Hand Watering', 'Rain'] },
                 { name: 'duration', label: 'Duration (minutes)', type: 'number', placeholder: '30' },
@@ -210,7 +210,7 @@
         seeding: {
             name: 'Seeding/Overseeding',
             icon: 'activity-seeding.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { 
                     name: 'product', 
@@ -235,7 +235,7 @@
         aeration: {
             name: 'Aeration',
             icon: 'activity-general.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { name: 'method', label: 'Method', type: 'select', options: ['Core Aeration', 'Spike Aeration', 'Liquid Aeration'] },
                 { name: 'equipment', label: 'Equipment', type: 'text', placeholder: 'e.g., Rental aerator' },
@@ -245,7 +245,7 @@
         treatment: {
             name: 'Weed/Pest Treatment',
             icon: 'activity-general.png',
-            color: 'bg-[#697965]',
+            color: 'bg-[#20730D]',
             fields: [
                 { name: 'treatmentType', label: 'Treatment Type', type: 'select', options: ['Herbicide', 'Pesticide', 'Fungicide', 'Pre-emergent'] },
                 { 
@@ -645,11 +645,11 @@
                                         value={manualLocation}
                                         onChange={(e) => setManualLocation(e.target.value)}
                                         placeholder="43235, Columbus, or coordinates"
-                                        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                     />
                                     <button
                                         type="submit"
-                                        className="px-6 py-2 bg-[#697965] text-white rounded-lg hover:bg-[#545d50] font-semibold"
+                                        className="px-6 py-2 bg-[#20730D] text-white rounded-lg hover:bg-[#1a5c0a] font-semibold"
                                     >
                                         Get Weather
                                     </button>
@@ -701,25 +701,25 @@
                 };
                 if (weather.soilTemp >= 50 && weather.soilTemp <= 65) return { 
                     text: 'Good for Cool-Season Grass', 
-                    color: 'bg-[#ebeeed] text-[#697965] border-[#b0b5ad]', 
+                    color: 'bg-[#e8f0e5] text-[#20730D] border-[#8fa882]', 
                     icon: '✅',
                     detail: 'Ideal for fescue, ryegrass, and bluegrass growth.'
                 };
                 if (weather.soilTemp >= 65 && weather.soilTemp <= 75) return { 
                     text: 'Ideal Growing Conditions', 
-                    color: 'bg-[#ebeeed] text-[#697965] border-[#b0b5ad]', 
+                    color: 'bg-[#e8f0e5] text-[#20730D] border-[#8fa882]', 
                     icon: '🌟',
                     detail: 'Perfect weather for most lawn activities and treatments.'
                 };
                 if (weather.soilTemp > 75) return { 
                     text: 'Good for Warm-Season Grass', 
-                    color: 'bg-[#ebeeed] text-[#697965] border-[#b0b5ad]', 
+                    color: 'bg-[#e8f0e5] text-[#20730D] border-[#8fa882]', 
                     icon: '☀️',
                     detail: 'Ideal for bermuda, zoysia, and St. Augustine.'
                 };
                 return { 
                     text: 'Good Lawn Care Weather', 
-                    color: 'bg-[#ebeeed] text-[#697965] border-[#b0b5ad]', 
+                    color: 'bg-[#e8f0e5] text-[#20730D] border-[#8fa882]', 
                     icon: '✅',
                     detail: 'Suitable conditions for most lawn maintenance.'
                 };
@@ -739,7 +739,7 @@
                     )}
                     
                     {/* Coach's Corner - Priority Alert at Top */}
-                    <div className="rounded-xl p-4 shadow-xl mb-4 border-2 border-white bg-gradient-to-br from-[#697965] to-[#6B8A76]">
+                    <div className="rounded-xl p-4 shadow-xl mb-4 border-2 border-white bg-gradient-to-br from-[#20730D] to-[#6B8A76]">
                         <div className="flex items-start gap-3">
                             <img 
                                 src={weather.temperature <= 32 ? "coach-winter.png" : "coach-icon.png"} 
@@ -757,13 +757,13 @@
                     {/* Main Stats Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                         {/* Current Conditions */}
-                        <div className="bg-white rounded-xl shadow-lg border-2 border-[#697965]/20 p-4">
-                            <h3 className="text-xs font-bold text-[#697965] uppercase tracking-wider mb-3">Current Conditions</h3>
+                        <div className="bg-white rounded-xl shadow-lg border-2 border-[#20730D]/20 p-4">
+                            <h3 className="text-xs font-bold text-[#20730D] uppercase tracking-wider mb-3">Current Conditions</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 {/* Left: Icon and Temp */}
-                                <div className="flex flex-col items-center justify-center border-r-2 border-[#697965]/20">
+                                <div className="flex flex-col items-center justify-center border-r-2 border-[#20730D]/20">
                                     <div className="text-4xl mb-1">{weatherInfo.icon}</div>
-                                    <div className="text-3xl font-bold text-[#697965]">{weather.temperature}°</div>
+                                    <div className="text-3xl font-bold text-[#20730D]">{weather.temperature}°</div>
                                 </div>
                                 
                                 {/* Right: Details */}
@@ -781,25 +781,25 @@
                         </div>
                         
                         {/* Soil Temp & Rainfall */}
-                        <div className="bg-white rounded-xl shadow-lg border-2 border-[#697965]/20 p-4">
-                            <h3 className="text-xs font-bold text-[#697965] uppercase tracking-wider mb-3">Ground Conditions</h3>
+                        <div className="bg-white rounded-xl shadow-lg border-2 border-[#20730D]/20 p-4">
+                            <h3 className="text-xs font-bold text-[#20730D] uppercase tracking-wider mb-3">Ground Conditions</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 {/* Soil Temperature */}
-                                <div className="flex flex-col justify-center border-r-2 border-[#697965]/20">
-                                    <div className="text-xs text-[#697965] mb-1 font-semibold">SOIL TEMP</div>
-                                    <div className="text-3xl font-bold text-[#697965] mb-1">{weather.soilTemp}°</div>
+                                <div className="flex flex-col justify-center border-r-2 border-[#20730D]/20">
+                                    <div className="text-xs text-[#20730D] mb-1 font-semibold">SOIL TEMP</div>
+                                    <div className="text-3xl font-bold text-[#20730D] mb-1">{weather.soilTemp}°</div>
                                     <div className="text-xs text-gray-500">at 4" depth</div>
                                 </div>
                                 
                                 {/* Rainfall */}
                                 <div className="flex flex-col justify-center">
-                                    <div className="text-xs text-[#697965] mb-1 font-semibold">RAINFALL</div>
-                                    <div className="text-3xl font-bold text-[#697965] mb-1">{weather.rainfall}"</div>
+                                    <div className="text-xs text-[#20730D] mb-1 font-semibold">RAINFALL</div>
+                                    <div className="text-3xl font-bold text-[#20730D] mb-1">{weather.rainfall}"</div>
                                     <div className="text-xs text-gray-500">this week</div>
                                 </div>
                             </div>
                             <div className={`text-sm font-bold mt-3 pt-3 border-t-2 border-gray-100 text-center ${
-                                weather.rainfall >= 1 ? 'text-[#697965]' : 'text-orange-600'
+                                weather.rainfall >= 1 ? 'text-[#20730D]' : 'text-orange-600'
                             }`}>
                                 {weather.rainfall >= 1 ? '✅ Adequate water' : '⚠️ May need watering'}
                             </div>
@@ -816,22 +816,22 @@
                         <span className="text-gray-300">•</span>
                         <button
                             onClick={() => setShowLocationInput(true)}
-                            className="text-gray-500 hover:text-[#697965] transition font-medium"
+                            className="text-gray-500 hover:text-[#20730D] transition font-medium"
                         >
                             Change Location
                         </button>
                         <span className="text-gray-300">•</span>
                         <button
                             onClick={() => fetchWeatherData()}
-                            className="text-gray-500 hover:text-[#697965] transition font-medium"
+                            className="text-gray-500 hover:text-[#20730D] transition font-medium"
                         >
                             Refresh
                         </button>
                     </div>
                     
                     {/* Last Activity */}
-                    <div className="bg-white rounded-xl shadow-lg border-2 border-[#697965]/20 p-4 mb-3">
-                        <h3 className="text-xs font-bold text-[#697965] uppercase tracking-wider mb-3">Last Activity</h3>
+                    <div className="bg-white rounded-xl shadow-lg border-2 border-[#20730D]/20 p-4 mb-3">
+                        <h3 className="text-xs font-bold text-[#20730D] uppercase tracking-wider mb-3">Last Activity</h3>
                         {activities.length > 0 ? (
                             <div className="flex items-center justify-between">
                                 <div>
@@ -897,7 +897,7 @@
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setShowCalendar(!showCalendar)}
-                                className="px-4 py-2 bg-[#697965] text-white rounded-lg shadow hover:bg-[#545d50] font-semibold"
+                                className="px-4 py-2 bg-[#20730D] text-white rounded-lg shadow hover:bg-[#1a5c0a] font-semibold"
                             >
                                 {showCalendar ? '📅 Hide Calendar' : '📅 Show Calendar'}
                             </button>
@@ -1043,7 +1043,7 @@
                                     placeholder="e.g., My Honda HRX, Red Echo Spreader"
                                     value={localGarageForm.name}
                                     onChange={(e) => setLocalGarageForm({...localGarageForm, name: e.target.value})}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                 />
                             </div>
 
@@ -1055,7 +1055,7 @@
                                         setSelectedType(e.target.value);
                                         setLocalGarageForm({...localGarageForm, type: e.target.value, productId: ''});
                                     }}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                 >
                                     <option value="mowers">Lawn Mower</option>
                                     <option value="spreaders">Spreader</option>
@@ -1089,7 +1089,7 @@
                                                 trimmerLineSize: selectedProduct?.lineSize || ''
                                             });
                                         }}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                     >
                                         <option value="">Choose a product...</option>
                                         {(
@@ -1106,7 +1106,7 @@
                                         const selectedProduct = PRODUCT_DATABASE.mowers.find(p => p.id === localGarageForm.productId);
                                         if (selectedProduct?.maintenanceSchedule?.oilChange) {
                                             return (
-                                                <p className="text-xs text-[#697965] mt-1">
+                                                <p className="text-xs text-[#20730D] mt-1">
                                                     ✓ Manufacturer recommends oil change every {selectedProduct.maintenanceSchedule.oilChange} hours
                                                 </p>
                                             );
@@ -1124,7 +1124,7 @@
                                         placeholder="e.g., John Deere X350, Kubota GR2120"
                                         value={localGarageForm.customMowerName}
                                         onChange={(e) => setLocalGarageForm({...localGarageForm, customMowerName: e.target.value})}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                     />
                                 </div>
                             )}
@@ -1139,7 +1139,7 @@
                                             placeholder="e.g., Echo, Stihl, Husqvarna"
                                             value={localGarageForm.trimmerManufacturer}
                                             onChange={(e) => setLocalGarageForm({...localGarageForm, trimmerManufacturer: e.target.value})}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 mb-4">
@@ -1148,7 +1148,7 @@
                                             <select
                                                 value={localGarageForm.trimmerEngineType}
                                                 onChange={(e) => setLocalGarageForm({...localGarageForm, trimmerEngineType: e.target.value})}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                             >
                                                 <option value="">Select...</option>
                                                 <option value="Gas">Gas</option>
@@ -1162,7 +1162,7 @@
                                                 placeholder='e.g., .095", .080"'
                                                 value={localGarageForm.trimmerLineSize}
                                                 onChange={(e) => setLocalGarageForm({...localGarageForm, trimmerLineSize: e.target.value})}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                             />
                                         </div>
                                     </div>
@@ -1179,7 +1179,7 @@
                                             placeholder="0"
                                             value={localGarageForm.currentHours}
                                             onChange={(e) => setLocalGarageForm({...localGarageForm, currentHours: e.target.value})}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">Starting hour meter reading</p>
                                     </div>
@@ -1191,7 +1191,7 @@
                                             placeholder="50"
                                             value={localGarageForm.maintenanceInterval}
                                             onChange={(e) => setLocalGarageForm({...localGarageForm, maintenanceInterval: e.target.value})}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">Hours between service</p>
                                     </div>
@@ -1200,7 +1200,7 @@
 
                             <button
                                 type="submit"
-                                className="w-full px-4 py-2 bg-[#697965] text-white rounded-lg hover:bg-[#545d50] font-semibold"
+                                className="w-full px-4 py-2 bg-[#20730D] text-white rounded-lg hover:bg-[#1a5c0a] font-semibold"
                             >
                                 Add to Garage
                             </button>
@@ -1371,7 +1371,7 @@
                                                                         ⚠️ Maintenance Due! (Manufacturer interval: {item.maintenanceInterval}hrs)
                                                                     </div>
                                                                 ) : (
-                                                                    <div className="bg-[#697965] border border-[#b0b5ad] rounded p-2 text-xs text-[#697965]">
+                                                                    <div className="bg-[#20730D] border border-[#8fa882] rounded p-2 text-xs text-[#20730D]">
                                                                         ✅ Next service in {(item.maintenanceInterval - hoursSinceMaintenance).toFixed(1)} hours (Mfr interval: {item.maintenanceInterval}hrs)
                                                                     </div>
                                                                 )}
@@ -1477,7 +1477,7 @@
                                 required
                                 value={localFormData.date}
                                 onChange={(e) => setLocalFormData({...localFormData, date: e.target.value})}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                             />
                         </div>
 
@@ -1565,7 +1565,7 @@
                                                         data: {...localFormData.data, [field.name]: product ? product.name : ''}
                                                     });
                                                 }}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                             >
                                                 <option value="">{field.placeholder || 'Select...'}</option>
                                                 {products.map(product => (
@@ -1616,7 +1616,7 @@
                                                 ...localFormData,
                                                 data: {...localFormData.data, [field.name]: e.target.value}
                                             })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                         >
                                             <option value="">Select...</option>
                                             {field.options.map(opt => (
@@ -1632,7 +1632,7 @@
                                                 ...localFormData,
                                                 data: {...localFormData.data, [field.name]: e.target.value}
                                             })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                                         />
                                     )}
                                 </div>
@@ -1646,14 +1646,14 @@
                                 onChange={(e) => setLocalFormData({...localFormData, notes: e.target.value})}
                                 placeholder="Any additional notes..."
                                 rows="3"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#697965] focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#20730D] focus:border-transparent"
                             />
                         </div>
 
                         <div className="flex gap-4">
                             <button
                                 type="submit"
-                                className="flex-1 px-6 py-3 bg-[#697965] text-white rounded-lg font-semibold hover:bg-[#545d50]"
+                                className="flex-1 px-6 py-3 bg-[#20730D] text-white rounded-lg font-semibold hover:bg-[#1a5c0a]"
                             >
                                 Save Activity
                             </button>
@@ -1747,13 +1747,13 @@
         return (
             <div className="min-h-screen bg-gray-50 p-2 md:p-3">
                 <div className="max-w-5xl mx-auto">
-                    <header className="mb-4 text-center bg-gradient-to-br from-[#697965] to-[#6B8A76] rounded-2xl p-4 shadow-xl border-2 border-white">
+                    <header className="mb-4 text-center bg-gradient-to-br from-[#20730D] to-[#6B8A76] rounded-2xl p-4 shadow-xl border-2 border-white">
                         <img src="logo.png" alt="Lawn Coach Logo" className="w-24 h-24 mx-auto object-contain drop-shadow-xl" />
                     </header>
 
                     <WeatherSnapshot />
 
-                    <nav className="flex gap-2 mb-4 flex-wrap bg-white rounded-xl p-2 shadow-lg border-2 border-[#697965]">
+                    <nav className="flex gap-2 mb-4 flex-wrap bg-white rounded-xl p-2 shadow-lg border-2 border-[#20730D]">
                         <button
                             onClick={() => {
                                 if (view === 'add') {
@@ -1766,8 +1766,8 @@
                             }}
                             className={`flex-1 px-3 py-2 rounded-lg text-sm font-bold transition-all border-2 ${
                                 view === 'add' 
-                                    ? 'bg-[#697965] text-white border-[#697965] shadow-md' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#697965]/10 hover:border-[#697965]'
+                                    ? 'bg-[#20730D] text-white border-[#20730D] shadow-md' 
+                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#20730D]/10 hover:border-[#20730D]'
                             }`}
                         >
                             ➕ Add Activity
@@ -1776,8 +1776,8 @@
                             onClick={() => setView(view === 'history' ? null : 'history')}
                             className={`flex-1 px-3 py-2 rounded-lg text-sm font-bold transition-all border-2 ${
                                 view === 'history' 
-                                    ? 'bg-[#697965] text-white border-[#697965] shadow-md' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#697965]/10 hover:border-[#697965]'
+                                    ? 'bg-[#20730D] text-white border-[#20730D] shadow-md' 
+                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#20730D]/10 hover:border-[#20730D]'
                             }`}
                         >
                             📋 History
@@ -1786,8 +1786,8 @@
                             onClick={() => setView(view === 'garage' ? null : 'garage')}
                             className={`flex-1 px-3 py-2 rounded-lg text-sm font-bold transition-all border-2 ${
                                 view === 'garage' 
-                                    ? 'bg-[#697965] text-white border-[#697965] shadow-md' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#697965]/10 hover:border-[#697965]'
+                                    ? 'bg-[#20730D] text-white border-[#20730D] shadow-md' 
+                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#20730D]/10 hover:border-[#20730D]'
                             }`}
                         >
                             🏠 My Garage
