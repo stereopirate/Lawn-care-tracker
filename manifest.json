@@ -1,0 +1,33 @@
+{
+“name”: “Easy Green - Your Lawn Care Made Simple”,
+“short_name”: “Easy Green”,
+“description”: “Making your lawn dreams come true, one blade at a time. Track maintenance, get weather updates, and achieve the perfect lawn.”,
+“start_url”: “/”,
+“display”: “standalone”,
+“background_color”: “#ffffff”,
+“theme_color”: “#20730D”,
+“orientation”: “portrait-primary”,
+“icons”: [
+{
+“src”: “/icon-192.png”,
+“sizes”: “192x192”,
+“type”: “image/png”,
+“purpose”: “any maskable”
+},
+{
+“src”: “/icon-512.png”,
+“sizes”: “512x512”,
+“type”: “image/png”,
+“purpose”: “any maskable”
+}
+],
+“categories”: [“productivity”, “lifestyle”],
+“screenshots”: [
+{
+“src”: “/screenshot-mobile.png”,
+“sizes”: “390x844”,
+“type”: “image/png”,
+“form_factor”: “narrow”
+}
+]
+}
