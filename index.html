@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 2.3 - Updated: Feb 2, 2026 - Exact Logo Green (#4e724e) -->
+    <!-- Version 2.4 - Updated: Feb 2, 2026 - Custom Activity Icons -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#16a34a">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
@@ -147,7 +147,7 @@
     const ACTIVITY_TYPES = {
         mowing: {
             name: 'Mowing Lawn',
-            icon: '🏡',
+            icon: 'activity-mowing.png',
             color: 'bg-[#4e724e]',
             fields: [
                 { 
@@ -164,7 +164,7 @@
         },
         fertilizer: {
             name: 'Applying Fertilizer',
-            icon: '🌱',
+            icon: 'activity-fertilizer.png',
             color: 'bg-amber-500',
             fields: [
                 { 
@@ -189,7 +189,7 @@
         },
         trimming: {
             name: 'Trimming Beds',
-            icon: '✂️',
+            icon: 'activity-general.png',
             color: 'bg-purple-500',
             fields: [
                 { name: 'areas', label: 'Areas Trimmed', type: 'text', placeholder: 'e.g., Front beds, side yard' },
@@ -199,7 +199,7 @@
         },
         watering: {
             name: 'Watering',
-            icon: '💧',
+            icon: 'activity-watering.png',
             color: 'bg-blue-500',
             fields: [
                 { name: 'method', label: 'Method', type: 'select', options: ['Sprinkler System', 'Hose', 'Hand Watering', 'Rain'] },
@@ -209,7 +209,7 @@
         },
         seeding: {
             name: 'Seeding/Overseeding',
-            icon: '🌾',
+            icon: 'activity-seeding.png',
             color: 'bg-yellow-600',
             fields: [
                 { 
@@ -234,7 +234,7 @@
         },
         aeration: {
             name: 'Aeration',
-            icon: '🔧',
+            icon: 'activity-general.png',
             color: 'bg-orange-500',
             fields: [
                 { name: 'method', label: 'Method', type: 'select', options: ['Core Aeration', 'Spike Aeration', 'Liquid Aeration'] },
@@ -244,7 +244,7 @@
         },
         treatment: {
             name: 'Weed/Pest Treatment',
-            icon: '🐛',
+            icon: 'activity-general.png',
             color: 'bg-red-500',
             fields: [
                 { name: 'treatmentType', label: 'Treatment Type', type: 'select', options: ['Herbicide', 'Pesticide', 'Fungicide', 'Pre-emergent'] },
@@ -1420,15 +1420,15 @@
                             <button
                                 key={key}
                                 onClick={() => setSelectedActivityType(key)}
-                                className={`${type.color} text-white p-4 rounded-lg shadow hover:shadow-md transition`}
+                                className={`${type.color} text-white p-4 rounded-lg shadow hover:shadow-md transition flex flex-col items-center`}
                             >
-                                <div className="text-3xl mb-1.5">{type.icon}</div>
-                                <div className="text-sm font-semibold leading-tight">{type.name}</div>
+                                <img src={type.icon} alt={type.name} className="w-16 h-16 mb-2 rounded-full object-cover" />
+                                <div className="text-sm font-semibold leading-tight text-center">{type.name}</div>
                             </button>
                         ))}
                     </div>
                     <button
-                        onClick={() => setView('calendar')}
+                        onClick={() => setView(null)}
                         className="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium"
                     >
                         Cancel
@@ -1464,8 +1464,9 @@
 
             return (
                 <div>
-                    <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                        {activityType.icon} {activityType.name}
+                    <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                        <img src={activityType.icon} alt={activityType.name} className="w-12 h-12 rounded-full object-cover" />
+                        {activityType.name}
                     </h2>
                     
                     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 max-w-3xl border border-gray-200">
@@ -1693,8 +1694,8 @@
                                     <div key={activity.id} className="bg-white rounded-lg shadow-lg p-6">
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-start gap-4 flex-1">
-                                                <div className={`${activityType.color} text-white px-4 py-2 rounded-lg text-2xl`}>
-                                                    {activityType.icon}
+                                                <div className={`${activityType.color} text-white p-2 rounded-lg`}>
+                                                    <img src={activityType.icon} alt={activityType.name} className="w-12 h-12 rounded-lg object-cover" />
                                                 </div>
                                                 <div className="flex-1">
                                                     <h3 className="text-xl font-bold mb-1">{activityType.name}</h3>
