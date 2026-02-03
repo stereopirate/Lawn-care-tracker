@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 3.0 - Updated: Feb 2, 2026 - Updated Green #367C2B + New Icons (No Gradients) -->
+    <!-- Version 3.4 - Updated: Feb 3, 2026 - Separate Pages for Each View + Back to Home Navigation -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#367C2B">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
@@ -1420,10 +1420,10 @@
                             <button
                                 key={key}
                                 onClick={() => setSelectedActivityType(key)}
-                                className={`${type.color} text-white p-4 rounded-lg shadow hover:shadow-md transition flex items-center gap-3 min-h-[80px]`}
+                                className={`${type.color} text-white p-3 rounded-lg shadow hover:shadow-md transition flex items-center gap-3 min-h-[90px]`}
                             >
-                                <img src={type.icon} alt={type.name} className="w-14 h-14 rounded-full object-cover flex-shrink-0" />
-                                <div className="text-sm font-semibold leading-snug text-left flex-1 break-words">{type.name}</div>
+                                <img src={type.icon} alt={type.name} className="w-20 h-20 rounded-full object-cover flex-shrink-0" />
+                                <div className="text-sm font-semibold leading-tight text-left flex-1 break-words pr-2">{type.name}</div>
                             </button>
                         ))}
                     </div>
@@ -1465,7 +1465,7 @@
             return (
                 <div>
                     <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-3">
-                        <img src={activityType.icon} alt={activityType.name} className="w-12 h-12 rounded-full object-cover" />
+                        <img src={activityType.icon} alt={activityType.name} className="w-16 h-16 rounded-full object-cover" />
                         {activityType.name}
                     </h2>
                     
@@ -1695,7 +1695,7 @@
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-start gap-4 flex-1">
                                                 <div className={`${activityType.color} text-white p-2 rounded-lg`}>
-                                                    <img src={activityType.icon} alt={activityType.name} className="w-12 h-12 rounded-lg object-cover" />
+                                                    <img src={activityType.icon} alt={activityType.name} className="w-16 h-16 rounded-lg object-cover" />
                                                 </div>
                                                 <div className="flex-1">
                                                     <h3 className="text-xl font-bold mb-1">{activityType.name}</h3>
@@ -1745,62 +1745,118 @@
         };
 
         return (
-            <div className="min-h-screen bg-gray-50 p-2 md:p-3">
-                <div className="max-w-5xl mx-auto">
-                    <header className="mb-4 text-center bg-[#367C2B] rounded-2xl p-4 shadow-xl border-2 border-white">
-                        <img src="logo.png" alt="Lawn Coach Logo" className="w-24 h-24 mx-auto object-contain drop-shadow-xl" />
-                    </header>
+            <div className="min-h-screen bg-gray-50">
+                {/* Top Menu Bar */}
+                <header className="bg-white shadow-md sticky top-0 z-50">
+                    <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <img src="logo.png" alt="Lawn Coach" className="w-12 h-12 rounded-full object-cover shadow-md" />
+                            <div className="flex items-center gap-1">
+                                <span className="text-2xl font-bold text-gray-900">Lawn</span>
+                                <span className="text-2xl font-bold text-[#367C2B]">Coach</span>
+                            </div>
+                        </div>
+                        
+                        {/* Hamburger Menu Button */}
+                        <button 
+                            onClick={() => setView(view === 'menu' ? null : 'menu')}
+                            className="p-2 rounded-lg hover:bg-gray-100 transition"
+                            aria-label="Menu"
+                        >
+                            <svg className="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    {/* Dropdown Menu */}
+                    {view === 'menu' && (
+                        <div className="border-t border-gray-200 bg-white shadow-lg">
+                            <div className="max-w-5xl mx-auto px-4 py-2">
+                                <button
+                                    onClick={() => {
+                                        setView('add');
+                                        setSelectedActivityType(null);
+                                    }}
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
+                                >
+                                    <span className="text-2xl">➕</span>
+                                    <span className="text-lg font-semibold text-gray-700">Add Activity</span>
+                                </button>
+                                <button
+                                    onClick={() => setView('history')}
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
+                                >
+                                    <span className="text-2xl">📋</span>
+                                    <span className="text-lg font-semibold text-gray-700">History</span>
+                                </button>
+                                <button
+                                    onClick={() => setView('garage')}
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
+                                >
+                                    <span className="text-2xl">🏠</span>
+                                    <span className="text-lg font-semibold text-gray-700">My Garage</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </header>
 
-                    <WeatherSnapshot />
+                {/* Home Page - Only show when no view is selected */}
+                {!view && (
+                    <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        <WeatherSnapshot />
+                    </div>
+                )}
 
-                    <nav className="flex gap-2 mb-4 flex-wrap bg-white rounded-xl p-2 shadow-lg border-2 border-[#367C2B]">
-                        <button
-                            onClick={() => {
-                                if (view === 'add') {
+                {/* Add Activity Page */}
+                {view === 'add' && (
+                    <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        <div className="mb-4">
+                            <button 
+                                onClick={() => {
                                     setView(null);
                                     setSelectedActivityType(null);
-                                } else {
-                                    setView('add');
-                                    setSelectedActivityType(null);
-                                }
-                            }}
-                            className={`flex-1 px-3 py-2 rounded-lg text-sm font-bold transition-all border-2 ${
-                                view === 'add' 
-                                    ? 'bg-[#367C2B] text-white border-[#367C2B] shadow-md' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#367C2B]/10 hover:border-[#367C2B]'
-                            }`}
-                        >
-                             Add Activity
-                        </button>
-                        <button
-                            onClick={() => setView(view === 'history' ? null : 'history')}
-                            className={`flex-1 px-3 py-2 rounded-lg text-sm font-bold transition-all border-2 ${
-                                view === 'history' 
-                                    ? 'bg-[#367C2B] text-white border-[#367C2B] shadow-md' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#367C2B]/10 hover:border-[#367C2B]'
-                            }`}
-                        >
-                             History
-                        </button>
-                        <button
-                            onClick={() => setView(view === 'garage' ? null : 'garage')}
-                            className={`flex-1 px-3 py-2 rounded-lg text-sm font-bold transition-all border-2 ${
-                                view === 'garage' 
-                                    ? 'bg-[#367C2B] text-white border-[#367C2B] shadow-md' 
-                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-[#367C2B]/10 hover:border-[#367C2B]'
-                            }`}
-                        >
-                             My Garage
-                        </button>
-                    </nav>
+                                }}
+                                className="text-[#367C2B] hover:text-[#2d6323] font-semibold flex items-center gap-2"
+                            >
+                                ← Back to Home
+                            </button>
+                        </div>
+                        {!selectedActivityType && <ActivitySelector />}
+                        {selectedActivityType && <ActivityForm />}
+                    </div>
+                )}
 
-                    <main>
-                        {view === 'add' && !selectedActivityType && <ActivitySelector />}
-                        {view === 'add' && selectedActivityType && <ActivityForm />}
-                        {view === 'history' && <HistoryView />}
-                        {view === 'garage' && <MyGarage />}
-                    </main>
-                </div>
+                {/* History Page */}
+                {view === 'history' && (
+                    <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        <div className="mb-4">
+                            <button 
+                                onClick={() => setView(null)}
+                                className="text-[#367C2B] hover:text-[#2d6323] font-semibold flex items-center gap-2"
+                            >
+                                ← Back to Home
+                            </button>
+                        </div>
+                        <HistoryView />
+                    </div>
+                )}
+
+                {/* My Garage Page */}
+                {view === 'garage' && (
+                    <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        <div className="mb-4">
+                            <button 
+                                onClick={() => setView(null)}
+                                className="text-[#367C2B] hover:text-[#2d6323] font-semibold flex items-center gap-2"
+                            >
+                                ← Back to Home
+                            </button>
+                        </div>
+                        <MyGarage />
+                    </div>
+                )}
             </div>
         );
     }
