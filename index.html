@@ -46,6 +46,16 @@
 
 </head>
 <body class="bg-white" style="background-color: #ffffff !important;">
+    <!-- Hide any loading artifacts -->
+    <style>
+        body::before,
+        body > *:not(#root):not(script) {
+            display: none !important;
+        }
+        #root {
+            min-height: 100vh;
+        }
+    </style>
     <div id="root"></div>
 
 ```
