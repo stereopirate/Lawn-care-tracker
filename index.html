@@ -4,16 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 3.5 - Updated: Feb 3, 2026 - Clickable Logo + Collapsible Maintenance Info -->
+    <!-- Version 3.6 - Updated: Feb 3, 2026 - Simplified Equipment Cards with Collapsible Maintenance -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#367C2B">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Easy Green">
-    <title>Easy Green - Your Lawn Care Made Simple</title>
+    <title>Lawn Coach - Your Lawn Care Made Simple</title>
 
-```
 <!-- PWA Manifest -->
 <link rel="manifest" href="/manifest.json">
 
@@ -1227,27 +1226,18 @@
                                         : false;
                                     
                                     return (
-                                        <div key={item.id} className="bg-gray-50 rounded-lg border border-gray-200">
-                                            {/* Clickable Header */}
-                                            <div 
-                                                className="p-3 cursor-pointer hover:bg-gray-100 transition"
-                                                onClick={() => {
-                                                    const newExpanded = expandedEquipment === item.id ? null : item.id;
-                                                    setExpandedEquipment(newExpanded);
-                                                }}
-                                            >
+                                        <div key={item.id} className="bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                                            {/* Equipment Header - Always Visible */}
+                                            <div className="p-4">
                                                 <div className="flex items-start justify-between mb-2">
                                                     <div className="flex-1">
-                                                        <div className="font-semibold text-gray-900 flex items-center gap-2">
-                                                            <span className="text-blue-500 text-sm">
-                                                                {expandedEquipment === item.id ? '' : ''}
-                                                            </span>
+                                                        <div className="font-bold text-lg text-gray-900">
                                                             {item.name}
                                                         </div>
-                                                        <div className="text-sm text-gray-600 capitalize">{item.type}</div>
+                                                        <div className="text-sm text-gray-600 capitalize mt-1">{item.type}</div>
                                                         {item.product && (
                                                             <div className="text-xs text-gray-500 mt-1">
-                                                                {item.product.brand} {item.product.name}
+                                                                {item.product.brand} • {item.product.type}
                                                             </div>
                                                         )}
                                                     </div>
@@ -1256,109 +1246,137 @@
                                                             e.stopPropagation();
                                                             deleteEquipment(item.id);
                                                         }}
-                                                        className="px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-xs font-medium"
+                                                        className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-xs font-semibold"
                                                     >
                                                         Remove
                                                     </button>
                                                 </div>
+                                                
+                                                {/* See Maintenance Info Toggle - Only for Mowers */}
+                                                {item.type === 'mowers' && (
+                                                    <button
+                                                        onClick={() => setShowMaintenanceInfo({
+                                                            ...showMaintenanceInfo,
+                                                            [item.id]: !showMaintenanceInfo[item.id]
+                                                        })}
+                                                        className="mt-3 text-sm text-[#367C2B] hover:text-[#2d6323] font-semibold underline"
+                                                    >
+                                                        {showMaintenanceInfo[item.id] ? '− Hide' : '+ See'} Maintenance Info
+                                                    </button>
+                                                )}
                                             </div>
                                             
-                                            {/* Expanded Content */}
-                                            <div className="px-3 pb-3">
-                                                {/* Expanded Content */}
-                                                {expandedEquipment === item.id && (
-                                                    <div className="mb-3">
-                                                        {item.product?.maintenanceSchedule && (
-                                                            <>
-                                                                <button
-                                                                    onClick={() => setShowMaintenanceInfo({
-                                                                        ...showMaintenanceInfo,
-                                                                        [item.id]: !showMaintenanceInfo[item.id]
-                                                                    })}
-                                                                    className="text-sm text-[#367C2B] hover:text-[#2d6323] font-semibold underline mb-2"
-                                                                >
-                                                                    {showMaintenanceInfo[item.id] ? '− Hide' : '+ Show'} Maintenance Info
-                                                                </button>
-                                                                
-                                                                {showMaintenanceInfo[item.id] && (
-                                                                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                                                        <div className="font-semibold text-blue-900 text-sm mb-2">
-                                                                             Manufacturer Maintenance Schedule
-                                                                        </div>
-                                                                        <div className="space-y-1 text-xs text-blue-800">
-                                                                            {item.product.maintenanceSchedule.oilChange && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Oil Change:</span>
-                                                                                    <span>Every {item.product.maintenanceSchedule.oilChange} hours</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.airFilter && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Air Filter:</span>
-                                                                                    <span>{typeof item.product.maintenanceSchedule.airFilter === 'number' ? `Every ${item.product.maintenanceSchedule.airFilter} hours` : item.product.maintenanceSchedule.airFilter}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.sparkPlug && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Spark Plug:</span>
-                                                                                    <span>{typeof item.product.maintenanceSchedule.sparkPlug === 'number' ? `Every ${item.product.maintenanceSchedule.sparkPlug} hours` : item.product.maintenanceSchedule.sparkPlug}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.bladeService && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Blade Service:</span>
-                                                                                    <span>{item.product.maintenanceSchedule.bladeService}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.cleaning && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Cleaning:</span>
-                                                                                    <span>{item.product.maintenanceSchedule.cleaning}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.lubrication && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Lubrication:</span>
-                                                                                    <span>{item.product.maintenanceSchedule.lubrication}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.tires && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Tires:</span>
-                                                                                    <span>{item.product.maintenanceSchedule.tires}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.gearbox && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Gearbox:</span>
-                                                                                    <span>{item.product.maintenanceSchedule.gearbox}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.battery && (
-                                                                                <div className="flex justify-between">
-                                                                                    <span className="font-medium">Battery:</span>
-                                                                                    <span>{item.product.maintenanceSchedule.battery}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {item.product.maintenanceSchedule.note && (
-                                                                                <div className="mt-2 pt-2 border-t border-blue-300 text-blue-700 font-medium">
-                                                                                     {item.product.maintenanceSchedule.note}
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
+                                            {/* Collapsible Maintenance Section - Only for Mowers */}
+                                            {item.type === 'mowers' && showMaintenanceInfo[item.id] && (
+                                                <div className="px-4 pb-4 border-t-2 border-gray-100 pt-4">
+                                                    {/* Hour Meter Display */}
+                                                    <div className="grid grid-cols-2 gap-3 mb-3">
+                                                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 font-medium mb-1">Current Hours</div>
+                                                            <div className="text-2xl font-bold text-gray-900">{(item.currentHours || 0).toFixed(1)}</div>
+                                                        </div>
+                                                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 font-medium mb-1">Since Maintenance</div>
+                                                            <div className={`text-2xl font-bold ${needsMaintenance ? 'text-red-600' : 'text-gray-900'}`}>
+                                                                {hoursSinceMaintenance.toFixed(1)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {/* Maintenance Status */}
+                                                    {item.maintenanceInterval && (
+                                                        <div className="mb-3">
+                                                            {needsMaintenance ? (
+                                                                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-3 text-sm text-red-700 font-semibold">
+                                                                     Maintenance Due! (Interval: {item.maintenanceInterval} hours)
+                                                                </div>
+                                                            ) : (
+                                                                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-3 text-sm text-green-700 font-semibold">
+                                                                     Next service in {(item.maintenanceInterval - hoursSinceMaintenance).toFixed(1)} hours (Interval: {item.maintenanceInterval} hours)
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Manufacturer Maintenance Schedule */}
+                                                    {item.product?.maintenanceSchedule && (
+                                                        <div className="mb-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                                                            <div className="font-semibold text-blue-900 text-sm mb-2">
+                                                                 Manufacturer Maintenance Schedule
+                                                            </div>
+                                                            <div className="space-y-1 text-xs text-blue-800">
+                                                                {item.product.maintenanceSchedule.oilChange && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Oil Change:</span>
+                                                                        <span>Every {item.product.maintenanceSchedule.oilChange} hours</span>
                                                                     </div>
                                                                 )}
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                
-                                                {/* Hour Meter Display - Only for Mowers */}
-                                                {item.type === 'mowers' && (
-                                                    <>
-                                                        <div className="grid grid-cols-2 gap-2 mb-2">
-                                                            <div className="bg-white p-2 rounded border border-gray-200">
-                                                                <div className="text-xs text-gray-500">Current Hours</div>
+                                                                {item.product.maintenanceSchedule.airFilter && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Air Filter:</span>
+                                                                        <span>{typeof item.product.maintenanceSchedule.airFilter === 'number' ? `Every ${item.product.maintenanceSchedule.airFilter} hours` : item.product.maintenanceSchedule.airFilter}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.product.maintenanceSchedule.sparkPlug && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Spark Plug:</span>
+                                                                        <span>{typeof item.product.maintenanceSchedule.sparkPlug === 'number' ? `Every ${item.product.maintenanceSchedule.sparkPlug} hours` : item.product.maintenanceSchedule.sparkPlug}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.product.maintenanceSchedule.bladeService && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Blade Service:</span>
+                                                                        <span>{item.product.maintenanceSchedule.bladeService}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.product.maintenanceSchedule.cleaning && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Cleaning:</span>
+                                                                        <span>{item.product.maintenanceSchedule.cleaning}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.product.maintenanceSchedule.lubrication && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Lubrication:</span>
+                                                                        <span>{item.product.maintenanceSchedule.lubrication}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.product.maintenanceSchedule.battery && (
+                                                                    <div className="flex justify-between">
+                                                                        <span className="font-medium">Battery:</span>
+                                                                        <span>{item.product.maintenanceSchedule.battery}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.product.maintenanceSchedule.note && (
+                                                                    <div className="mt-2 pt-2 border-t border-blue-300 text-blue-700 font-medium">
+                                                                         {item.product.maintenanceSchedule.note}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Log Maintenance Button */}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (confirm(`Log maintenance for ${item.name} at ${(item.currentHours || 0).toFixed(1)} hours?`)) {
+                                                                logMaintenance(item.id);
+                                                                alert(` Maintenance logged! Hour meter reset to 0 hours since last service.`);
+                                                            }
+                                                        }}
+                                                        className="w-full px-4 py-2.5 bg-[#367C2B] text-white rounded-lg hover:bg-[#2d6323] text-sm font-semibold"
+                                                    >
+                                                         Log Maintenance
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
                                                                 <div className="text-lg font-bold text-gray-900">{(item.currentHours || 0).toFixed(1)}</div>
                                                             </div>
                                                             <div className="bg-white p-2 rounded border border-gray-200">
@@ -1875,7 +1893,6 @@
 
     ReactDOM.render(<LawnCareTracker />, document.getElementById('root'));
 </script>
-```
 
 </body>
 </html>
