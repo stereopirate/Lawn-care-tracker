@@ -11,8 +11,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Easy Green">
-    <title>Lawn Coach - Your Lawn Care Made Simple</title>
+    <title>Easy Green - Your Lawn Care Made Simple</title>
 
+```
 <!-- PWA Manifest -->
 <link rel="manifest" href="/manifest.json">
 
@@ -1377,53 +1378,6 @@
                             </div>
                         )}
                     </div>
-                                                                <div className="text-lg font-bold text-gray-900">{(item.currentHours || 0).toFixed(1)}</div>
-                                                            </div>
-                                                            <div className="bg-white p-2 rounded border border-gray-200">
-                                                                <div className="text-xs text-gray-500">Since Maintenance</div>
-                                                                <div className={`text-lg font-bold ${needsMaintenance ? 'text-red-600' : 'text-gray-900'}`}>
-                                                                    {hoursSinceMaintenance.toFixed(1)}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        {/* Maintenance Status */}
-                                                        {item.maintenanceInterval && (
-                                                            <div className="mb-2">
-                                                                {needsMaintenance ? (
-                                                                    <div className="bg-red-50 border border-red-200 rounded p-2 text-xs text-red-700 font-medium">
-                                                                         Maintenance Due! (Manufacturer interval: {item.maintenanceInterval}hrs)
-                                                                    </div>
-                                                                ) : (
-                                                                    <div className="bg-[#367C2B] border border-[#7ba870] rounded p-2 text-xs text-[#367C2B]">
-                                                                         Next service in {(item.maintenanceInterval - hoursSinceMaintenance).toFixed(1)} hours (Mfr interval: {item.maintenanceInterval}hrs)
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                        
-                                                        {/* Log Maintenance Button */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (confirm(`Log maintenance for ${item.name} at ${(item.currentHours || 0).toFixed(1)} hours?`)) {
-                                                                    logMaintenance(item.id);
-                                                                    alert(` Maintenance logged! Hour meter will reset to 0 hours since last service.`);
-                                                                }
-                                                            }}
-                                                            className="w-full px-3 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs font-medium"
-                                                        >
-                                                             Log Maintenance
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </div>
 
                     <button
                         onClick={() => setView('calendar')}
@@ -1893,6 +1847,7 @@
 
     ReactDOM.render(<LawnCareTracker />, document.getElementById('root'));
 </script>
+```
 
 </body>
 </html>
