@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 4.0 Beta - Updated: Feb 3, 2026 - Dashboard, Enhanced Home, Lawn Profile, Enhanced Activity Entry -->
+    <!-- Version 4.1 - Updated: Feb 7, 2026 - Personalized Recommendations System -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#367C2B">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
@@ -304,6 +304,7 @@
         const [equipment, setEquipment] = useState([]);
         const [lawnProfile, setLawnProfile] = useState(null);
         const [statsView, setStatsView] = useState('year'); // year, season, all
+        const [showProfilePrompt, setShowProfilePrompt] = useState(false);
 
         // Load activities from localStorage on mount
         useEffect(() => {
@@ -746,6 +747,9 @@
             };
 
             const condition = getLawnCondition();
+            
+            // Get top recommendation
+            const topRecommendation = calculateRecommendations()[0];
 
             return (
                 <div className="mb-6">
@@ -758,21 +762,61 @@
                         </div>
                     )}
                     
-                    {/* Coach's Corner - Priority Alert at Top */}
-                    <div className="rounded-xl p-4 shadow-xl mb-4 border-2 border-white bg-[#367C2B]">
-                        <div className="flex items-start gap-3">
-                            <img 
-                                src={weather.temperature <= 32 ? "coach-winter.png" : "coach-icon.png"} 
-                                alt="Coach" 
-                                className="w-16 h-16 object-contain flex-shrink-0" 
-                            />
-                            <div className="flex-1">
-                                <div className="text-xs font-bold uppercase tracking-widest mb-1 text-white/80">🏆 Coach's Corner</div>
-                                <div className="font-bold text-xl mb-1 text-white" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.2)'}}>{condition.text}</div>
-                                <div className="text-sm text-white/95 leading-relaxed">{condition.detail}</div>
+                    {/* Coach's Corner - Show Top Recommendation or Weather Advice */}
+                    {topRecommendation ? (
+                        <div className="rounded-xl p-4 shadow-xl mb-4 border-2 border-white bg-[#367C2B]">
+                            <div className="flex items-start gap-3">
+                                <img 
+                                    src={weather.temperature <= 32 ? "coach-winter.png" : "coach-icon.png"} 
+                                    alt="Coach" 
+                                    className="w-16 h-16 object-contain flex-shrink-0" 
+                                />
+                                <div className="flex-1">
+                                    <div className="text-xs font-bold uppercase tracking-widest mb-1 text-white/80">🏆 Coach's Corner</div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        {topRecommendation.priority === 'high' && <span className="text-lg">🔴</span>}
+                                        {topRecommendation.priority === 'medium' && <span className="text-lg">🟡</span>}
+                                        <div className="font-bold text-xl text-white" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.2)'}}>
+                                            {topRecommendation.title}
+                                        </div>
+                                    </div>
+                                    <div className="text-sm text-white/95 leading-relaxed mb-2">{topRecommendation.reason}</div>
+                                    <div className="flex gap-2 mt-3">
+                                        <button
+                                            onClick={() => {
+                                                setSelectedActivityType(topRecommendation.action);
+                                                setView('add');
+                                            }}
+                                            className="px-4 py-2 bg-white text-[#367C2B] rounded-lg font-semibold hover:bg-gray-100 transition text-sm"
+                                        >
+                                            {topRecommendation.icon} Log Now
+                                        </button>
+                                        <button
+                                            onClick={() => setView('recommendations')}
+                                            className="px-4 py-2 bg-white/20 text-white rounded-lg font-semibold hover:bg-white/30 transition text-sm border border-white/30"
+                                        >
+                                            View All ({calculateRecommendations().length})
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="rounded-xl p-4 shadow-xl mb-4 border-2 border-white bg-[#367C2B]">
+                            <div className="flex items-start gap-3">
+                                <img 
+                                    src={weather.temperature <= 32 ? "coach-winter.png" : "coach-icon.png"} 
+                                    alt="Coach" 
+                                    className="w-16 h-16 object-contain flex-shrink-0" 
+                                />
+                                <div className="flex-1">
+                                    <div className="text-xs font-bold uppercase tracking-widest mb-1 text-white/80">🏆 Coach's Corner</div>
+                                    <div className="font-bold text-xl mb-1 text-white" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.2)'}}>{condition.text}</div>
+                                    <div className="text-sm text-white/95 leading-relaxed">{condition.detail}</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     
                     {/* Main Stats Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
@@ -1673,6 +1717,194 @@
 
         
         // ==================== DASHBOARD COMPONENT ====================
+        // ==================== V4.1 RECOMMENDATION ENGINE ====================
+        
+        // Growing Season Calculator
+        const getGrowingSeason = (grassType, soilTemp) => {
+            const now = new Date();
+            const month = now.getMonth(); // 0-11
+            
+            if (!grassType) return null;
+            
+            // Calendar-based baseline
+            let calendarSeason = false;
+            if (grassType === 'cool') {
+                // Cool season: April (3) through October (9)
+                calendarSeason = month >= 3 && month <= 9;
+            } else {
+                // Warm season: May (4) through September (8)
+                calendarSeason = month >= 4 && month <= 8;
+            }
+            
+            // Soil temperature override
+            let soilTempActive = false;
+            if (soilTemp) {
+                if (grassType === 'cool') {
+                    soilTempActive = soilTemp >= 40 && soilTemp <= 80;
+                } else {
+                    soilTempActive = soilTemp >= 65 && soilTemp <= 90;
+                }
+            }
+            
+            // Hybrid: Use calendar OR soil temp
+            return calendarSeason || soilTempActive;
+        };
+        
+        // Calculate Recommendations
+        const calculateRecommendations = () => {
+            const recommendations = [];
+            const now = new Date();
+            
+            // Helper: Get days since last activity
+            const getDaysSinceActivity = (type) => {
+                const lastActivity = activities
+                    .filter(a => a.type === type)
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+                
+                if (!lastActivity) return 999;
+                
+                const daysSince = Math.floor((now - new Date(lastActivity.date)) / (1000 * 60 * 60 * 24));
+                return daysSince;
+            };
+            
+            const grassType = lawnProfile?.grassType;
+            const isGrowingSeason = weather ? getGrowingSeason(grassType, weather.soilTemp) : false;
+            
+            // MOWING RECOMMENDATIONS
+            const daysSinceLastMow = getDaysSinceActivity('mowing');
+            
+            if (isGrowingSeason && daysSinceLastMow >= 3) {
+                let priority = 'low';
+                let title = 'Consider Mowing';
+                let reason = `It's been ${daysSinceLastMow} days since your last mowing.`;
+                
+                if (daysSinceLastMow >= 7) {
+                    priority = 'high';
+                    title = 'Mow Your Lawn';
+                    reason = `It's been ${daysSinceLastMow} days - grass is likely overgrown.`;
+                } else if (daysSinceLastMow >= 5) {
+                    priority = 'medium';
+                    title = 'Time to Mow';
+                }
+                
+                const skipRain = weather && (weather.description?.toLowerCase().includes('rain') || weather.description?.toLowerCase().includes('storm'));
+                
+                if (!skipRain) {
+                    recommendations.push({
+                        id: 'rec_mowing',
+                        type: 'mowing',
+                        priority,
+                        icon: '🌱',
+                        title,
+                        reason,
+                        details: isGrowingSeason ? 'Grass is actively growing.' : 'Grass growth is slowing.',
+                        timing: daysSinceLastMow >= 7 ? 'Within 48 hours' : 'This weekend',
+                        action: 'mowing'
+                    });
+                }
+            }
+            
+            // FERTILIZER RECOMMENDATIONS
+            const daysSinceLastFertilizer = getDaysSinceActivity('fertilizer');
+            const weeksSinceLastFertilizer = Math.floor(daysSinceLastFertilizer / 7);
+            
+            if (weather && weather.soilTemp && grassType) {
+                let shouldRecommend = false;
+                let fertReason = '';
+                let fertPriority = 'low';
+                
+                if (grassType === 'cool') {
+                    const month = now.getMonth();
+                    const isSpring = month >= 3 && month <= 5;
+                    const isFall = month >= 8 && month <= 9;
+                    
+                    if (isSpring && weather.soilTemp >= 50 && weather.soilTemp <= 70) {
+                        shouldRecommend = weeksSinceLastFertilizer >= 6;
+                        fertReason = `Soil temp is ${weather.soilTemp}°F - ideal spring feeding window.`;
+                        fertPriority = weeksSinceLastFertilizer >= 12 ? 'high' : 'medium';
+                    } else if (isFall && weather.soilTemp >= 50) {
+                        shouldRecommend = weeksSinceLastFertilizer >= 6;
+                        fertReason = `Soil temp is ${weather.soilTemp}°F - fall feeding strengthens roots.`;
+                        fertPriority = weeksSinceLastFertilizer >= 12 ? 'high' : 'medium';
+                    }
+                } else if (grassType === 'warm') {
+                    const month = now.getMonth();
+                    const isSummer = month >= 4 && month <= 7;
+                    
+                    if (isSummer && weather.soilTemp >= 65) {
+                        shouldRecommend = weeksSinceLastFertilizer >= 6;
+                        fertReason = `Soil temp is ${weather.soilTemp}°F - warm-season grass is actively growing.`;
+                        fertPriority = weeksSinceLastFertilizer >= 12 ? 'high' : 'medium';
+                    }
+                }
+                
+                if (shouldRecommend) {
+                    let details = fertReason;
+                    if (lawnProfile?.lawnSize) {
+                        const sqft = parseInt(lawnProfile.lawnSize);
+                        const lbsNeeded = (sqft / 1000).toFixed(1);
+                        details += ` For ${sqft.toLocaleString()} sq ft, apply ~${lbsNeeded} lbs of nitrogen.`;
+                    }
+                    
+                    recommendations.push({
+                        id: 'rec_fertilizer',
+                        type: 'fertilizer',
+                        priority: fertPriority,
+                        icon: '🌾',
+                        title: 'Apply Fertilizer',
+                        reason: weeksSinceLastFertilizer >= 12 ? `It's been ${weeksSinceLastFertilizer} weeks since last application.` : 'Optimal feeding window is open.',
+                        details,
+                        timing: 'Within 2 weeks',
+                        action: 'fertilizer'
+                    });
+                }
+            }
+            
+            // WATERING RECOMMENDATIONS
+            const daysSinceLastWatering = getDaysSinceActivity('watering');
+            
+            if (weather && isGrowingSeason) {
+                const weeklyRainfall = weather.rainfall || 0;
+                const temp = weather.temperature || 0;
+                const humidity = weather.humidity || 50;
+                
+                let shouldRecommend = false;
+                let waterPriority = 'low';
+                let waterReason = '';
+                
+                if (weeklyRainfall < 0.5 && temp >= 85 && humidity < 50) {
+                    shouldRecommend = true;
+                    waterPriority = 'high';
+                    waterReason = `Only ${weeklyRainfall}" rain this week. High temps (${temp}°F) and low humidity (${humidity}%) stress grass.`;
+                } else if (weeklyRainfall < 1.0 && temp >= 75) {
+                    shouldRecommend = daysSinceLastWatering >= 3;
+                    waterPriority = 'medium';
+                    waterReason = `Only ${weeklyRainfall}" rain this week with ${temp}°F temps.`;
+                }
+                
+                if (shouldRecommend) {
+                    const amountNeeded = (1.0 - weeklyRainfall).toFixed(1);
+                    recommendations.push({
+                        id: 'rec_watering',
+                        type: 'watering',
+                        priority: waterPriority,
+                        icon: '💧',
+                        title: waterPriority === 'high' ? 'Water Your Lawn' : 'Consider Watering',
+                        reason: waterReason,
+                        details: `Apply ${amountNeeded}" of water. Water deeply and infrequently - early morning is best.`,
+                        timing: waterPriority === 'high' ? 'Within 24 hours' : 'This week',
+                        action: 'watering'
+                    });
+                }
+            }
+            
+            // Sort by priority
+            const priorityOrder = { high: 0, medium: 1, low: 2 };
+            recommendations.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+            
+            return recommendations.slice(0, 3);
+        };
+
         const Dashboard = () => {
             // Calculate stats based on current view (year/season/all)
             const getFilteredActivities = () => {
@@ -1879,7 +2111,7 @@
             const [profileData, setProfileData] = useState(lawnProfile || {
                 lawnSize: '',
                 location: '',
-                grassSeason: 'cool',
+                grassType: '', // cool or warm
                 grassVariety: '',
                 soilType: '',
                 sunExposure: '',
@@ -1942,33 +2174,23 @@
                         
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Season</label>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button
-                                        onClick={() => setProfileData({...profileData, grassSeason: 'cool'})}
-                                        className={`py-3 px-4 rounded-lg border-2 font-semibold transition ${
-                                            profileData.grassSeason === 'cool'
-                                                ? 'bg-[#367C2B] text-white border-[#367C2B]'
-                                                : 'bg-white text-gray-700 border-gray-200 hover:border-[#367C2B]'
-                                        }`}
-                                    >
-                                        Cool Season
-                                    </button>
-                                    <button
-                                        onClick={() => setProfileData({...profileData, grassSeason: 'warm'})}
-                                        className={`py-3 px-4 rounded-lg border-2 font-semibold transition ${
-                                            profileData.grassSeason === 'warm'
-                                                ? 'bg-[#367C2B] text-white border-[#367C2B]'
-                                                : 'bg-white text-gray-700 border-gray-200 hover:border-[#367C2B]'
-                                        }`}
-                                    >
-                                        Warm Season
-                                    </button>
-                                </div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Grass Season Type <span className="text-red-600">*</span>
+                                </label>
+                                <select
+                                    value={profileData.grassType || ''}
+                                    onChange={(e) => setProfileData({...profileData, grassType: e.target.value})}
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#367C2B] focus:outline-none"
+                                >
+                                    <option value="">Select grass type...</option>
+                                    <option value="cool">Cool Season (Fescue, Bluegrass, Ryegrass)</option>
+                                    <option value="warm">Warm Season (Bermuda, Zoysia, St. Augustine)</option>
+                                </select>
+                                <div className="text-xs text-gray-500 mt-1">Required for personalized recommendations</div>
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Grass Variety</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Grass Variety (Optional)</label>
                                 <input
                                     type="text"
                                     value={profileData.grassVariety}
@@ -2094,7 +2316,7 @@
                         <h3 className="text-lg font-bold text-gray-900 mb-4">ℹ️ About</h3>
                         <div className="text-sm text-gray-600 space-y-2">
                             <p><strong>Lawn Coach</strong> - DIY Lawn Care Tracking</p>
-                            <p>Version 4.0 Beta</p>
+                            <p>Version 4.1</p>
                             <p className="text-xs text-gray-500 mt-4">All data is stored locally in your browser. No account required.</p>
                         </div>
                     </div>
@@ -2102,6 +2324,103 @@
             );
         };
         
+        // ==================== RECOMMENDATIONS PAGE ====================
+        const RecommendationsPage = () => {
+            const recommendations = calculateRecommendations();
+            const hasProfile = lawnProfile && lawnProfile.grassType;
+            
+            return (
+                <div className="pb-20">
+                    <div className="mb-4">
+                        <button 
+                            onClick={() => setView(null)}
+                            className="text-[#367C2B] hover:text-[#2d6323] font-semibold flex items-center gap-2"
+                        >
+                            ← Back to Home
+                        </button>
+                    </div>
+                    
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">📋 Your Recommendations</h2>
+
+                    {/* Profile Completion Prompt */}
+                    {!hasProfile && (
+                        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-6">
+                            <div className="flex items-start gap-3">
+                                <div className="text-2xl">⚠️</div>
+                                <div className="flex-1">
+                                    <div className="font-semibold text-yellow-900 mb-1">Complete Your Lawn Profile</div>
+                                    <div className="text-sm text-yellow-800 mb-3">
+                                        Get personalized recommendations by telling us about your grass type and lawn conditions.
+                                    </div>
+                                    <button
+                                        onClick={() => setView('profile')}
+                                        className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323] transition text-sm"
+                                    >
+                                        Complete Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Recommendations List */}
+                    {recommendations.length > 0 ? (
+                        <div className="space-y-4">
+                            {recommendations.map((rec) => {
+                                const priorityColors = {
+                                    high: { bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-600', text: 'text-red-900' },
+                                    medium: { bg: 'bg-yellow-50', border: 'border-yellow-200', badge: 'bg-yellow-600', text: 'text-yellow-900' },
+                                    low: { bg: 'bg-green-50', border: 'border-green-200', badge: 'bg-green-600', text: 'text-green-900' }
+                                };
+                                const colors = priorityColors[rec.priority];
+                                const priorityLabels = { high: 'URGENT', medium: 'RECOMMENDED', low: 'OPTIONAL' };
+                                
+                                return (
+                                    <div key={rec.id} className={`${colors.bg} border-2 ${colors.border} rounded-xl p-4`}>
+                                        {/* Priority Badge */}
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className={`px-3 py-1 ${colors.badge} text-white rounded-full text-xs font-bold`}>
+                                                {rec.priority === 'high' && '🔴'} {rec.priority === 'medium' && '🟡'} {rec.priority === 'low' && '🟢'} {priorityLabels[rec.priority]}
+                                            </div>
+                                            <div className="text-xs text-gray-600 font-medium">{rec.timing}</div>
+                                        </div>
+                                        
+                                        {/* Title */}
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-2xl">{rec.icon}</span>
+                                            <h3 className={`text-xl font-bold ${colors.text}`}>{rec.title}</h3>
+                                        </div>
+                                        
+                                        {/* Reason */}
+                                        <p className={`text-sm ${colors.text} font-semibold mb-2`}>{rec.reason}</p>
+                                        
+                                        {/* Details */}
+                                        <p className="text-sm text-gray-700 mb-4">{rec.details}</p>
+                                        
+                                        {/* Action Button */}
+                                        <button
+                                            onClick={() => {
+                                                setSelectedActivityType(rec.action);
+                                                setView('add');
+                                            }}
+                                            className="w-full py-3 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323] transition flex items-center justify-center gap-2"
+                                        >
+                                            Log {ACTIVITY_TYPES[rec.action].name} →
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <div className="text-6xl mb-4">✅</div>
+                            <div className="text-xl font-bold text-gray-900 mb-2">All Caught Up!</div>
+                            <div className="text-gray-600">No recommendations at this time. Check back soon.</div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
 
         const HistoryView = () => {
             const sortedActivities = [...activities].sort((a, b) => 
@@ -2248,6 +2567,13 @@
                                     <span className="text-lg font-semibold text-gray-700">Lawn Profile</span>
                                 </button>
                                 <button
+                                    onClick={() => setView('recommendations')}
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
+                                >
+                                    <span className="text-2xl">📋</span>
+                                    <span className="text-lg font-semibold text-gray-700">Recommendations</span>
+                                </button>
+                                <button
                                     onClick={() => setView('settings')}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
@@ -2333,6 +2659,13 @@
                 {view === 'settings' && (
                     <div className="max-w-5xl mx-auto p-2 md:p-3">
                         <Settings />
+                    </div>
+                )}
+
+                {/* Recommendations Page */}
+                {view === 'recommendations' && (
+                    <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        <RecommendationsPage />
                     </div>
                 )}
             </div>
