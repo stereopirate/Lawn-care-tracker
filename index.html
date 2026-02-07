@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 4.1.1 - Updated: Feb 7, 2026 - Expanded Fertilizer to Treatments (Pre-emergent, Fungicide, etc.) -->
+    <!-- Version 4.2 - Updated: Feb 7, 2026 - Production-Ready Release to Treatments (Pre-emergent, Fungicide, etc.) -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#367C2B">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
@@ -245,7 +245,7 @@
                 },
                 { 
                     name: 'spreader', 
-                    label: 'Spreader/Applicator Used', 
+                    label: 'Spreader/Applicator Used (Optional)', 
                     type: 'product-select', 
                     productType: 'spreaders',
                     placeholder: 'Select spreader (optional)...'
@@ -260,7 +260,9 @@
                     name: 'coverage', 
                     label: 'Coverage Area (sq ft)', 
                     type: 'number', 
-                    placeholder: '5000'
+                    placeholder: '5000',
+                    min: 1,
+                    max: 100000
                 },
                 { 
                     name: 'amountUsed', 
@@ -377,6 +379,37 @@
         const [lawnProfile, setLawnProfile] = useState(null);
         const [statsView, setStatsView] = useState('year'); // year, season, all
         const [showProfilePrompt, setShowProfilePrompt] = useState(false);
+
+        // localStorage error handling wrapper
+        const safeLocalStorage = {
+            setItem: (key, value) => {
+                try {
+                    localStorage.setItem(key, value);
+                    return true;
+                } catch (e) {
+                    console.error('localStorage error:', e);
+                    if (e.name === 'QuotaExceededError') {
+                        alert('⚠️ Storage limit reached. Please export your data and clear old activities.');
+                    }
+                    return false;
+                }
+            },
+            getItem: (key) => {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.error('localStorage error:', e);
+                    return null;
+                }
+            }
+        };
+
+        // Format large numbers with commas
+        const formatNumber = (num) => {
+            if (!num) return '0';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        };
+
 
         // Load activities from localStorage on mount
         useEffect(() => {
@@ -612,13 +645,20 @@
                 hoursLogged: activityData.hoursLogged || null,
                 createdAt: new Date().toISOString()
             };
+            const isFirstActivity = activities.length === 0;
+            
             const updatedActivities = [...activities, newActivity];
             setActivities(updatedActivities);
-            localStorage.setItem('lawnCareActivities', JSON.stringify(updatedActivities));
+            safeLocalStorage.setItem('lawnCareActivities', JSON.stringify(updatedActivities));
             
             // Update equipment hours if equipment was used
             if (activityData.equipmentUsed && activityData.hoursLogged) {
                 updateEquipmentHours(activityData.equipmentUsed, activityData.hoursLogged);
+            }
+            
+            // Show profile prompt after first activity if profile not complete
+            if (isFirstActivity && (!lawnProfile || !lawnProfile.grassType)) {
+                setTimeout(() => setShowProfilePrompt(true), 500);
             }
             
             setView('calendar');
@@ -864,7 +904,7 @@
                                             {topRecommendation.icon} Log Now
                                         </button>
                                         <button
-                                            onClick={() => setView('recommendations')}
+                                            onClick={() => { setView('recommendations'); }}
                                             className="px-4 py-2 bg-white/20 text-white rounded-lg font-semibold hover:bg-white/30 transition text-sm border border-white/30"
                                         >
                                             View All ({calculateRecommendations().length})
@@ -1562,11 +1602,90 @@
             });
             const [selectedProducts, setSelectedProducts] = useState({});
             const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
+            const [validationErrors, setValidationErrors] = useState({});
+            const [showOtherInput, setShowOtherInput] = useState(false);
+            const [customProductName, setCustomProductName] = useState('');
+
 
             const handleSubmit = (e) => {
                 e.preventDefault();
-                addActivity(localFormData);
+                
+                // Validate form
+                if (!validateForm()) {
+                    alert('⚠️ Please fix the errors in the form before submitting.');
+                    return;
+                }
+                
+                // Add custom product name if "Other" was selected
+                const activityData = { ...localFormData };
+                if (customProductName.trim()) {
+                    activityData.data = {
+                        ...activityData.data,
+                        customProduct: customProductName.trim()
+                    };
+                }
+                
+                addActivity(activityData);
             };
+
+            // Comprehensive form validation
+            const validateForm = () => {
+                const errors = {};
+                const activityType = ACTIVITY_TYPES[selectedActivityType];
+                
+                // Validate required fields
+                activityType.fields.forEach(field => {
+                    if (field.required) {
+                        const value = localFormData.data[field.name];
+                        if (!value || value === '') {
+                            errors[field.name] = `${field.label} is required`;
+                        }
+                    }
+                });
+                
+                // Validate coverage area
+                if (localFormData.data.coverage) {
+                    const coverage = parseInt(localFormData.data.coverage);
+                    if (coverage < 0) {
+                        errors.coverage = 'Coverage cannot be negative';
+                    }
+                    if (coverage > 100000) {
+                        errors.coverage = 'Coverage seems unrealistically large';
+                    }
+                }
+                
+                // Validate amount used
+                if (localFormData.data.amountUsed) {
+                    const amount = parseFloat(localFormData.data.amountUsed);
+                    if (amount < 0) {
+                        errors.amountUsed = 'Amount cannot be negative';
+                    }
+                }
+                
+                // Validate date
+                if (localFormData.date) {
+                    const selectedDate = new Date(localFormData.date);
+                    const today = new Date();
+                    today.setHours(23, 59, 59, 999);
+                    if (selectedDate > today) {
+                        errors.date = 'Date cannot be in the future';
+                    }
+                    const twoYearsAgo = new Date();
+                    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+                    if (selectedDate < twoYearsAgo) {
+                        errors.date = 'Date seems too far in the past';
+                    }
+                }
+                
+                // Validate custom product name if "Other" selected
+                if (showOtherInput && !customProductName.trim()) {
+                    errors.customProduct = 'Please specify the product name';
+                }
+                
+                setValidationErrors(errors);
+                return Object.keys(errors).length === 0;
+            };
+
             
             const getProductType = (field) => {
                 if (field.type === 'product-select-conditional' && field.conditionalField) {
@@ -1586,11 +1705,23 @@
                     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 max-w-3xl border border-gray-200">
                         <div className="mb-4">
                             <label className="block text-sm font-semibold mb-2 text-gray-700">Date</label>
+                            {validationErrors.date && (
+                                <div className="mb-2 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠️</span>
+                                    <span>{validationErrors.date}</span>
+                                </div>
+                            )}
                             <input
                                 type="date"
                                 required
+                                max={new Date().toISOString().split('T')[0]}
                                 value={localFormData.date}
-                                onChange={(e) => setLocalFormData({...localFormData, date: e.target.value})}
+                                onChange={(e) => {
+                                    setLocalFormData({...localFormData, date: e.target.value});
+                                    if (validationErrors.date) {
+                                        setValidationErrors({...validationErrors, date: null});
+                                    }
+                                }}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#367C2B] focus:border-transparent"
                             />
                         </div>
@@ -1606,9 +1737,15 @@
                                         {field.label}
                                         {field.required && <span className="text-red-600 ml-1">*</span>}
                                     </label>
+                                    {validationErrors[field.name] && (
+                                        <div className="mb-2 text-sm text-red-600 flex items-center gap-1 bg-red-50 px-3 py-2 rounded-lg border border-red-200">
+                                            <span>⚠️</span>
+                                            <span>{validationErrors[field.name]}</span>
+                                        </div>
+                                    )}
                                     
                                     {field.type === 'treatment-category' ? (
-                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                        <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:grid-cols-3">
                                             {Object.entries(TREATMENT_CATEGORIES).map(([key, cat]) => (
                                                 <button
                                                     key={key}
@@ -1667,6 +1804,36 @@
                                                             </option>
                                                         ))}
                                                     </select>
+                                                    
+                                                    {/* Custom product name input for "Other" */}
+                                                    {localFormData.data.productId && localFormData.data.productId.includes('other') && (
+                                                        <div className="mt-3">
+                                                            <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                                                Specify Product Name <span className="text-red-600">*</span>
+                                                            </label>
+                                                            {validationErrors.customProduct && (
+                                                                <div className="mb-2 text-sm text-red-600 flex items-center gap-1">
+                                                                    <span>⚠️</span>
+                                                                    <span>{validationErrors.customProduct}</span>
+                                                                </div>
+                                                            )}
+                                                            <input
+                                                                type="text"
+                                                                value={customProductName}
+                                                                onChange={(e) => {
+                                                                    setCustomProductName(e.target.value);
+                                                                    if (validationErrors.customProduct) {
+                                                                        setValidationErrors({...validationErrors, customProduct: null});
+                                                                    }
+                                                                }}
+                                                                placeholder="Enter product name (e.g., Generic Prodiamine)"
+                                                                className="w-full px-4 py-2 border-2 border-[#367C2B]/30 rounded-lg focus:ring-2 focus:ring-[#367C2B] focus:border-transparent"
+                                                            />
+                                                            <div className="text-xs text-gray-500 mt-1">
+                                                                💡 Enter the brand and product name you're using
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                     
                                                     {selectedProducts[field.name] && (
                                                         <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
@@ -1793,6 +1960,25 @@
                                                 ))}
                                             </select>
                                             
+                                            {/* Custom product name for "Other" equipment */}
+                                            {selectedProduct && selectedProduct.id && (selectedProduct.id.includes('other') || selectedProduct.id === 'm-other' || selectedProduct.id === 't-other') && (
+                                                <div className="mt-3">
+                                                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                                        Specify Equipment Name <span className="text-red-600">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={customProductName}
+                                                        onChange={(e) => setCustomProductName(e.target.value)}
+                                                        placeholder="Enter equipment name (e.g., Toro Recycler 22)"
+                                                        className="w-full px-4 py-2 border-2 border-[#367C2B]/30 rounded-lg focus:ring-2 focus:ring-[#367C2B] focus:border-transparent"
+                                                    />
+                                                    <div className="text-xs text-gray-500 mt-1">
+                                                        💡 Enter the brand and model you're using
+                                                    </div>
+                                                </div>
+                                            )}
+                                            
                                             {selectedProduct && (
                                                 <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
                                                     <div className="text-sm font-semibold text-gray-900 mb-2">
@@ -1871,19 +2057,21 @@
                         <div className="flex gap-4">
                             <button
                                 type="submit"
-                                className="flex-1 px-6 py-3 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323]"
+                                className="flex-1 px-6 py-3 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323] transition"
                             >
                                 Save Activity
                             </button>
                             <button
                                 type="button"
                                 onClick={() => {
-                                    setSelectedActivityType(null);
-                                    setView('add');
+                                    if (confirm('Discard changes and cancel?')) {
+                                        setSelectedActivityType(null);
+                                        setView(null);
+                                    }
                                 }}
-                                className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
                             >
-                                Back
+                                Cancel
                             </button>
                         </div>
                     </form>
@@ -2413,9 +2601,11 @@
                                     value={profileData.lawnSize}
                                     onChange={(e) => setProfileData({...profileData, lawnSize: e.target.value})}
                                     placeholder="5000"
+                                    min="100"
+                                    max="100000"
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#367C2B] focus:outline-none"
                                 />
-                                <div className="text-xs text-gray-500 mt-1">Square feet</div>
+                                <div className="text-xs text-gray-500 mt-1">Square feet (typical range: 1,000-50,000)</div>
                             </div>
                             
                             <div>
@@ -2579,7 +2769,7 @@
                         <h3 className="text-lg font-bold text-gray-900 mb-4">ℹ️ About</h3>
                         <div className="text-sm text-gray-600 space-y-2">
                             <p><strong>Lawn Coach</strong> - DIY Lawn Care Tracking</p>
-                            <p>Version 4.1</p>
+                            <p>Version 4.2</p>
                             <p className="text-xs text-gray-500 mt-4">All data is stored locally in your browser. No account required.</p>
                         </div>
                     </div>
@@ -2616,7 +2806,7 @@
                                         Get personalized recommendations by telling us about your grass type and lawn conditions.
                                     </div>
                                     <button
-                                        onClick={() => setView('profile')}
+                                        onClick={() => { setView('profile'); }}
                                         className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323] transition text-sm"
                                     >
                                         Complete Profile
@@ -2788,7 +2978,7 @@
                         <div className="border-t border-gray-200 bg-white shadow-lg">
                             <div className="max-w-5xl mx-auto px-4 py-2">
                                 <button
-                                    onClick={() => setView('dashboard')}
+                                    onClick={() => { setView('dashboard'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
                                     <span className="text-2xl">📊</span>
@@ -2805,35 +2995,35 @@
                                     <span className="text-lg font-semibold text-gray-700">Add Activity</span>
                                 </button>
                                 <button
-                                    onClick={() => setView('history')}
+                                    onClick={() => { setView('history'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
                                     <span className="text-2xl">📋</span>
                                     <span className="text-lg font-semibold text-gray-700">History</span>
                                 </button>
                                 <button
-                                    onClick={() => setView('garage')}
+                                    onClick={() => { setView('garage'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
                                     <span className="text-2xl">🏠</span>
                                     <span className="text-lg font-semibold text-gray-700">My Garage</span>
                                 </button>
                                 <button
-                                    onClick={() => setView('profile')}
+                                    onClick={() => { setView('profile'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
                                     <span className="text-2xl">🌱</span>
                                     <span className="text-lg font-semibold text-gray-700">Lawn Profile</span>
                                 </button>
                                 <button
-                                    onClick={() => setView('recommendations')}
+                                    onClick={() => { setView('recommendations'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
                                     <span className="text-2xl">📋</span>
                                     <span className="text-lg font-semibold text-gray-700">Recommendations</span>
                                 </button>
                                 <button
-                                    onClick={() => setView('settings')}
+                                    onClick={() => { setView('settings'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
                                     <span className="text-2xl">⚙️</span>
@@ -2847,6 +3037,27 @@
                 {/* Home Page - Only show when no view is selected */}
                 {!view && (
                     <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        {/* Profile Completion Banner */}
+                        {(!lawnProfile || !lawnProfile.grassType) && (
+                            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 mb-4 shadow-md">
+                                <div className="flex items-start gap-3">
+                                    <div className="text-2xl">⚠️</div>
+                                    <div className="flex-1">
+                                        <div className="font-bold text-yellow-900 mb-1">Complete Your Lawn Profile</div>
+                                        <div className="text-sm text-yellow-800 mb-3">
+                                            Set up your grass type and lawn details to get personalized recommendations based on weather and your location.
+                                        </div>
+                                        <button
+                                            onClick={() => setView('profile')}
+                                            className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323] transition text-sm"
+                                        >
+                                            Complete Profile Now →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
                         <WeatherSnapshot />
                     </div>
                 )}
@@ -2927,6 +3138,37 @@
                         <RecommendationsPage />
                     </div>
                 )}
+
+                {/* Profile Prompt Modal */}
+                {showProfilePrompt && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={() => setShowProfilePrompt(false)}>
+                        <div className="bg-white rounded-2xl p-6 max-w-md shadow-2xl transform transition-all" onClick={(e) => e.stopPropagation()}>
+                            <div className="text-5xl mb-4 text-center">🌱</div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Great Start!</h3>
+                            <p className="text-gray-600 mb-6 text-center leading-relaxed">
+                                You've logged your first activity! Complete your lawn profile to get personalized recommendations based on your grass type and climate.
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => {
+                                        setShowProfilePrompt(false);
+                                        setView('profile');
+                                    }}
+                                    className="flex-1 py-3 px-4 bg-[#367C2B] text-white rounded-lg font-semibold hover:bg-[#2d6323] transition-all hover:shadow-lg"
+                                >
+                                    Complete Profile →
+                                </button>
+                                <button
+                                    onClick={() => setShowProfilePrompt(false)}
+                                    className="px-4 py-3 bg-gray-100 text-gray-600 rounded-lg font-semibold hover:bg-gray-200 transition-all"
+                                >
+                                    Later
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
             </div>
         );
     }
