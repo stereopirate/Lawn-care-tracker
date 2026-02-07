@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Version 4.1 - Updated: Feb 7, 2026 - Personalized Recommendations System -->
+    <!-- Version 4.1.1 - Updated: Feb 7, 2026 - Expanded Fertilizer to Treatments (Pre-emergent, Fungicide, etc.) -->
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#367C2B">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
@@ -154,6 +154,58 @@
         ]
     };
     
+    // Treatment Products Database - Organized by Category
+    const TREATMENT_PRODUCTS = {
+        fertilizer: [
+            // Keep existing fertilizer products - will be populated from fertilizers array above
+        ],
+        preemergent: [
+            { id: 'pre1', name: 'Prodiamine 65 WDG (Yard Mastery)', brand: 'Yard Mastery', activeIngredient: 'Prodiamine 65%', rate: '0.5 oz per 1,000 sq ft', timing: 'When soil hits 50-55°F', notes: 'Premium WDG formulation' },
+            { id: 'pre2', name: 'Barricade 4FL', brand: 'Syngenta', activeIngredient: 'Prodiamine 41.7%', rate: '0.5 fl oz per 1,000 sq ft', timing: 'Early spring & fall', notes: 'Liquid concentrate' },
+            { id: 'pre3', name: 'Dimension 2EW', brand: 'Dow', activeIngredient: 'Dithiopyr 23.3%', rate: '0.5 fl oz per 1,000 sq ft', timing: 'Pre & early post-emergent', notes: 'Works on young crabgrass' },
+            { id: 'pre4', name: 'Scotts Halts', brand: 'Scotts', activeIngredient: 'Pendimethalin', rate: '2.9 lbs per 1,000 sq ft', timing: 'Early spring', notes: 'Granular, easy application' },
+            { id: 'pre5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', timing: '', notes: 'Custom product' }
+        ],
+        postemergent: [
+            { id: 'post1', name: 'Tenacity', brand: 'Syngenta', activeIngredient: 'Mesotrione 40%', rate: '0.25 oz per 1,000 sq ft', target: 'Crabgrass, broadleaf weeds', notes: 'Safe for seeding' },
+            { id: 'post2', name: 'Ortho Weed B Gon', brand: 'Ortho', activeIngredient: '2,4-D + Quinclorac', rate: 'Per label', target: 'Broadleaf & grassy weeds', notes: 'Ready-to-spray' },
+            { id: 'post3', name: 'Speedzone', brand: 'PBI Gordon', activeIngredient: '2,4-D + others', rate: '1.5 fl oz per 1,000 sq ft', target: 'Fast-acting broadleaf', notes: 'Works in cool temps' },
+            { id: 'post4', name: 'Quinclorac 75DF', brand: 'Various', activeIngredient: 'Quinclorac 75%', rate: '0.25 oz per 1,000 sq ft', target: 'Crabgrass, clover', notes: 'Selective herbicide' },
+            { id: 'post5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', target: '', notes: 'Custom product' }
+        ],
+        fungicide: [
+            { id: 'fung1', name: 'Disease Ex (Scotts)', brand: 'Scotts', activeIngredient: 'Azoxystrobin 0.31%', rate: '3 lbs per 1,000 sq ft', target: 'Brown patch, dollar spot', notes: 'Granular, preventative' },
+            { id: 'fung2', name: 'Azoxystrobin 0.31G', brand: 'Various', activeIngredient: 'Azoxystrobin 0.31%', rate: '3 lbs per 1,000 sq ft', target: 'Broad spectrum', notes: 'Generic Disease Ex' },
+            { id: 'fung3', name: 'Propiconazole 14.3', brand: 'Various', activeIngredient: 'Propiconazole 14.3%', rate: '1 fl oz per 1,000 sq ft', target: 'Systemic fungicide', notes: 'Liquid concentrate' },
+            { id: 'fung4', name: 'Heritage G', brand: 'Syngenta', activeIngredient: 'Azoxystrobin 0.5%', rate: '2 lbs per 1,000 sq ft', target: 'Premium fungicide', notes: 'Professional grade' },
+            { id: 'fung5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', target: '', notes: 'Custom product' }
+        ],
+        insecticide: [
+            { id: 'ins1', name: 'GrubEx (Scotts)', brand: 'Scotts', activeIngredient: 'Chlorantraniliprole', rate: '2.87 lbs per 1,000 sq ft', target: 'Grubs (preventative)', notes: 'Apply late spring/early summer' },
+            { id: 'ins2', name: 'BioAdvanced Grub Killer', brand: 'BioAdvanced', activeIngredient: 'Imidacloprid', rate: '3 lbs per 1,000 sq ft', target: 'Grubs, mole crickets', notes: 'Season-long control' },
+            { id: 'ins3', name: 'Dylox 6.2G', brand: 'Bayer', activeIngredient: 'Trichlorfon 6.2%', rate: '3 lbs per 1,000 sq ft', target: 'Active grubs', notes: '24-hour curative' },
+            { id: 'ins4', name: 'Bifenthrin 0.2G', brand: 'Various', activeIngredient: 'Bifenthrin 0.2%', rate: '2.3 lbs per 1,000 sq ft', target: 'Surface insects', notes: 'Ants, chinch bugs' },
+            { id: 'ins5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', target: '', notes: 'Custom product' }
+        ],
+        soilAmendment: [
+            { id: 'soil1', name: 'Pelletized Lime', brand: 'Various', type: 'pH Increase', rate: '50 lbs per 1,000 sq ft', effect: 'Raises pH by ~0.5', notes: 'For acidic soils (pH <6.5)' },
+            { id: 'soil2', name: 'Elemental Sulfur', brand: 'Various', type: 'pH Decrease', rate: '5-10 lbs per 1,000 sq ft', effect: 'Lowers pH by ~0.5', notes: 'For alkaline soils (pH >7.0)' },
+            { id: 'soil3', name: 'Gypsum', brand: 'Various', type: 'Soil Structure', rate: '40 lbs per 1,000 sq ft', effect: 'Improves clay soil', notes: 'Does not change pH' },
+            { id: 'soil4', name: 'Humic Acid', brand: 'Various', type: 'Soil Health', rate: '3 fl oz per 1,000 sq ft', effect: 'Improves nutrient uptake', notes: 'Liquid application' },
+            { id: 'soil5', name: 'Other (specify)', brand: 'Various', type: '', rate: 'See label', effect: '', notes: 'Custom product' }
+        ]
+    };
+    
+    // Treatment category definitions
+    const TREATMENT_CATEGORIES = {
+        fertilizer: { label: 'Fertilizer', icon: '🌾', description: 'NPK nutrients for growth' },
+        preemergent: { label: 'Pre-Emergent', icon: '🛡️', description: 'Prevent weed seeds from germinating' },
+        postemergent: { label: 'Post-Emergent', icon: '🌿', description: 'Kill existing weeds' },
+        fungicide: { label: 'Fungicide', icon: '🍄', description: 'Prevent or treat lawn diseases' },
+        insecticide: { label: 'Insecticide', icon: '🐛', description: 'Control grubs and insects' },
+        soilAmendment: { label: 'Soil Amendment', icon: '🌍', description: 'Adjust pH or improve soil' }
+    };
+    
     // Activity type definitions with their custom fields
     const ACTIVITY_TYPES = {
         mowing: {
@@ -174,28 +226,48 @@
             ]
         },
         fertilizer: {
-            name: 'Applying Fertilizer',
+            name: 'Fertilizer & Treatments',
             icon: 'activity-fertilizer.png',
             color: 'bg-[#367C2B]',
             fields: [
+                {
+                    name: 'category',
+                    label: 'Treatment Category',
+                    type: 'treatment-category',
+                    required: true
+                },
                 { 
                     name: 'product', 
-                    label: 'Fertilizer Product', 
-                    type: 'product-select', 
-                    productType: 'fertilizers',
-                    placeholder: 'Select fertilizer...'
+                    label: 'Product', 
+                    type: 'treatment-product',
+                    placeholder: 'Select product...',
+                    required: true
                 },
                 { 
                     name: 'spreader', 
-                    label: 'Spreader Used', 
+                    label: 'Spreader/Applicator Used', 
                     type: 'product-select', 
                     productType: 'spreaders',
-                    placeholder: 'Select spreader...'
+                    placeholder: 'Select spreader (optional)...'
                 },
-                { name: 'spreaderSetting', label: 'Spreader Setting', type: 'text', placeholder: 'e.g., Setting 5 or G' },
-                { name: 'applicationRate', label: 'Application Rate', type: 'text', placeholder: 'e.g., 3 lbs per 1000 sq ft' },
-                { name: 'amountUsed', label: 'Amount Used (lbs)', type: 'number', placeholder: '15' },
-                { name: 'coverage', label: 'Coverage Area (sq ft)', type: 'number', placeholder: '5000' }
+                { 
+                    name: 'applicationRate', 
+                    label: 'Application Rate', 
+                    type: 'text', 
+                    placeholder: 'e.g., 0.5 oz per 1,000 sq ft'
+                },
+                { 
+                    name: 'coverage', 
+                    label: 'Coverage Area (sq ft)', 
+                    type: 'number', 
+                    placeholder: '5000'
+                },
+                { 
+                    name: 'amountUsed', 
+                    label: 'Total Amount Used', 
+                    type: 'text', 
+                    placeholder: 'e.g., 2.5 oz or 15 lbs'
+                }
             ]
         },
         trimming: {
@@ -1530,9 +1602,113 @@
                             
                             return (
                                 <div key={field.name} className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-gray-700">{field.label}</label>
+                                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                        {field.label}
+                                        {field.required && <span className="text-red-600 ml-1">*</span>}
+                                    </label>
                                     
-                                    {field.type === 'product-select' || field.type === 'product-select-conditional' ? (
+                                    {field.type === 'treatment-category' ? (
+                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                            {Object.entries(TREATMENT_CATEGORIES).map(([key, cat]) => (
+                                                <button
+                                                    key={key}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setLocalFormData({
+                                                            ...localFormData,
+                                                            data: {
+                                                                ...localFormData.data,
+                                                                category: key,
+                                                                product: '' // Reset product when category changes
+                                                            }
+                                                        });
+                                                        setSelectedProducts({});
+                                                    }}
+                                                    className={`p-3 rounded-lg border-2 font-semibold transition text-sm ${
+                                                        localFormData.data.category === key
+                                                            ? 'bg-[#367C2B] text-white border-[#367C2B]'
+                                                            : 'bg-white text-gray-700 border-gray-200 hover:border-[#367C2B]'
+                                                    }`}
+                                                >
+                                                    <div className="text-xl mb-1">{cat.icon}</div>
+                                                    <div>{cat.label}</div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : field.type === 'treatment-product' ? (
+                                        <div>
+                                            {localFormData.data.category ? (
+                                                <>
+                                                    <select
+                                                        value={localFormData.data[field.name] || ''}
+                                                        onChange={(e) => {
+                                                            const productId = e.target.value;
+                                                            const categoryProducts = TREATMENT_PRODUCTS[localFormData.data.category] || [];
+                                                            const product = categoryProducts.find(p => p.id === productId);
+                                                            setSelectedProducts({...selectedProducts, [field.name]: product});
+                                                            setLocalFormData({
+                                                                ...localFormData,
+                                                                data: {
+                                                                    ...localFormData.data, 
+                                                                    [field.name]: product ? product.name : '',
+                                                                    productId: productId,
+                                                                    activeIngredient: product?.activeIngredient || '',
+                                                                    rate: product?.rate || ''
+                                                                }
+                                                            });
+                                                        }}
+                                                        required={field.required}
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#367C2B] focus:border-transparent"
+                                                    >
+                                                        <option value="">{field.placeholder || 'Select product...'}</option>
+                                                        {(TREATMENT_PRODUCTS[localFormData.data.category] || []).map(product => (
+                                                            <option key={product.id} value={product.id}>
+                                                                {product.name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    
+                                                    {selectedProducts[field.name] && (
+                                                        <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                                            <div className="text-sm font-semibold text-gray-900 mb-2">
+                                                                {selectedProducts[field.name].name}
+                                                            </div>
+                                                            <div className="space-y-1 text-xs text-gray-600">
+                                                                {selectedProducts[field.name].brand && (
+                                                                    <div><span className="font-medium">Brand:</span> {selectedProducts[field.name].brand}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].activeIngredient && (
+                                                                    <div><span className="font-medium">Active Ingredient:</span> {selectedProducts[field.name].activeIngredient}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].rate && (
+                                                                    <div><span className="font-medium">Typical Rate:</span> {selectedProducts[field.name].rate}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].target && (
+                                                                    <div><span className="font-medium">Target:</span> {selectedProducts[field.name].target}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].timing && (
+                                                                    <div><span className="font-medium">Timing:</span> {selectedProducts[field.name].timing}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].type && (
+                                                                    <div><span className="font-medium">Type:</span> {selectedProducts[field.name].type}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].effect && (
+                                                                    <div><span className="font-medium">Effect:</span> {selectedProducts[field.name].effect}</div>
+                                                                )}
+                                                                {selectedProducts[field.name].notes && (
+                                                                    <div className="text-gray-500 mt-1"><span className="font-medium">Note:</span> {selectedProducts[field.name].notes}</div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                                                    ⚠️ Please select a treatment category first
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : field.type === 'product-select' || field.type === 'product-select-conditional' ? (
                                         <div>
                                             {/* My Garage Quick Select */}
                                             {equipment.length > 0 && (
@@ -1894,6 +2070,93 @@
                         details: `Apply ${amountNeeded}" of water. Water deeply and infrequently - early morning is best.`,
                         timing: waterPriority === 'high' ? 'Within 24 hours' : 'This week',
                         action: 'watering'
+                    });
+                }
+            }
+            
+            // PRE-EMERGENT RECOMMENDATIONS
+            const getLastTreatment = (category) => {
+                const treatments = activities.filter(a => 
+                    a.type === 'fertilizer' && a.data?.category === category
+                ).sort((a, b) => new Date(b.date) - new Date(a.date));
+                return treatments[0];
+            };
+            
+            const lastPreemergent = getLastTreatment('preemergent');
+            const weeksSincePreemergent = lastPreemergent 
+                ? Math.floor((now - new Date(lastPreemergent.date)) / (1000 * 60 * 60 * 24 * 7))
+                : 999;
+            
+            if (weather && weather.soilTemp && grassType) {
+                let shouldRecommend = false;
+                let preReason = '';
+                let prePriority = 'medium';
+                
+                // Pre-emergent window: soil temp 50-55°F (crabgrass germinates at 55°F)
+                if (weather.soilTemp >= 50 && weather.soilTemp <= 58) {
+                    shouldRecommend = weeksSincePreemergent >= 10 || weeksSincePreemergent === 999;
+                    preReason = `Soil temp is ${weather.soilTemp}°F - crabgrass prevention window is open.`;
+                    prePriority = weather.soilTemp >= 55 ? 'high' : 'medium'; // Urgent if close to germination
+                }
+                
+                if (shouldRecommend) {
+                    let details = preReason + ' Apply before crabgrass seeds germinate (typically at 55°F for 3-5 days).';
+                    if (lawnProfile?.lawnSize) {
+                        const sqft = parseInt(lawnProfile.lawnSize);
+                        details += ` For ${sqft.toLocaleString()} sq ft, check product label for exact rate.`;
+                    }
+                    
+                    recommendations.push({
+                        id: 'rec_preemergent',
+                        type: 'fertilizer',
+                        category: 'preemergent',
+                        priority: prePriority,
+                        icon: '🛡️',
+                        title: 'Apply Pre-Emergent',
+                        reason: weeksSincePreemergent === 999 
+                            ? 'No pre-emergent applied this year' 
+                            : `Last application was ${weeksSincePreemergent} weeks ago`,
+                        details,
+                        timing: prePriority === 'high' ? 'Within 1 week' : 'Within 2 weeks',
+                        action: 'fertilizer'
+                    });
+                }
+            }
+            
+            // FUNGICIDE RECOMMENDATIONS
+            const lastFungicide = getLastTreatment('fungicide');
+            const weeksSinceFungicide = lastFungicide 
+                ? Math.floor((now - new Date(lastFungicide.date)) / (1000 * 60 * 60 * 24 * 7))
+                : 999;
+            
+            if (weather && isGrowingSeason) {
+                const humidity = weather.humidity || 50;
+                const temp = weather.temperature || 0;
+                
+                let shouldRecommend = false;
+                let fungPriority = 'low';
+                let fungReason = '';
+                
+                // High disease pressure: High humidity + warm temps
+                if (humidity >= 75 && temp >= 75 && temp <= 90) {
+                    // Only recommend if haven't applied recently (4+ weeks)
+                    shouldRecommend = weeksSinceFungicide >= 4 || weeksSinceFungicide === 999;
+                    fungPriority = humidity >= 85 ? 'medium' : 'low';
+                    fungReason = `High humidity (${humidity}%) and warm temps (${temp}°F) create ideal conditions for lawn diseases.`;
+                }
+                
+                if (shouldRecommend) {
+                    recommendations.push({
+                        id: 'rec_fungicide',
+                        type: 'fertilizer',
+                        category: 'fungicide',
+                        priority: fungPriority,
+                        icon: '🍄',
+                        title: 'Consider Fungicide',
+                        reason: fungReason,
+                        details: 'Preventative application recommended. Watch for brown patch, dollar spot, or other disease symptoms.',
+                        timing: 'Preventative or at first signs',
+                        action: 'fertilizer'
                     });
                 }
             }
