@@ -13,6 +13,7 @@
     <meta name="apple-mobile-web-app-title" content="Lawn Coach">
     <title>Lawn Coach - DIY Lawn Care Tracking</title>
 
+```
 <!-- PWA Manifest -->
 <link rel="manifest" href="/manifest.json">
 
@@ -25,6 +26,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.263.1/lucide.min.css">
 
 <!-- Register Service Worker -->
@@ -41,6 +43,7 @@
         });
     }
 </script>
+```
 
 </head>
 <body class="bg-white" style="background-color: #ffffff !important;">
@@ -56,6 +59,7 @@
     </style>
     <div id="root"></div>
 
+```
 <script type="text/babel">
     const { useState, useEffect } = React;
     
@@ -152,9 +156,9 @@
     
     // Treatment Products Database - Organized by Category
     const TREATMENT_PRODUCTS = {
-        fertilizer: PRODUCT_DATABASE.fertilizers.map(f => ({
-            id: f.id, name: f.name, brand: f.brand, activeIngredient: f.npk, rate: f.coverage, type: f.type, notes: ''
-        })),
+        fertilizer: [
+            // Keep existing fertilizer products - will be populated from fertilizers array above
+        ],
         preemergent: [
             { id: 'pre1', name: 'Prodiamine 65 WDG (Yard Mastery)', brand: 'Yard Mastery', activeIngredient: 'Prodiamine 65%', rate: '0.5 oz per 1,000 sq ft', timing: 'When soil hits 50-55°F', notes: 'Premium WDG formulation' },
             { id: 'pre2', name: 'Barricade 4FL', brand: 'Syngenta', activeIngredient: 'Prodiamine 41.7%', rate: '0.5 fl oz per 1,000 sq ft', timing: 'Early spring & fall', notes: 'Liquid concentrate' },
@@ -270,7 +274,7 @@
         },
         trimming: {
             name: 'Trimming Beds',
-            icon: 'activity-general.png',
+            icon: 'activity-trimming.png',
             color: 'bg-[#367C2B]',
             fields: [
                 { name: 'areas', label: 'Areas Trimmed', type: 'text', placeholder: 'e.g., Front beds, side yard' },
@@ -290,7 +294,7 @@
         },
         seeding: {
             name: 'Seeding/Overseeding',
-            icon: 'activity-seeding.png',
+            icon: 'activity-fertilizer.png',
             color: 'bg-[#367C2B]',
             fields: [
                 { 
@@ -315,7 +319,7 @@
         },
         aeration: {
             name: 'Aeration',
-            icon: 'activity-general.png',
+            icon: 'activity-aeration.png',
             color: 'bg-[#367C2B]',
             fields: [
                 { name: 'method', label: 'Method', type: 'select', options: ['Core Aeration', 'Spike Aeration', 'Liquid Aeration'] },
@@ -325,7 +329,7 @@
         },
         treatment: {
             name: 'Weed/Pest Treatment',
-            icon: 'activity-general.png',
+            icon: 'activity-fertilizer.png',
             color: 'bg-[#367C2B]',
             fields: [
                 { name: 'treatmentType', label: 'Treatment Type', type: 'select', options: ['Herbicide', 'Pesticide', 'Fungicide', 'Pre-emergent'] },
@@ -354,6 +358,19 @@
                 { name: 'targetProblem', label: 'Target Problem', type: 'text', placeholder: 'e.g., Dandelions, grubs' },
                 { name: 'applicationRate', label: 'Application Rate', type: 'text', placeholder: 'Per label instructions' },
                 { name: 'areas', label: 'Areas Treated', type: 'text', placeholder: 'e.g., Backyard' }
+            ]
+        },
+        maintenance: {
+            name: 'Equipment Maintenance',
+            icon: 'activity-maintenance.png',
+            color: 'bg-[#367C2B]',
+            fields: [
+                { name: 'equipmentType', label: 'Equipment Type', type: 'select', options: ['Mower', 'Trimmer', 'Edger', 'Blower', 'Spreader', 'Aerator', 'Other'] },
+                { name: 'maintenanceType', label: 'Maintenance Performed', type: 'select', options: ['Oil Change', 'Blade Sharpening', 'Spark Plug', 'Air Filter', 'Cleaning', 'General Service', 'Repair', 'Winterization'] },
+                { name: 'equipmentModel', label: 'Equipment Model (Optional)', type: 'text', placeholder: 'e.g., Honda HRX217' },
+                { name: 'partsReplaced', label: 'Parts Replaced (Optional)', type: 'text', placeholder: 'e.g., Air filter, spark plug' },
+                { name: 'cost', label: 'Cost (Optional)', type: 'number', placeholder: '25' },
+                { name: 'duration', label: 'Duration (minutes)', type: 'number', placeholder: '30' }
             ]
         }
     };
@@ -627,7 +644,7 @@
 
         // Save activities to localStorage whenever they change
         useEffect(() => {
-            safeLocalStorage.setItem('lawnCareActivities', JSON.stringify(activities));
+            localStorage.setItem('lawnCareActivities', JSON.stringify(activities));
         }, [activities]);
 
         const addActivity = (activityData) => {
@@ -645,6 +662,7 @@
             
             const updatedActivities = [...activities, newActivity];
             setActivities(updatedActivities);
+            safeLocalStorage.setItem('lawnCareActivities', JSON.stringify(updatedActivities));
             
             // Update equipment hours if equipment was used
             if (activityData.equipmentUsed && activityData.hoursLogged) {
@@ -656,7 +674,7 @@
                 setTimeout(() => setShowProfilePrompt(true), 500);
             }
             
-            setView(null);
+            setView('calendar');
             setSelectedActivityType(null);
             setFormData({});
         };
@@ -668,6 +686,7 @@
         };
 
         const addEquipment = (equipmentData) => {
+            console.log('Adding equipment:', equipmentData);
             const newEquipment = {
                 id: Date.now(),
                 name: equipmentData.name,
@@ -680,8 +699,9 @@
                 createdAt: new Date().toISOString()
             };
             const updatedEquipment = [...equipment, newEquipment];
+            console.log('Updated equipment list:', updatedEquipment);
             setEquipment(updatedEquipment);
-            safeLocalStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
+            localStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
         };
 
         const updateEquipmentHours = (equipmentId, hoursToAdd) => {
@@ -695,7 +715,7 @@
                 return item;
             });
             setEquipment(updatedEquipment);
-            safeLocalStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
+            localStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
         };
 
         const logMaintenance = (equipmentId) => {
@@ -709,14 +729,14 @@
                 return item;
             });
             setEquipment(updatedEquipment);
-            safeLocalStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
+            localStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
         };
 
         const deleteEquipment = (id) => {
             if (confirm('Are you sure you want to remove this equipment?')) {
                 const updatedEquipment = equipment.filter(e => e.id !== id);
                 setEquipment(updatedEquipment);
-                safeLocalStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
+                localStorage.setItem('lawnCareEquipment', JSON.stringify(updatedEquipment));
             }
         };
 
@@ -853,9 +873,8 @@
 
             const condition = getLawnCondition();
             
-            // Get recommendations (computed once)
-            const allRecommendations = calculateRecommendations();
-            const topRecommendation = allRecommendations[0];
+            // Get top recommendation
+            const topRecommendation = calculateRecommendations()[0];
 
             return (
                 <div className="mb-6">
@@ -901,7 +920,7 @@
                                             onClick={() => { setView('recommendations'); }}
                                             className="px-4 py-2 bg-white/20 text-white rounded-lg font-semibold hover:bg-white/30 transition text-sm border border-white/30"
                                         >
-                                            View All ({allRecommendations.length})
+                                            View All ({calculateRecommendations().length})
                                         </button>
                                     </div>
                                 </div>
@@ -1002,29 +1021,26 @@
                     {/* Last Activity */}
                     <div className="bg-white rounded-xl shadow-lg border-2 border-[#367C2B]/30 p-4 mb-3">
                         <h3 className="text-xs font-bold text-[#367C2B] uppercase tracking-wider mb-3">Last Activity</h3>
-                        {activities.length > 0 ? (() => {
-                            const lastActivity = activities[activities.length - 1];
-                            const lastType = ACTIVITY_TYPES[lastActivity.type];
-                            const daysSince = Math.floor((new Date() - new Date(lastActivity.date)) / (1000 * 60 * 60 * 24));
-                            const timeAgo = daysSince === 0 ? 'Today' : daysSince === 1 ? 'Yesterday' : `${daysSince} days ago`;
-                            return (
+                        {activities.length > 0 ? (
                             <div className="flex items-center gap-3">
-                                <img
-                                    src={lastType.icon}
-                                    alt={lastType.name}
+                                <img 
+                                    src={ACTIVITY_TYPES[activities[activities.length - 1].type].icon}
+                                    alt={ACTIVITY_TYPES[activities[activities.length - 1].type].name}
                                     className="w-16 h-16 rounded-lg object-cover shadow-sm"
                                 />
                                 <div className="flex-1">
                                     <div className="text-base font-bold text-[#367C2B]">
-                                        {lastType.name}
+                                        {ACTIVITY_TYPES[activities[activities.length - 1].type].name}
                                     </div>
                                     <div className="text-xs text-gray-600 mt-1">
-                                        {timeAgo}
+                                        {(() => {
+                                            const lastActivity = activities[activities.length - 1];
+                                            const daysSince = Math.floor((new Date() - new Date(lastActivity.date)) / (1000 * 60 * 60 * 24));
+                                            return daysSince === 0 ? 'Today' : daysSince === 1 ? 'Yesterday' : `${daysSince} days ago`;
+                                        })()}
                                     </div>
                                 </div>
                             </div>
-                            );
-                        })()
                         ) : (
                             <div className="text-center py-3">
                                 <div className="text-gray-400 text-3xl mb-1">📋</div>
@@ -1077,7 +1093,7 @@
                             {showCalendar && (
                                 <>
                                     <button
-                                        onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1, 1))}
+                                        onClick={() => setSelectedMonth(new Date(selectedMonth.setMonth(selectedMonth.getMonth() - 1)))}
                                         className="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50"
                                     >
                                          Prev
@@ -1086,10 +1102,10 @@
                                         {selectedMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                     </h2>
                                     <button
-                                        onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1))}
+                                        onClick={() => setSelectedMonth(new Date(selectedMonth.setMonth(selectedMonth.getMonth() + 1)))}
                                         className="px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50"
                                     >
-                                        Next
+                                        Next 
                                     </button>
                                 </>
                             )}
@@ -1137,6 +1153,7 @@
 
             const handleAddEquipment = (e) => {
                 e.preventDefault();
+                console.log('Form submitted:', localGarageForm);
                 
                 if (!localGarageForm.name) {
                     alert('Please enter an equipment name');
@@ -2351,6 +2368,66 @@
                 }
             }
             
+            // MAINTENANCE RECOMMENDATIONS (Mowers Only)
+            equipment.filter(eq => eq.type === 'mowers').forEach(mower => {
+                const currentHours = mower.currentHours || 0;
+                const lastMaint = mower.lastMaintenance;
+                const hoursAtLastMaint = lastMaint?.hoursAtMaintenance || 0;
+                const hoursSinceMaint = currentHours - hoursAtLastMaint;
+                
+                // Oil Change Recommendation (every 50 hours)
+                if (hoursSinceMaint >= 50) {
+                    const priority = hoursSinceMaint >= 75 ? 'high' : hoursSinceMaint >= 60 ? 'medium' : 'low';
+                    recommendations.push({
+                        id: `rec_oil_${mower.id}`,
+                        type: 'maintenance',
+                        priority,
+                        icon: '🔧',
+                        title: `Oil Change - ${mower.name}`,
+                        reason: `${hoursSinceMaint.toFixed(1)} hours since last ${lastMaint ? 'oil change' : 'purchase'}`,
+                        details: hoursSinceMaint >= 75 
+                            ? 'Overdue - oil change needed immediately to prevent engine damage.'
+                            : `Recommended every 50 hours. Current: ${currentHours.toFixed(1)} hrs.`,
+                        timing: hoursSinceMaint >= 75 ? 'Immediately' : 'Within 1 week',
+                        action: 'maintenance',
+                        equipmentId: mower.id
+                    });
+                } else if (hoursSinceMaint >= 40 && hoursSinceMaint < 50) {
+                    // Gentle reminder at 40 hours
+                    recommendations.push({
+                        id: `rec_oil_soon_${mower.id}`,
+                        type: 'maintenance',
+                        priority: 'low',
+                        icon: '🔧',
+                        title: `Oil Change Soon - ${mower.name}`,
+                        reason: `${hoursSinceMaint.toFixed(1)} hours since last oil change`,
+                        details: `Oil change due at 50 hours. Plan ahead to avoid missed maintenance.`,
+                        timing: 'Next 10 hours',
+                        action: 'maintenance',
+                        equipmentId: mower.id
+                    });
+                }
+                
+                // Blade Sharpening Recommendation (every 25 hours)
+                if (lastMaint?.type !== 'Blade Sharpening' && hoursSinceMaint >= 25) {
+                    const daysSince = lastMaint ? Math.floor((now - new Date(lastMaint.date)) / (1000 * 60 * 60 * 24)) : 180;
+                    if (daysSince >= 90) {  // Also check if it's been 3+ months
+                        recommendations.push({
+                            id: `rec_blades_${mower.id}`,
+                            type: 'maintenance',
+                            priority: daysSince >= 180 ? 'medium' : 'low',
+                            icon: '🔪',
+                            title: `Sharpen Blades - ${mower.name}`,
+                            reason: `${Math.floor(daysSince / 30)} months since last blade service`,
+                            details: 'Dull blades tear grass instead of cutting cleanly, causing brown tips and stress.',
+                            timing: daysSince >= 180 ? 'This month' : 'This season',
+                            action: 'maintenance',
+                            equipmentId: mower.id
+                        });
+                    }
+                }
+            });
+            
             // Sort by priority
             const priorityOrder = { high: 0, medium: 1, low: 2 };
             recommendations.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
@@ -2378,14 +2455,17 @@
         
             const filtered = getFilteredActivities();
             
-            // Calculate stats in a single pass
-            const stats = filtered.reduce((acc, a) => {
-                acc.total++;
-                if (acc[a.type] !== undefined) acc[a.type]++;
-                acc.totalMinutes += (parseFloat(a.data?.duration) || 0);
-                return acc;
-            }, { total: 0, mowing: 0, fertilizer: 0, watering: 0, seeding: 0, treatment: 0, general: 0, totalMinutes: 0 });
-            stats.totalHours = stats.totalMinutes / 60;
+            // Calculate stats
+            const stats = {
+                total: filtered.length,
+                mowing: filtered.filter(a => a.type === 'mowing').length,
+                fertilizer: filtered.filter(a => a.type === 'fertilizer').length,
+                watering: filtered.filter(a => a.type === 'watering').length,
+                seeding: filtered.filter(a => a.type === 'seeding').length,
+                treatment: filtered.filter(a => a.type === 'treatment').length,
+                general: filtered.filter(a => a.type === 'general').length,
+                totalHours: filtered.reduce((sum, a) => sum + (parseFloat(a.data?.duration) || 0), 0) / 60
+            };
         
             // Get monthly data for chart (last 6 months)
             const monthlyData = [];
@@ -2463,17 +2543,15 @@
                     <div className="bg-white rounded-xl p-4 shadow-md border-2 border-gray-100 mb-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">Activity Breakdown</h3>
                         <div className="space-y-3">
-                            {(() => {
-                                const breakdownItems = [
-                                    { type: 'mowing', label: 'Mowing', color: '#367C2B', count: stats.mowing },
-                                    { type: 'fertilizer', label: 'Fertilizer', color: '#F97316', count: stats.fertilizer },
-                                    { type: 'watering', label: 'Watering', color: '#3B82F6', count: stats.watering },
-                                    { type: 'seeding', label: 'Seeding', color: '#92400E', count: stats.seeding },
-                                    { type: 'treatment', label: 'Treatment', color: '#DC2626', count: stats.treatment },
-                                    { type: 'general', label: 'General', color: '#6B7280', count: stats.general }
-                                ];
-                                const maxCount = Math.max(...breakdownItems.map(i => i.count)) || 1;
-                                return breakdownItems.map(({ type, label, color, count }) => {
+                            {[
+                                { type: 'mowing', label: 'Mowing', color: '#367C2B', count: stats.mowing },
+                                { type: 'fertilizer', label: 'Fertilizer', color: '#F97316', count: stats.fertilizer },
+                                { type: 'watering', label: 'Watering', color: '#3B82F6', count: stats.watering },
+                                { type: 'seeding', label: 'Seeding', color: '#92400E', count: stats.seeding },
+                                { type: 'treatment', label: 'Treatment', color: '#DC2626', count: stats.treatment },
+                                { type: 'general', label: 'General', color: '#6B7280', count: stats.general }
+                            ].map(({ type, label, color, count }) => {
+                                const maxCount = Math.max(stats.mowing, stats.fertilizer, stats.watering, stats.seeding, stats.treatment, stats.general) || 1;
                                 const width = (count / maxCount) * 100;
                                 return (
                                     <div key={type} className="flex items-center gap-3">
@@ -2491,18 +2569,16 @@
                                         </div>
                                     </div>
                                 );
-                            });
-                            })()}
+                            })}
                         </div>
                     </div>
-
+        
                     {/* Monthly Trend */}
                     <div className="bg-white rounded-xl p-4 shadow-md border-2 border-gray-100 mb-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">Monthly Trend</h3>
                         <div className="flex items-end justify-between h-40 gap-2">
-                            {(() => {
+                            {monthlyData.map((data, i) => {
                                 const maxCount = Math.max(...monthlyData.map(d => d.count)) || 1;
-                                return monthlyData.map((data, i) => {
                                 const height = (data.count / maxCount) * 100;
                                 return (
                                     <div key={i} className="flex-1 flex flex-col items-center gap-2">
@@ -2519,11 +2595,10 @@
                                         <div className="text-xs text-gray-600 font-medium">{data.month}</div>
                                     </div>
                                 );
-                            });
-                            })()}
+                            })}
                         </div>
                     </div>
-
+        
                     {/* Recent Activity */}
                     <div className="bg-white rounded-xl p-4 shadow-md border-2 border-gray-100">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">🕒 Recent Activity</h3>
@@ -2722,7 +2797,6 @@
                 link.href = url;
                 link.download = `lawn-coach-backup-${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
-                URL.revokeObjectURL(url);
             };
         
             const resetData = () => {
@@ -3178,9 +3252,9 @@
         );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<LawnCareTracker />);
+    ReactDOM.render(<LawnCareTracker />, document.getElementById('root'));
 </script>
+```
 
 </body>
 </html>
