@@ -748,11 +748,6 @@
         }, [activities]);
 
         const addActivity = (activityData) => {
-            console.log('=== SAVING ACTIVITY ===');
-            console.log('Activity Type:', selectedActivityType);
-            console.log('Activity Data:', activityData);
-            console.log('Data Object:', activityData.data);
-            
             const newActivity = {
                 id: Date.now(),
                 type: selectedActivityType,
@@ -764,16 +759,11 @@
                 createdAt: new Date().toISOString()
             };
             
-            console.log('New Activity Object:', newActivity);
-            
             const isFirstActivity = activities.length === 0;
             
             const updatedActivities = [...activities, newActivity];
             setActivities(updatedActivities);
             safeLocalStorage.setItem('lawnCareActivities', JSON.stringify(updatedActivities));
-            
-            console.log('Saved to localStorage');
-            console.log('=== SAVE COMPLETE ===');
             
             // Update equipment hours if equipment was used
             if (activityData.equipmentUsed && activityData.hoursLogged) {
@@ -1921,7 +1911,7 @@
                                             {localFormData.data.category ? (
                                                 <>
                                                     <select
-                                                        value={localFormData.data[field.name] || ''}
+                                                        value={localFormData.data.productId || ''}
                                                         onChange={(e) => {
                                                             const productId = e.target.value;
                                                             const categoryProducts = TREATMENT_PRODUCTS[localFormData.data.category] || [];
@@ -3219,17 +3209,19 @@
                                                     
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                                                         {Object.entries(activity.data).map(([key, value]) => {
-                                                            const field = activityType.fields.find(f => f.name === key);
-                                                            
-                                                            console.log('Displaying field:', key, 'Value:', value, 'Field def:', field);
-                                                            
-                                                            if (!value || !field) {
-                                                                console.log('Skipping field:', key, 'Has value?', !!value, 'Has field def?', !!field);
+                                                            // Skip internal fields
+                                                            if (key === 'productId' || !value || value === '') {
                                                                 return null;
                                                             }
+                                                            
+                                                            const field = activityType.fields.find(f => f.name === key);
+                                                            
+                                                            // Display even if no field definition (for debugging)
+                                                            const label = field ? field.label : key.charAt(0).toUpperCase() + key.slice(1);
+                                                            
                                                             return (
                                                                 <div key={key} className="text-sm">
-                                                                    <span className="font-semibold">{field.label}:</span>{' '}
+                                                                    <span className="font-semibold">{label}:</span>{' '}
                                                                     <span className="text-gray-700">{value}</span>
                                                                 </div>
                                                             );
