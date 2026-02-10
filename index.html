@@ -418,6 +418,16 @@
         return RESEARCH_PROGRAMS[key] || null;
     };
 
+    // University research sources for citations
+    const RESEARCH_SOURCES = [
+        { id: 'psu', name: 'Penn State Extension', count: 3, url: 'https://extension.psu.edu/' },
+        { id: 'purdue', name: 'Purdue Extension', count: 2, url: 'https://www.purdue.edu/hla/sites/turf/' },
+        { id: 'ncstate', name: 'NC State Extension', count: 4, url: 'https://content.ces.ncsu.edu/' },
+        { id: 'uga', name: 'University of Georgia Extension', count: 4, url: 'https://extension.uga.edu/' },
+        { id: 'tamu', name: 'Texas A&M AgriLife Extension', count: 4, url: 'https://agrilifeextension.tamu.edu/' },
+        { id: 'msu', name: 'Michigan State Extension', count: 2, url: 'https://www.canr.msu.edu/turf/' }
+    ];
+
     function LawnCareTracker() {
         const [activities, setActivities] = useState([]);
         const [view, setView] = useState(null); // calendar, add, history, garage
@@ -3081,7 +3091,17 @@
                                         {/* Title */}
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-2xl">{rec.icon}</span>
-                                            <h3 className={`text-xl font-bold ${colors.text}`}>{rec.title}</h3>
+                                            <h3 className={`text-xl font-bold ${colors.text} flex-1`}>{rec.title}</h3>
+                                            {lawnProfile?.zone && lawnProfile?.specificGrass && (
+                                                <button
+                                                    onClick={() => setView('sources')}
+                                                    className="text-blue-600 hover:text-blue-800 text-sm font-semibold flex items-center gap-1"
+                                                    title="View research sources"
+                                                >
+                                                    <span className="hidden sm:inline">Sources</span>
+                                                    <span className="text-base">ℹ️</span>
+                                                </button>
+                                            )}
                                         </div>
                                         
                                         {/* Reason */}
@@ -3111,6 +3131,80 @@
                             <div className="text-gray-600">No recommendations at this time. Check back soon.</div>
                         </div>
                     )}
+
+                    {/* Research-Based Note */}
+                    {lawnProfile?.zone && lawnProfile?.specificGrass && (
+                        <div className="mt-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                            <p className="text-sm text-blue-900">
+                                <strong>📚 Research-Based:</strong> These recommendations are tailored to Zone {lawnProfile.zone} {lawnProfile.specificGrass.replace('-', ' ')} based on university extension research.{' '}
+                                <button 
+                                    onClick={() => setView('sources')} 
+                                    className="underline font-semibold hover:text-blue-700"
+                                >
+                                    View Research Sources
+                                </button>
+                            </p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const ResearchSourcesPage = () => {
+            return (
+                <div className="pb-20">
+                    <div className="mb-4">
+                        <button 
+                            onClick={() => setView(null)}
+                            className="text-[#367C2B] hover:text-[#2d6323] font-semibold flex items-center gap-2"
+                        >
+                            ← Back to Home
+                        </button>
+                    </div>
+                    
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">📚 Research Sources</h2>
+
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-blue-900">
+                            <strong>Evidence-Based Recommendations:</strong> All lawn care guidance in this app is based on peer-reviewed research from university extension programs. These are the same sources professional turf managers use.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {RESEARCH_SOURCES.map((source) => (
+                            <div key={source.id} className="bg-white rounded-xl p-4 shadow-md border-2 border-gray-100">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-bold text-gray-900 mb-1">{source.name}</h3>
+                                        <p className="text-sm text-gray-600 mb-3">
+                                            {source.count} {source.count === 1 ? 'publication' : 'publications'} referenced
+                                        </p>
+                                        <a 
+                                            href={source.url} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-[#367C2B] hover:text-[#2d6323] font-semibold text-sm underline"
+                                        >
+                                            Visit Extension Website →
+                                        </a>
+                                    </div>
+                                    <div className="text-3xl">🎓</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+                        <p className="text-sm text-gray-700">
+                            <strong>Total Sources:</strong> 19 university extension publications covering fertilization, mowing, pre-emergent timing, overseeding, and seasonal care for cool-season and warm-season grasses across USDA Zones 5-8.
+                        </p>
+                    </div>
+
+                    <div className="mt-4 p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                        <p className="text-sm text-green-900">
+                            <strong>Why University Extensions?</strong> Land-grant university extension programs conduct rigorous field research specific to regional climates and grass types. Unlike generic online advice, extension recommendations are tested, peer-reviewed, and updated based on ongoing research.
+                        </p>
+                    </div>
                 </div>
             );
         };
@@ -3271,6 +3365,13 @@
                                     <span className="text-lg font-semibold text-gray-700">Recommendations</span>
                                 </button>
                                 <button
+                                    onClick={() => { setView('sources'); }}
+                                    className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
+                                >
+                                    <span className="text-2xl">📚</span>
+                                    <span className="text-lg font-semibold text-gray-700">Research Sources</span>
+                                </button>
+                                <button
                                     onClick={() => { setView('settings'); }}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 transition flex items-center gap-3"
                                 >
@@ -3384,6 +3485,13 @@
                 {view === 'recommendations' && (
                     <div className="max-w-5xl mx-auto p-2 md:p-3">
                         <RecommendationsPage />
+                    </div>
+                )}
+
+                {/* Research Sources Page */}
+                {view === 'sources' && (
+                    <div className="max-w-5xl mx-auto p-2 md:p-3">
+                        <ResearchSourcesPage />
                     </div>
                 )}
 
