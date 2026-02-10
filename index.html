@@ -375,6 +375,102 @@
         }
     };
 
+    // ==================== RESEARCH DATA v5.0 ====================
+    const RESEARCH_PROGRAMS = {
+        'z5-tall-fescue': {
+            fertilizer: { 
+                yearlyN: '3-4',
+                schedule: [
+                    {m:4, n:0.5, p:'low'},
+                    {m:9, n:1.0, p:'high'},
+                    {m:10, n:1.0, p:'high'},
+                    {m:11, n:0.5, p:'low'}
+                ]
+            },
+            mowing: { spring:'3-3.5 inches', summer:'3.5-4 inches', fall:'3-3.5 inches' },
+            preEmergent: { timing:'Early-mid April', soilTemp:'50-55F' },
+            overseeding: { window:'Sept 1-30', rate:'5-7 lbs' }
+        },
+        'z6-tall-fescue': {
+            fertilizer: { 
+                yearlyN: '3-4',
+                schedule: [
+                    {m:4, n:0.5, p:'low'},
+                    {m:9, n:1.0, p:'high'},
+                    {m:10, n:1.0, p:'high'},
+                    {m:11, n:0.5, p:'low'}
+                ]
+            },
+            mowing: { spring:'3-3.5 inches', summer:'3.5-4 inches', fall:'3-3.5 inches' },
+            preEmergent: { timing:'Early-mid April', soilTemp:'50-55F' },
+            overseeding: { window:'Sept 1-30', rate:'5-7 lbs' }
+        },
+        'z6-kentucky-bluegrass': {
+            fertilizer: { 
+                yearlyN: '3-5',
+                schedule: [
+                    {m:4, n:0.5, p:'low'},
+                    {m:5, n:0.5, p:'low'},
+                    {m:9, n:1.5, p:'high'},
+                    {m:10, n:1.5, p:'high'},
+                    {m:11, n:1.0, p:'medium'}
+                ]
+            },
+            mowing: { spring:'2.5-3 inches', summer:'3-3.5 inches', fall:'2.5-3 inches' },
+            preEmergent: { timing:'Early-mid April', soilTemp:'50-55F' },
+            overseeding: { window:'September', rate:'2-3 lbs', note:'Less critical - spreads via rhizomes' }
+        },
+        'z7-tall-fescue': {
+            fertilizer: { 
+                yearlyN: '3-4',
+                schedule: [
+                    {m:4, n:0.5, p:'low', note:'Light spring feeding'},
+                    {m:9, n:1.25, p:'high', note:'Heavy for recovery'},
+                    {m:10, n:1.0, p:'high'},
+                    {m:11, n:0.5, p:'medium'}
+                ]
+            },
+            mowing: { spring:'3.5 inches', summer:'4 inches CRITICAL', fall:'3-3.5 inches', note:'Transition zone - summer height critical for survival' },
+            preEmergent: { timing:'Late March-Early April', soilTemp:'50-55F', note:'Earlier than Zone 6' },
+            overseeding: { window:'Sept 1-30', rate:'6-8 lbs', note:'MORE critical than northern zones - summer stress recovery' }
+        },
+        'z7-bermuda': {
+            fertilizer: { 
+                yearlyN: '2-4',
+                schedule: [
+                    {m:5, n:1.0, p:'high'},
+                    {m:6, n:1.0, p:'high'},
+                    {m:7, n:1.0, p:'medium'},
+                    {m:8, n:0.5, p:'low'}
+                ]
+            },
+            mowing: { height:'1-1.5 inches', freq:'2-3x per week in summer' },
+            greenUp: { temp:'65F soil', timing:'Late April-Early May' },
+            dormancy: { temp:'50F soil', timing:'Late Oct-Nov', months:'5-6 months brown' }
+        },
+        'z8-bermuda': {
+            fertilizer: { 
+                yearlyN: '3-4',
+                schedule: [
+                    {m:4, n:1.0, p:'high'},
+                    {m:5, n:1.0, p:'high'},
+                    {m:6, n:1.0, p:'high'},
+                    {m:7, n:0.5, p:'medium'},
+                    {m:8, n:0.5, p:'low'}
+                ]
+            },
+            mowing: { height:'1-1.5 inches', freq:'2-3x per week in summer' },
+            greenUp: { temp:'65F soil', timing:'Mid-late April' },
+            dormancy: { temp:'50F soil', timing:'Late Oct-Nov', months:'4-5 months brown' }
+        }
+    };
+
+    const getProgram = (zone, grass) => {
+        if (!zone || !grass) return null;
+        const key = 'z' + zone + '-' + grass;
+        return RESEARCH_PROGRAMS[key] || null;
+    };
+
     function LawnCareTracker() {
         const [activities, setActivities] = useState([]);
         const [view, setView] = useState(null); // calendar, add, history, garage
@@ -2173,12 +2269,12 @@
             if (isGrowingSeason && daysSinceLastMow >= 3) {
                 let priority = 'low';
                 let title = 'Consider Mowing';
-                let reason = `It's been ${daysSinceLastMow} days since your last mowing.`;
+                let reason = 'It has been ' + daysSinceLastMow + ' days since your last mowing.';
                 
                 if (daysSinceLastMow >= 7) {
                     priority = 'high';
                     title = 'Mow Your Lawn';
-                    reason = `It's been ${daysSinceLastMow} days - grass is likely overgrown.`;
+                    reason = 'It has been ' + daysSinceLastMow + ' days - grass is likely overgrown.';
                 } else if (daysSinceLastMow >= 5) {
                     priority = 'medium';
                     title = 'Time to Mow';
@@ -2187,6 +2283,38 @@
                 const skipRain = weather && (weather.description?.toLowerCase().includes('rain') || weather.description?.toLowerCase().includes('storm'));
                 
                 if (!skipRain) {
+                    let details = isGrowingSeason ? 'Grass is actively growing.' : 'Grass growth is slowing.';
+                    
+                    // Add height guidance from research
+                    const zone = lawnProfile?.zone;
+                    const specificGrass = lawnProfile?.specificGrass;
+                    const program = getProgram(zone, specificGrass);
+                    
+                    if (program && program.mowing) {
+                        const month = now.getMonth();
+                        let height = '';
+                        
+                        if (month >= 2 && month <= 4) {
+                            height = program.mowing.spring;
+                        } else if (month >= 5 && month <= 8) {
+                            height = program.mowing.summer;
+                        } else if (month >= 9 && month <= 10) {
+                            height = program.mowing.fall || program.mowing.spring;
+                        }
+                        
+                        if (height) {
+                            details += ' Recommended height: ' + height + '.';
+                        }
+                        
+                        if (program.mowing.note) {
+                            details += ' ' + program.mowing.note + '.';
+                        }
+                        
+                        if (program.mowing.freq) {
+                            details += ' Frequency: ' + program.mowing.freq + '.';
+                        }
+                    }
+                    
                     recommendations.push({
                         id: 'rec_mowing',
                         type: 'mowing',
@@ -2194,18 +2322,54 @@
                         icon: '🌱',
                         title,
                         reason,
-                        details: isGrowingSeason ? 'Grass is actively growing.' : 'Grass growth is slowing.',
+                        details,
                         timing: daysSinceLastMow >= 7 ? 'Within 48 hours' : 'This weekend',
                         action: 'mowing'
                     });
                 }
             }
             
-            // FERTILIZER RECOMMENDATIONS
+            // FERTILIZER RECOMMENDATIONS (Research-Based)
             const daysSinceLastFertilizer = getDaysSinceActivity('fertilizer');
             const weeksSinceLastFertilizer = Math.floor(daysSinceLastFertilizer / 7);
             
-            if (weather && weather.soilTemp && grassType) {
+            const zone = lawnProfile?.zone;
+            const specificGrass = lawnProfile?.specificGrass;
+            const program = getProgram(zone, specificGrass);
+            
+            if (program && program.fertilizer && weeksSinceLastFertilizer >= 4) {
+                const month = now.getMonth(); // 0-11
+                const currentMonthSchedule = program.fertilizer.schedule.find(s => s.m === month);
+                
+                if (currentMonthSchedule) {
+                    const lbsN = currentMonthSchedule.n;
+                    const priority = currentMonthSchedule.p;
+                    
+                    let details = 'Apply ' + lbsN + ' lbs of nitrogen per 1,000 sq ft.';
+                    if (currentMonthSchedule.note) {
+                        details += ' ' + currentMonthSchedule.note + '.';
+                    }
+                    
+                    if (lawnProfile?.lawnSize) {
+                        const sqft = parseInt(lawnProfile.lawnSize);
+                        const totalLbsNeeded = (sqft / 1000 * lbsN).toFixed(1);
+                        details += ' For your ' + formatNumber(sqft) + ' sq ft lawn, apply approximately ' + totalLbsNeeded + ' lbs total nitrogen.';
+                    }
+                    
+                    recommendations.push({
+                        id: 'rec_fertilizer',
+                        type: 'fertilizer',
+                        priority,
+                        icon: '🌾',
+                        title: month === 8 || month === 9 ? 'Apply Fall Fertilizer' : month === 3 || month === 4 ? 'Apply Spring Fertilizer' : 'Apply Fertilizer',
+                        reason: 'Research-based timing for Zone ' + zone + ' ' + (specificGrass || 'lawn').replace('-', ' ') + '.',
+                        details,
+                        timing: priority === 'high' ? 'This month (priority)' : 'When convenient this month',
+                        action: 'fertilizer'
+                    });
+                }
+            } else if (weather && weather.soilTemp && grassType) {
+                // Fallback to simple logic if no program data
                 let shouldRecommend = false;
                 let fertReason = '';
                 let fertPriority = 'low';
