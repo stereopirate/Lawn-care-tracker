@@ -409,6 +409,87 @@
             mowing: { height:'1-1.5 inches', freq:'2-3x per week in summer' },
             greenUp: { temp:'65F soil', timing:'Mid-late April' },
             dormancy: { temp:'50F soil', timing:'Late Oct-Nov', months:'4-5 months brown' }
+        },
+        'z5-perennial-ryegrass': {
+            fertilizer: { 
+                yearlyN: '2-4',
+                schedule: [
+                    {m:4, n:0.5, p:'low'},
+                    {m:9, n:1.0, p:'high'},
+                    {m:10, n:1.0, p:'high'},
+                    {m:11, n:0.5, p:'medium'}
+                ]
+            },
+            mowing: { spring:'2-2.5 inches', summer:'3-4 inches', fall:'2-2.5 inches', note:'Raise height in heat stress' },
+            preEmergent: { timing:'Early-mid April', soilTemp:'50-55F' },
+            overseeding: { window:'Sept 1-30', rate:'8-10 lbs', note:'Quick germination - 5-7 days' }
+        },
+        'z6-perennial-ryegrass': {
+            fertilizer: { 
+                yearlyN: '2-4',
+                schedule: [
+                    {m:4, n:0.5, p:'low'},
+                    {m:9, n:1.0, p:'high'},
+                    {m:10, n:1.0, p:'high'},
+                    {m:11, n:0.5, p:'medium'}
+                ]
+            },
+            mowing: { spring:'2-2.5 inches', summer:'3-4 inches', fall:'2-2.5 inches', note:'Raise height in heat stress' },
+            preEmergent: { timing:'Early-mid April', soilTemp:'50-55F' },
+            overseeding: { window:'Sept 1-30', rate:'8-10 lbs', note:'Quick germination - 5-7 days' }
+        },
+        'z7-perennial-ryegrass': {
+            fertilizer: { 
+                yearlyN: '2-3',
+                schedule: [
+                    {m:4, n:0.5, p:'low', note:'Light spring feeding'},
+                    {m:9, n:1.0, p:'high'},
+                    {m:10, n:0.75, p:'high'},
+                    {m:11, n:0.5, p:'medium'}
+                ]
+            },
+            mowing: { spring:'2.5 inches', summer:'3-4 inches CRITICAL', fall:'2-2.5 inches', note:'Transition zone - summer height critical' },
+            preEmergent: { timing:'Late March-Early April', soilTemp:'50-55F' },
+            overseeding: { window:'Sept 1-30', rate:'8-10 lbs', note:'Heat stress can be severe' }
+        },
+        'z6-zoysia': {
+            fertilizer: { 
+                yearlyN: '1.5-2.5',
+                schedule: [
+                    {m:5, n:0.75, p:'high'},
+                    {m:6, n:0.75, p:'high'},
+                    {m:7, n:0.5, p:'medium'}
+                ]
+            },
+            mowing: { height:'1-2 inches', note:'Raise 0.5 inches in heat stress. Stiff blades - sharpen often' },
+            greenUp: { temp:'65F soil', timing:'May' },
+            dormancy: { temp:'50F soil', timing:'Oct-Nov', months:'5-7 months brown', note:'Northern limit of zoysia' }
+        },
+        'z7-zoysia': {
+            fertilizer: { 
+                yearlyN: '2-3',
+                schedule: [
+                    {m:4, n:0.75, p:'high'},
+                    {m:6, n:0.75, p:'high'},
+                    {m:7, n:0.75, p:'medium'}
+                ]
+            },
+            mowing: { height:'1-2 inches', note:'Raise 0.5 inches in heat stress. Stiff blades - sharpen often' },
+            greenUp: { temp:'65F soil', timing:'Late April-May' },
+            dormancy: { temp:'50F soil', timing:'Oct-Nov', months:'4-6 months brown' }
+        },
+        'z8-zoysia': {
+            fertilizer: { 
+                yearlyN: '2-3',
+                schedule: [
+                    {m:4, n:1.0, p:'high'},
+                    {m:6, n:1.0, p:'high'},
+                    {m:7, n:0.5, p:'medium'}
+                ]
+            },
+            mowing: { height:'0.75-2 inches', note:'Lower maintenance than bermuda. Raise 0.5 inches in heat' },
+            greenUp: { temp:'65F soil', timing:'Mid-late April' },
+            dormancy: { temp:'50F soil', timing:'Nov', months:'3-5 months brown' }
         }
     };
 
@@ -2885,9 +2966,11 @@
                                     <optgroup label="Cool Season">
                                         <option value="tall-fescue">Tall Fescue</option>
                                         <option value="kentucky-bluegrass">Kentucky Bluegrass</option>
+                                        <option value="perennial-ryegrass">Perennial Ryegrass</option>
                                     </optgroup>
                                     <optgroup label="Warm Season">
                                         <option value="bermuda">Bermudagrass</option>
+                                        <option value="zoysia">Zoysia</option>
                                     </optgroup>
                                 </select>
                             </div>
@@ -3196,7 +3279,7 @@
 
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
                         <p className="text-sm text-gray-700">
-                            <strong>Total Sources:</strong> 19 university extension publications covering fertilization, mowing, pre-emergent timing, overseeding, and seasonal care for cool-season and warm-season grasses across USDA Zones 5-8.
+                            <strong>Total Sources:</strong> 19 university extension publications covering fertilization, mowing, pre-emergent timing, overseeding, and seasonal care for cool-season grasses (Tall Fescue, Kentucky Bluegrass, Perennial Ryegrass) and warm-season grasses (Bermudagrass, Zoysia) across USDA Zones 5-8.
                         </p>
                     </div>
 
