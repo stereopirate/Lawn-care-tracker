@@ -127,30 +127,6 @@
             { id: 's8', name: 'Zoysia Grass Seed', brand: 'Zenith', type: 'Warm Season', coverage: '2000 sq ft', variety: 'Drought Tolerant' },
             { id: 's9', name: 'Bermuda Grass Seed', brand: 'Outsidepride', type: 'Improved', coverage: '3000 sq ft', variety: 'Southern Lawns' },
             { id: 's10', name: 'Kentucky Bluegrass Mix', brand: 'Jonathan Green', type: 'Premium KBG', coverage: '3000 sq ft', variety: 'Fine Texture' }
-        ],
-        herbicides: [
-            { id: 'h1', name: 'Ortho Weed B Gon', brand: 'Ortho', type: 'Post-Emergent', target: 'Broadleaf Weeds', coverage: '16000 sq ft' },
-            { id: 'h2', name: 'Spectracide Weed Stop', brand: 'Spectracide', type: 'Post-Emergent', target: 'Dandelions, Clover', coverage: '5000 sq ft' },
-            { id: 'h3', name: 'Preen Lawn Weed Control', brand: 'Preen', type: 'Pre-Emergent', target: 'Crabgrass', coverage: '5000 sq ft' },
-            { id: 'h4', name: 'Scotts Halts Crabgrass Preventer', brand: 'Scotts', type: 'Pre-Emergent', target: 'Crabgrass, Grassy Weeds', coverage: '15000 sq ft' },
-            { id: 'h5', name: 'BioAdvanced All-in-One', brand: 'BioAdvanced', type: 'Weed & Feed', target: 'Weeds + Fertilizer', coverage: '10000 sq ft' },
-            { id: 'h6', name: 'Tenacity Herbicide', brand: 'SePRO', type: 'Pre/Post-Emergent', target: 'Crabgrass, Clover', coverage: '10000 sq ft' },
-            { id: 'h7', name: 'Compare-N-Save Concentrate', brand: 'Compare-N-Save', type: 'Non-Selective', target: 'All Vegetation', coverage: '25000 sq ft' },
-            { id: 'h8', name: 'Natural Armor Weed Killer', brand: 'Natural Armor', type: 'Organic', target: 'Broadleaf Weeds', coverage: '1000 sq ft' },
-            { id: 'h9', name: 'Prodiamine 65 WDG', brand: 'Generic', type: 'Pre-Emergent', target: 'Annual Grasses', coverage: '43560 sq ft' },
-            { id: 'h10', name: 'Celsius WG Herbicide', brand: 'Bayer', type: 'Post-Emergent', target: 'Warm Season Weeds', coverage: '43560 sq ft' }
-        ],
-        pesticides: [
-            { id: 'p1', name: 'Spectracide Triazicide', brand: 'Spectracide', type: 'Insect Killer', target: 'Grubs, Ants, Fleas', coverage: '10000 sq ft' },
-            { id: 'p2', name: 'BioAdvanced Grub Killer', brand: 'BioAdvanced', type: 'Season-Long Control', target: 'Grubs, Japanese Beetles', coverage: '10000 sq ft' },
-            { id: 'p3', name: 'Scotts GrubEx', brand: 'Scotts', type: 'Preventive Grub Control', target: 'Grub Prevention', coverage: '10000 sq ft' },
-            { id: 'p4', name: 'Sevin Insect Killer', brand: 'Sevin', type: 'Contact Killer', target: 'Over 500 Insects', coverage: '5000 sq ft' },
-            { id: 'p5', name: 'Dylox 6.2 Granular', brand: 'Bayer', type: 'Fast-Acting', target: 'Active Grubs', coverage: '7000 sq ft' },
-            { id: 'p6', name: 'Milky Spore Powder', brand: 'St. Gabriel', type: 'Organic', target: 'Japanese Beetle Grubs', coverage: '2500 sq ft' },
-            { id: 'p7', name: 'Ortho BugClear Lawn', brand: 'Ortho', type: 'Surface & Soil', target: 'Ants, Ticks, Chinch Bugs', coverage: '10000 sq ft' },
-            { id: 'p8', name: 'Scotts DiseaseEx', brand: 'Scotts', type: 'Fungicide', target: 'Brown Patch, Dollar Spot', coverage: '5000 sq ft' },
-            { id: 'p9', name: 'Eagle 20EW Fungicide', brand: 'Dow', type: 'Systemic', target: 'Lawn Diseases', coverage: '43560 sq ft' },
-            { id: 'p10', name: 'Neem Oil Concentrate', brand: 'Bonide', type: 'Organic', target: 'Insects & Diseases', coverage: 'Varies' }
         ]
     };
     
@@ -329,39 +305,6 @@
                 { name: 'method', label: 'Method', type: 'select', options: ['Core Aeration', 'Spike Aeration', 'Liquid Aeration'] },
                 { name: 'equipment', label: 'Equipment', type: 'text', placeholder: 'e.g., Rental aerator' },
                 { name: 'coverage', label: 'Coverage Area (sq ft)', type: 'number', placeholder: '5000' }
-            ]
-        },
-        treatment: {
-            name: 'Weed/Pest Treatment',
-            icon: 'activity-fertilizer.png',
-            color: 'bg-[#367C2B]',
-            fields: [
-                { name: 'treatmentType', label: 'Treatment Type', type: 'select', options: ['Herbicide', 'Pesticide', 'Fungicide', 'Pre-emergent'] },
-                { 
-                    name: 'product', 
-                    label: 'Product', 
-                    type: 'product-select-conditional', 
-                    productType: 'herbicides', // Default
-                    conditionalField: 'treatmentType',
-                    productMap: {
-                        'Herbicide': 'herbicides',
-                        'Pesticide': 'pesticides',
-                        'Fungicide': 'pesticides',
-                        'Pre-emergent': 'herbicides'
-                    },
-                    placeholder: 'Select product...'
-                },
-                { 
-                    name: 'spreader', 
-                    label: 'Spreader Used (if granular)', 
-                    type: 'product-select', 
-                    productType: 'spreaders',
-                    placeholder: 'Select spreader or leave blank for liquid spray'
-                },
-                { name: 'spreaderSetting', label: 'Spreader Setting (if used)', type: 'text', placeholder: 'e.g., Setting 3 or D' },
-                { name: 'targetProblem', label: 'Target Problem', type: 'text', placeholder: 'e.g., Dandelions, grubs' },
-                { name: 'applicationRate', label: 'Application Rate', type: 'text', placeholder: 'Per label instructions' },
-                { name: 'areas', label: 'Areas Treated', type: 'text', placeholder: 'e.g., Backyard' }
             ]
         },
         maintenance: {
