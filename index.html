@@ -157,7 +157,11 @@
     // Treatment Products Database - Organized by Category
     const TREATMENT_PRODUCTS = {
         fertilizer: [
-            // Keep existing fertilizer products - will be populated from fertilizers array above
+            { id: 'f1', name: 'Scotts Turf Builder Lawn Food', brand: 'Scotts', activeIngredient: '32-0-4', rate: 'Per label', timing: 'Spring/Fall', notes: 'Slow-Release Nitrogen' },
+            { id: 'f2', name: 'Milorganite Organic Fertilizer', brand: 'Milorganite', activeIngredient: '6-4-0', rate: 'Per label', timing: 'Any season', notes: 'Organic, Slow-Release' },
+            { id: 'f3', name: 'Jonathan Green Green-Up', brand: 'Jonathan Green', activeIngredient: '29-0-3', rate: 'Per label', timing: 'Spring/Fall', notes: 'Professional Grade' },
+            { id: 'f4', name: 'Pennington UltraGreen', brand: 'Pennington', activeIngredient: '30-0-4', rate: 'Per label', timing: 'Growing season', notes: 'Nitrogen Stabilized' },
+            { id: 'f5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', timing: '', notes: 'Custom product' }
         ],
         preemergent: [
             { id: 'pre1', name: 'Prodiamine 65 WDG (Yard Mastery)', brand: 'Yard Mastery', activeIngredient: 'Prodiamine 65%', rate: '0.5 oz per 1,000 sq ft', timing: 'When soil hits 50-55°F', notes: 'Premium WDG formulation' },
@@ -744,6 +748,11 @@
         }, [activities]);
 
         const addActivity = (activityData) => {
+            console.log('=== SAVING ACTIVITY ===');
+            console.log('Activity Type:', selectedActivityType);
+            console.log('Activity Data:', activityData);
+            console.log('Data Object:', activityData.data);
+            
             const newActivity = {
                 id: Date.now(),
                 type: selectedActivityType,
@@ -754,11 +763,17 @@
                 hoursLogged: activityData.hoursLogged || null,
                 createdAt: new Date().toISOString()
             };
+            
+            console.log('New Activity Object:', newActivity);
+            
             const isFirstActivity = activities.length === 0;
             
             const updatedActivities = [...activities, newActivity];
             setActivities(updatedActivities);
             safeLocalStorage.setItem('lawnCareActivities', JSON.stringify(updatedActivities));
+            
+            console.log('Saved to localStorage');
+            console.log('=== SAVE COMPLETE ===');
             
             // Update equipment hours if equipment was used
             if (activityData.equipmentUsed && activityData.hoursLogged) {
@@ -3205,7 +3220,13 @@
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                                                         {Object.entries(activity.data).map(([key, value]) => {
                                                             const field = activityType.fields.find(f => f.name === key);
-                                                            if (!value || !field) return null;
+                                                            
+                                                            console.log('Displaying field:', key, 'Value:', value, 'Field def:', field);
+                                                            
+                                                            if (!value || !field) {
+                                                                console.log('Skipping field:', key, 'Has value?', !!value, 'Has field def?', !!field);
+                                                                return null;
+                                                            }
                                                             return (
                                                                 <div key={key} className="text-sm">
                                                                     <span className="font-semibold">{field.label}:</span>{' '}
