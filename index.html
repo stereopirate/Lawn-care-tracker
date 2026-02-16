@@ -768,19 +768,65 @@
                                         </div>
                                     ) : field.type === 'treatment-product' ? (
                                         localFormData.data.category ? (
-                                            <select
-                                                onChange={(e) => setLocalFormData({
-                                                    ...localFormData,
-                                                    data: {...localFormData.data, product: e.target.value}
-                                                })}
-                                                className="w-full px-4 py-2 border rounded-lg"
-                                                required={field.required}
-                                            >
-                                                <option value="">Select...</option>
-                                                {(TREATMENT_PRODUCTS[localFormData.data.category] || []).map(p => (
-                                                    <option key={p.id} value={p.name}>{p.name}</option>
-                                                ))}
-                                            </select>
+                                            <div>
+                                                <select
+                                                    onChange={(e) => setLocalFormData({
+                                                        ...localFormData,
+                                                        data: {...localFormData.data, product: e.target.value}
+                                                    })}
+                                                    className="w-full px-4 py-2 border rounded-lg"
+                                                    required={field.required}
+                                                >
+                                                    <option value="">Select...</option>
+                                                    {(TREATMENT_PRODUCTS[localFormData.data.category] || []).map(p => (
+                                                        <option key={p.id} value={p.name}>{p.name}</option>
+                                                    ))}
+                                                </select>
+                                                {(() => {
+                                                    const selectedProduct = (TREATMENT_PRODUCTS[localFormData.data.category] || []).find(p => p.name === localFormData.data.product);
+                                                    if (!selectedProduct || selectedProduct.id.includes('5')) return null;
+                                                    return (
+                                                        <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                            <div className="text-xs font-bold text-blue-800 uppercase mb-2">Product Details</div>
+                                                            <div className="grid grid-cols-2 gap-2">
+                                                                {selectedProduct.activeIngredient && (
+                                                                    <div>
+                                                                        <div className="text-xs text-gray-500">Active Ingredient</div>
+                                                                        <div className="text-xs font-semibold text-gray-800">{selectedProduct.activeIngredient}</div>
+                                                                    </div>
+                                                                )}
+                                                                {selectedProduct.rate && (
+                                                                    <div>
+                                                                        <div className="text-xs text-gray-500">Application Rate</div>
+                                                                        <div className="text-xs font-semibold text-gray-800">{selectedProduct.rate}</div>
+                                                                    </div>
+                                                                )}
+                                                                {selectedProduct.timing && (
+                                                                    <div>
+                                                                        <div className="text-xs text-gray-500">Timing</div>
+                                                                        <div className="text-xs font-semibold text-gray-800">{selectedProduct.timing}</div>
+                                                                    </div>
+                                                                )}
+                                                                {selectedProduct.target && (
+                                                                    <div>
+                                                                        <div className="text-xs text-gray-500">Target</div>
+                                                                        <div className="text-xs font-semibold text-gray-800">{selectedProduct.target}</div>
+                                                                    </div>
+                                                                )}
+                                                                {selectedProduct.effect && (
+                                                                    <div>
+                                                                        <div className="text-xs text-gray-500">Effect</div>
+                                                                        <div className="text-xs font-semibold text-gray-800">{selectedProduct.effect}</div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            {selectedProduct.notes && (
+                                                                <div className="mt-2 text-xs text-gray-600 italic">{selectedProduct.notes}</div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </div>
                                         ) : (
                                             <div className="p-4 bg-yellow-50 border rounded">Select category first</div>
                                         )
@@ -1081,26 +1127,102 @@
                                 <p className="text-gray-500 text-center py-6">No equipment yet — add your first piece above!</p>
                             ) : (
                                 <div className="space-y-3">
-                                    {equipment.map(item => (
-                                        <div key={item.id} className="bg-gray-50 p-4 rounded-lg">
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex gap-3">
-                                                    <div className="text-3xl">{typeIcons[item.type] || '🔧'}</div>
-                                                    <div>
-                                                        <div className="font-bold">{item.name}</div>
-                                                        {item.brand && item.brand !== 'Custom' && (
-                                                            <div className="text-sm text-[#367C2B] font-semibold">{item.brand}</div>
-                                                        )}
-                                                        <div className="text-xs text-gray-500 capitalize">{typeLabels[item.type] || item.type}</div>
-                                                        {item.details && <div className="text-xs text-gray-500 mt-1">{item.details}</div>}
+                                    {equipment.map(item => {
+                                        const maintenanceLogs = activities.filter(a => a.type === 'maintenance' && a.data && a.data.equipmentType && item.name.toLowerCase().includes(a.data.equipmentType.toLowerCase()));
+                                        const mowingHours = item.type === 'mowers'
+                                            ? activities.filter(a => a.type === 'mowing' && a.data && a.data.mowerUsed === item.name).reduce((sum, a) => sum + (parseFloat(a.data.duration) || 45) / 60, 0)
+                                            : 0;
+                                        const schedule = item.maintenanceSchedule;
+
+                                        return (
+                                            <div key={item.id} className="bg-gray-50 p-4 rounded-lg">
+                                                <div className="flex justify-between items-start">
+                                                    <div className="flex gap-3">
+                                                        <div className="text-3xl">{typeIcons[item.type] || '🔧'}</div>
+                                                        <div>
+                                                            <div className="font-bold">{item.name}</div>
+                                                            {item.brand && item.brand !== 'Custom' && (
+                                                                <div className="text-sm text-[#367C2B] font-semibold">{item.brand}</div>
+                                                            )}
+                                                            <div className="text-xs text-gray-500 capitalize">{typeLabels[item.type] || item.type}</div>
+                                                            {item.details && <div className="text-xs text-gray-500 mt-1">{item.details}</div>}
+                                                        </div>
                                                     </div>
+                                                    <button onClick={() => deleteEquipment(item.id)} className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm">
+                                                        Remove
+                                                    </button>
                                                 </div>
-                                                <button onClick={() => deleteEquipment(item.id)} className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm">
-                                                    Remove
-                                                </button>
+
+                                                {/* Maintenance schedule display */}
+                                                {schedule && (
+                                                    <div className="mt-3 pt-3 border-t border-gray-200">
+                                                        <div className="text-xs font-bold text-[#367C2B] uppercase mb-2">Maintenance Schedule</div>
+                                                        {schedule.note ? (
+                                                            <div className="text-xs text-gray-500 italic">{schedule.note}</div>
+                                                        ) : (
+                                                            <div className="space-y-1">
+                                                                {item.type === 'mowers' && (
+                                                                    <div className="text-xs text-gray-600 mb-2">
+                                                                        Estimated hours logged: <span className="font-bold text-[#367C2B]">{Math.round(mowingHours * 10) / 10} hrs</span>
+                                                                    </div>
+                                                                )}
+                                                                <div className="grid grid-cols-2 gap-2">
+                                                                    {schedule.oilChange && (
+                                                                        <div className={`text-xs p-2 rounded ${mowingHours >= schedule.oilChange ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}>
+                                                                            <span className="font-semibold">Oil Change:</span> Every {schedule.oilChange} hrs
+                                                                            {mowingHours >= schedule.oilChange && <div className="text-red-600 font-bold mt-0.5">Due now</div>}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.airFilter && (
+                                                                        <div className={`text-xs p-2 rounded ${typeof schedule.airFilter === 'number' && mowingHours >= schedule.airFilter ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}>
+                                                                            <span className="font-semibold">Air Filter:</span> {typeof schedule.airFilter === 'number' ? `Every ${schedule.airFilter} hrs` : schedule.airFilter}
+                                                                            {typeof schedule.airFilter === 'number' && mowingHours >= schedule.airFilter && <div className="text-red-600 font-bold mt-0.5">Due now</div>}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.sparkPlug && (
+                                                                        <div className={`text-xs p-2 rounded ${typeof schedule.sparkPlug === 'number' && mowingHours >= schedule.sparkPlug ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}>
+                                                                            <span className="font-semibold">Spark Plug:</span> {typeof schedule.sparkPlug === 'number' ? `Every ${schedule.sparkPlug} hrs` : schedule.sparkPlug}
+                                                                            {typeof schedule.sparkPlug === 'number' && mowingHours >= schedule.sparkPlug && <div className="text-red-600 font-bold mt-0.5">Due now</div>}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.bladeService && (
+                                                                        <div className="text-xs p-2 rounded bg-gray-100">
+                                                                            <span className="font-semibold">Blade Service:</span> {schedule.bladeService}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.cleaning && (
+                                                                        <div className="text-xs p-2 rounded bg-gray-100">
+                                                                            <span className="font-semibold">Cleaning:</span> {schedule.cleaning}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.lubrication && (
+                                                                        <div className="text-xs p-2 rounded bg-gray-100">
+                                                                            <span className="font-semibold">Lubrication:</span> {schedule.lubrication}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.tires && (
+                                                                        <div className="text-xs p-2 rounded bg-gray-100">
+                                                                            <span className="font-semibold">Tires:</span> {schedule.tires}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.battery && (
+                                                                        <div className="text-xs p-2 rounded bg-gray-100">
+                                                                            <span className="font-semibold">Battery:</span> {schedule.battery}
+                                                                        </div>
+                                                                    )}
+                                                                    {schedule.gearbox && (
+                                                                        <div className="text-xs p-2 rounded bg-gray-100">
+                                                                            <span className="font-semibold">Gearbox:</span> {schedule.gearbox}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
@@ -1290,6 +1412,12 @@
                                         <div className="text-xs text-gray-500 mb-1">Peak Growth</div>
                                         <div className="text-sm font-bold text-gray-800">{grassInfo.peakGrowth}</div>
                                     </div>
+                                    {grassInfo.idealSoilTemp && (
+                                        <div className="bg-gray-50 rounded-lg p-3 text-center col-span-2">
+                                            <div className="text-xs text-gray-500 mb-1">Ideal Soil Temp</div>
+                                            <div className="text-sm font-bold text-gray-800">{grassInfo.idealSoilTemp}</div>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                                     <div className="text-xs text-blue-600 font-semibold mb-1">Dormancy</div>
@@ -1316,6 +1444,96 @@
                                 )}
                             </div>
                         )}
+
+                        {/* Full annual program */}
+                        {(() => {
+                            if (!profileData.specificGrass || !profileData.zone) return null;
+                            const keyMap = {
+                                'tall-fescue': 'tallFescue',
+                                'kentucky-bluegrass': 'kentuckyBluegrass',
+                                'perennial-ryegrass': 'perennialRyegrass',
+                                'bermuda': 'bermuda',
+                                'zoysia': 'zoysia',
+                                'st-augustine': 'stAugustine'
+                            };
+                            const programKey = keyMap[profileData.specificGrass] + '_zone' + profileData.zone;
+                            const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
+                            if (!program || !program.schedule) return null;
+
+                            const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                            const currentMonth = months[new Date().getMonth()];
+                            const [showFullProgram, setShowFullProgram] = React.useState(false);
+
+                            const isCurrentMonth = (monthStr) => {
+                                if (monthStr === currentMonth) return true;
+                                if (monthStr && monthStr.includes('-')) {
+                                    const parts = monthStr.split('-');
+                                    const startIdx = months.indexOf(parts[0]);
+                                    const endIdx = months.indexOf(parts[1]);
+                                    const curIdx = months.indexOf(currentMonth);
+                                    if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
+                                }
+                                return false;
+                            };
+
+                            return (
+                                <div className="bg-white rounded-xl shadow-lg p-4">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h3 className="text-sm font-bold text-[#367C2B] uppercase">Full Year Program</h3>
+                                        <button
+                                            onClick={() => setShowFullProgram(!showFullProgram)}
+                                            className="text-xs font-semibold text-[#367C2B] border border-[#367C2B] rounded-lg px-3 py-1 hover:bg-[#367C2B]/10"
+                                        >
+                                            {showFullProgram ? 'Collapse' : 'View All Months'}
+                                        </button>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mb-3">{program.description}</div>
+                                    {program.warning && (
+                                        <div className="mb-3 p-2 bg-yellow-50 border border-yellow-300 rounded-lg text-xs text-yellow-800">{program.warning}</div>
+                                    )}
+                                    {showFullProgram && (
+                                        <div className="space-y-3">
+                                            {program.schedule.map((entry, i) => (
+                                                <div key={i} className={`p-3 rounded-lg border-2 ${
+                                                    isCurrentMonth(entry.month)
+                                                        ? 'border-[#367C2B] bg-[#e8f5e9]'
+                                                        : 'border-gray-100 bg-gray-50'
+                                                }`}>
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className="text-sm font-bold text-gray-800">
+                                                            {isCurrentMonth(entry.month) && <span className="text-[#367C2B] mr-1">▶</span>}
+                                                            {entry.month}
+                                                        </div>
+                                                        {entry.importance && (
+                                                            <span className="text-xs font-bold text-white bg-orange-500 px-2 py-0.5 rounded-full">{entry.importance}</span>
+                                                        )}
+                                                    </div>
+                                                    {entry.soilTemp && (
+                                                        <div className="text-xs text-gray-500 mb-1">Soil temp: {entry.soilTemp}</div>
+                                                    )}
+                                                    <ul className="space-y-1">
+                                                        {entry.tasks.map((task, j) => (
+                                                            <li key={j} className="text-xs text-gray-700 flex items-start gap-1">
+                                                                <span className="text-[#367C2B] mt-0.5">·</span>
+                                                                <span>{task}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ))}
+                                            {program.sources && program.sources.length > 0 && (
+                                                <div className="text-xs text-gray-400 text-center mt-2">
+                                                    Sources: {program.sources.map(s => s.institution).join(', ')}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    {!showFullProgram && (
+                                        <div className="text-xs text-gray-400 text-center">Tap "View All Months" to see the complete {program.schedule.length}-month program</div>
+                                    )}
+                                </div>
+                            );
+                        })()}
 
                         {/* Key tips */}
                         {grassInfo && grassInfo.keyTips && (
@@ -1473,8 +1691,41 @@
 
                         <div className="bg-white rounded-xl p-4 shadow">
                             <h3 className="text-lg font-bold mb-4">ℹ️ About</h3>
-                            <p className="text-sm text-gray-600">Lawn Care Tracker v5.0</p>
+                            <p className="text-sm text-gray-600 font-semibold">Lawn Care Tracker v6.0</p>
                             <p className="text-xs text-gray-500 mt-2">All data stored locally</p>
+
+                            <div className="mt-4 pt-4 border-t border-gray-200">
+                                <h4 className="text-sm font-bold text-gray-700 mb-3">Release Notes</h4>
+                                <div className="space-y-3">
+                                    <div className="border-l-3 border-[#367C2B] pl-3" style={{borderLeft: '3px solid #367C2B'}}>
+                                        <div className="text-sm font-bold text-[#367C2B]">v6.0 <span className="text-xs font-normal text-gray-400">Feb 2026</span></div>
+                                        <ul className="text-xs text-gray-600 mt-1 space-y-0.5">
+                                            <li>+ Soil temperature display in My Yard quick reference</li>
+                                            <li>+ Treatment product detail cards (rate, timing, target, active ingredient)</li>
+                                            <li>+ Full annual program calendar in My Yard with month-by-month tasks</li>
+                                            <li>+ Equipment maintenance tracker with hour-based service alerts</li>
+                                            <li>+ Version release notes in Settings</li>
+                                        </ul>
+                                    </div>
+                                    <div className="border-l-3 border-gray-300 pl-3" style={{borderLeft: '3px solid #d1d5db'}}>
+                                        <div className="text-sm font-bold text-gray-600">v5.0 <span className="text-xs font-normal text-gray-400">Feb 2026</span></div>
+                                        <ul className="text-xs text-gray-600 mt-1 space-y-0.5">
+                                            <li>+ My Yard overview with grass type info and zone compatibility</li>
+                                            <li>+ Current month tasks from research-backed programs</li>
+                                            <li>+ Mower type filtering and expanded model database</li>
+                                            <li>+ Dashboard view toggle (This Year / Season / All Time)</li>
+                                        </ul>
+                                    </div>
+                                    <div className="border-l-3 border-gray-300 pl-3" style={{borderLeft: '3px solid #d1d5db'}}>
+                                        <div className="text-sm font-bold text-gray-600">v4.0 <span className="text-xs font-normal text-gray-400">Feb 2026</span></div>
+                                        <ul className="text-xs text-gray-600 mt-1 space-y-0.5">
+                                            <li>+ Initial release with activity tracking, My Garage, and weather</li>
+                                            <li>+ 76+ mower models, treatment products, and research sources</li>
+                                            <li>+ Lawn profile setup with 6 grass types across zones 4-9</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
