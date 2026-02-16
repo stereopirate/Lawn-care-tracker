@@ -993,8 +993,15 @@
 
             const Dashboard = () => {
                 const [expandedRecentId, setExpandedRecentId] = useState(null);
+                const now = new Date();
                 const filtered = statsView === 'year'
-                    ? activities.filter(a => new Date(a.date).getFullYear() === new Date().getFullYear())
+                    ? activities.filter(a => new Date(a.date).getFullYear() === now.getFullYear())
+                    : statsView === 'season'
+                    ? activities.filter(a => {
+                        const d = new Date(a.date);
+                        const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+                        return diffDays <= 90;
+                    })
                     : activities;
 
                 const stats = {
@@ -1006,7 +1013,27 @@
                 return (
                     <div>
                         <h2 className="text-2xl font-bold mb-4">📊 Dashboard</h2>
-                        
+
+                        <div className="flex gap-2 bg-gray-100 p-1 rounded-lg mb-4">
+                            {[
+                                { key: 'year', label: 'This Year' },
+                                { key: 'season', label: 'Season' },
+                                { key: 'all', label: 'All Time' }
+                            ].map(({ key, label }) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setStatsView(key)}
+                                    className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold transition ${
+                                        statsView === key
+                                            ? 'bg-[#367C2B] text-white shadow'
+                                            : 'text-gray-600 hover:text-gray-900'
+                                    }`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+
                         <div className="grid grid-cols-2 gap-3 mb-6">
                             <div className="bg-white rounded-xl p-4 shadow">
                                 <div className="text-3xl font-bold text-[#367C2B]">{stats.total}</div>
