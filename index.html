@@ -22,25 +22,33 @@
         .header {
             background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
             color: white;
-            padding: 1rem;
+            padding: 1.5rem 1rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .header h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.25rem;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .header .tagline {
-            font-size: 0.875rem;
+            font-size: 0.95rem;
             opacity: 0.9;
+            margin-bottom: 1rem;
         }
 
         .nav {
-            margin-top: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .nav a {
@@ -54,23 +62,121 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 1rem;
         }
 
-        .card {
+        .hero {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .hero h2 {
+            color: #2d5016;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #4a7c2c;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #3a6222;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
             background: white;
             border-radius: 8px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 4px solid #4a7c2c;
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #2d5016;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .card h2 {
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4a7c2c;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .quick-start {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .quick-start h2 {
             color: #2d5016;
-            margin-bottom: 1rem;
-            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
 
         .form-group {
@@ -84,7 +190,7 @@
             color: #555;
         }
 
-        select, input[type="text"], input[type="number"], textarea {
+        select {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid #ddd;
@@ -93,7 +199,7 @@
             font-family: inherit;
         }
 
-        select:focus, input:focus, textarea:focus {
+        select:focus {
             outline: none;
             border-color: #4a7c2c;
         }
@@ -115,17 +221,26 @@
             background: #3a6222;
         }
 
-        .btn-secondary {
-            background: #666;
-            margin-top: 0.5rem;
-        }
-
-        .program-display {
+        .program-section {
             display: none;
         }
 
-        .program-display.active {
+        .program-section.active {
             display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #2d5016;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
         }
 
         .alert {
@@ -134,11 +249,6 @@
             padding: 1rem;
             margin-bottom: 1rem;
             border-radius: 4px;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            border-left-color: #0c5460;
         }
 
         .month-section {
@@ -175,159 +285,6 @@
             cursor: pointer;
         }
 
-        .equipment-item, .activity-item {
-            background: #f8f9fa;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-        }
-
-        .toggle-section {
-            background: #e8f5e9;
-            border: 2px solid #4a7c2c;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-
-        .toggle-section h4 {
-            color: #2d5016;
-            margin-bottom: 0.75rem;
-        }
-
-        .toggle-options {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            min-width: 120px;
-            padding: 0.75rem;
-            border: 2px solid #4a7c2c;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .toggle-btn.active {
-            background: #4a7c2c;
-            color: white;
-        }
-
-        .strategy-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 0.75rem;
-        }
-
-        .strategy-card {
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            padding: 1rem;
-            cursor: pointer;
-            background: white;
-        }
-
-        .strategy-card.active {
-            border-color: #4a7c2c;
-            background: #e8f5e9;
-        }
-
-        .strategy-card h5 {
-            color: #2d5016;
-            margin-bottom: 0.5rem;
-        }
-
-        .info-link {
-            color: #4a7c2c;
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 8px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            margin: 2rem auto;
-            position: relative;
-        }
-
-        .modal-header {
-            background: #2d5016;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px 8px 0 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .source-tag {
             display: inline-block;
             background: #e8f5e9;
@@ -338,183 +295,157 @@
             color: #2d5016;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
             .header h1 {
-                font-size: 1.25rem;
+                font-size: 1.5rem;
             }
-            
-            .toggle-btn {
-                min-width: 100%;
+
+            .hero h2 {
+                font-size: 1.5rem;
             }
-        }
 
-        .variety-item {
-            background: #f8f9fa;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            border-left: 3px solid #4a7c2c;
-            border-radius: 4px;
-        }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
 
-        .variety-item strong {
-            color: #2d5016;
-        }
-
-        .last-updated {
-            font-size: 0.875rem;
-            color: #666;
-            font-style: italic;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🌱 Lawn Care Tracker</h1>
-        <p class="tagline">Research-Backed Lawn Care Programs</p>
-        <div class="nav">
-            <a href="about.html">About</a>
+        <div class="header-content">
+            <h1>🌱 Lawn Care Tracker</h1>
+            <p class="tagline">Research-Backed Lawn Care Programs from University Extensions</p>
+            <div class="nav">
+                <a href="#home" onclick="showHome()">Home</a>
+                <a href="#programs" onclick="showPrograms()">My Program</a>
+                <a href="about.html">About</a>
+            </div>
         </div>
     </div>
 
     <div class="container">
-        <!-- Selection Card -->
-        <div class="card">
-            <h2>Select Your Lawn</h2>
-            <div class="form-group">
-                <label for="grassType">Grass Type</label>
-                <select id="grassType">
-                    <option value="">Choose your grass type...</option>
-                    <option value="tallFescue">Tall Fescue</option>
-                    <option value="kentuckyBluegrass">Kentucky Bluegrass</option>
-                    <option value="perennialRyegrass">Perennial Ryegrass</option>
-                    <option value="bermudagrass">Bermudagrass</option>
-                    <option value="stAugustine">St. Augustine</option>
-                    <option value="zoysiagrass">Zoysiagrass</option>
-                    <option value="centipedegrass">Centipedegrass</option>
-                </select>
+        <!-- Home Dashboard -->
+        <div id="homeSection" class="home-section">
+            <div class="hero">
+                <h2>Science-Backed Lawn Care for DIY Homeowners</h2>
+                <p>Get personalized maintenance programs based on research from 19+ agricultural universities. Free forever, no ads, no product bias.</p>
+                <a href="#programs" class="cta-button" onclick="showPrograms()">Get Started →</a>
             </div>
 
-            <div class="form-group">
-                <label for="zone">Climate Zone</label>
-                <select id="zone">
-                    <option value="">Choose your zone...</option>
-                    <option value="4">Zone 4</option>
-                    <option value="5">Zone 5</option>
-                    <option value="6">Zone 6</option>
-                    <option value="7">Zone 7</option>
-                    <option value="8">Zone 8</option>
-                    <option value="9">Zone 9</option>
-                </select>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Grass Types</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Climate Zones</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Programs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">19+</div>
+                    <div class="stat-label">Universities</div>
+                </div>
             </div>
 
-            <button class="btn" onclick="loadProgram()">Load My Program</button>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📅</div>
+                    <h3>Monthly Programs</h3>
+                    <p>Complete maintenance schedules tailored to your grass type and climate zone</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🌡️</div>
+                    <h3>Transition Zone Expertise</h3>
+                    <p>Specialized guidance for challenging climates where standard advice fails</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🌱</div>
+                    <h3>Variety Selection</h3>
+                    <p>Heat-tolerant, cold-hardy, and drought-resistant cultivar recommendations</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🐛</div>
+                    <h3>Problem Solving</h3>
+                    <p>Weed identification, disease diagnosis, and troubleshooting guides</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">💧</div>
+                    <h3>Water Conservation</h3>
+                    <p>Drought management strategies and irrigation optimization</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">💰</div>
+                    <h3>Cost Transparency</h3>
+                    <p>Real budget estimates for DIY vs professional lawn care</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Program Display -->
-        <div id="programDisplay" class="program-display">
-            <!-- Program content will be inserted here -->
-        </div>
+        <!-- Programs Section -->
+        <div id="programsSection" class="program-section">
+            <div class="quick-start">
+                <h2>Select Your Lawn</h2>
+                <div class="form-group">
+                    <label for="grassType">Grass Type</label>
+                    <select id="grassType">
+                        <option value="">Choose your grass type...</option>
+                        <option value="tallFescue">Tall Fescue</option>
+                        <option value="kentuckyBluegrass">Kentucky Bluegrass</option>
+                        <option value="perennialRyegrass">Perennial Ryegrass</option>
+                        <option value="bermudagrass">Bermudagrass</option>
+                        <option value="stAugustine">St. Augustine</option>
+                        <option value="zoysiagrass">Zoysiagrass</option>
+                        <option value="centipedegrass">Centipedegrass</option>
+                    </select>
+                </div>
 
-        <!-- Equipment Tracker -->
-        <div class="card">
-            <h2>Equipment Tracker</h2>
-            <div class="form-group">
-                <label for="equipmentName">Equipment Name</label>
-                <input type="text" id="equipmentName" placeholder="e.g., Lawn Mower">
-            </div>
-            <div class="form-group">
-                <label for="equipmentPurchase">Purchase Date</label>
-                <input type="text" id="equipmentPurchase" placeholder="e.g., Spring 2023">
-            </div>
-            <button class="btn" onclick="addEquipment()">Add Equipment</button>
-            <div id="equipmentList" style="margin-top: 1rem;"></div>
-        </div>
+                <div class="form-group">
+                    <label for="zone">Climate Zone</label>
+                    <select id="zone">
+                        <option value="">Choose your zone...</option>
+                        <option value="4">Zone 4</option>
+                        <option value="5">Zone 5</option>
+                        <option value="6">Zone 6</option>
+                        <option value="7">Zone 7</option>
+                        <option value="8">Zone 8</option>
+                        <option value="9">Zone 9</option>
+                    </select>
+                </div>
 
-        <!-- Activity Log -->
-        <div class="card">
-            <h2>Activity Log</h2>
-            <div class="form-group">
-                <label for="activityDate">Date</label>
-                <input type="text" id="activityDate" placeholder="e.g., May 15, 2024">
+                <button class="btn" onclick="loadProgram()">Load My Program</button>
             </div>
-            <div class="form-group">
-                <label for="activityDescription">Activity</label>
-                <textarea id="activityDescription" rows="3" placeholder="What did you do?"></textarea>
-            </div>
-            <button class="btn" onclick="addActivity()">Log Activity</button>
-            <div id="activityList" style="margin-top: 1rem;"></div>
-        </div>
-    </div>
 
-    <!-- Modals -->
-    <div id="varietyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Recommended Varieties</h3>
-                <button class="modal-close" onclick="closeModal('varietyModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="varietyModalBody"></div>
-        </div>
-    </div>
-
-    <div id="overseedModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Overseeding Guide</h3>
-                <button class="modal-close" onclick="closeModal('overseedModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="overseedModalBody"></div>
-        </div>
-    </div>
-
-    <div id="shadeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Shade Management</h3>
-                <button class="modal-close" onclick="closeModal('shadeModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="shadeModalBody"></div>
-        </div>
-    </div>
-
-    <div id="winterModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Winterization Guide</h3>
-                <button class="modal-close" onclick="closeModal('winterModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="winterModalBody"></div>
-        </div>
-    </div>
-
-    <div id="preemergentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Pre-Emergent Timing</h3>
-                <button class="modal-close" onclick="closeModal('preemergentModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="preemergentModalBody"></div>
-        </div>
-    </div>
-
-    <div id="phModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>pH Management</h3>
-                <button class="modal-close" onclick="closeModal('phModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="phModalBody"></div>
+            <div id="programDisplay"></div>
         </div>
     </div>
 
     <script src="grass-programs.js"></script>
     <script>
-        // State management
-        let currentProgram = null;
-        let toggleStates = {};
+        // Show/hide sections
+        function showHome() {
+            document.getElementById('homeSection').style.display = 'block';
+            document.getElementById('programsSection').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showPrograms() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('programsSection').classList.add('active');
+            window.scrollTo(0, 0);
+        }
 
         // Load saved state
         function loadState() {
@@ -523,21 +454,18 @@
                 const state = JSON.parse(saved);
                 document.getElementById('grassType').value = state.grassType || '';
                 document.getElementById('zone').value = state.zone || '';
-                toggleStates = state.toggleStates || {};
                 if (state.grassType && state.zone) {
+                    showPrograms();
                     loadProgram();
                 }
             }
-            loadEquipment();
-            loadActivities();
         }
 
         // Save state
         function saveState() {
             const state = {
                 grassType: document.getElementById('grassType').value,
-                zone: document.getElementById('zone').value,
-                toggleStates: toggleStates
+                zone: document.getElementById('zone').value
             };
             localStorage.setItem('lawnCareState', JSON.stringify(state));
         }
@@ -553,45 +481,38 @@
             }
 
             const programKey = `${grassType}_zone${zone}`;
-            currentProgram = grassPrograms[programKey];
+            const program = grassPrograms[programKey];
 
-            if (!currentProgram) {
-                alert('No program available for this combination');
+            if (!program) {
+                alert('No program available for this combination. This grass may not be suitable for your zone.');
                 return;
             }
 
-            displayProgram();
+            displayProgram(program);
             saveState();
         }
 
         // Display program
-        function displayProgram() {
-            if (!currentProgram) return;
-
+        function displayProgram(program) {
             const display = document.getElementById('programDisplay');
             let html = '<div class="card">';
             
-            html += `<h2>${currentProgram.grassType} - Zone ${currentProgram.zone}</h2>`;
-            html += `<p>${currentProgram.description}</p>`;
+            html += `<h2>${program.grassType} - Zone ${program.zone}</h2>`;
+            html += `<p>${program.description}</p>`;
 
-            // Warning if exists
-            if (currentProgram.warning) {
-                html += `<div class="alert">${currentProgram.warning}</div>`;
+            if (program.warning) {
+                html += `<div class="alert">${program.warning}</div>`;
             }
 
-            // Variety recommendations button
-            html += '<button class="btn" onclick="showVarieties()">View Recommended Varieties</button>';
-
-            // Smart toggles
-            html += renderToggles();
-
-            // Monthly schedule
             html += '<h3 style="margin-top: 2rem; color: #2d5016;">Monthly Schedule</h3>';
             
-            if (currentProgram.schedule) {
-                currentProgram.schedule.forEach(month => {
+            if (program.schedule && program.schedule.length > 0) {
+                program.schedule.forEach(month => {
                     html += '<div class="month-section">';
                     html += `<h3>${month.month}</h3>`;
+                    if (month.importance) {
+                        html += `<p style="color: #d32f2f; font-weight: 600;">${month.importance}</p>`;
+                    }
                     if (month.tasks && month.tasks.length > 0) {
                         html += '<ul class="task-list">';
                         month.tasks.forEach((task, index) => {
@@ -608,11 +529,10 @@
                 });
             }
 
-            // Sources
-            if (currentProgram.sources && currentProgram.sources.length > 0) {
-                html += '<div class="last-updated">';
+            if (program.sources && program.sources.length > 0) {
+                html += '<div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">';
                 html += '<strong>Research Sources:</strong><br>';
-                currentProgram.sources.forEach(source => {
+                program.sources.forEach(source => {
                     html += `<span class="source-tag">${source.institution}</span>`;
                 });
                 html += '</div>';
@@ -620,125 +540,12 @@
 
             html += '</div>';
             display.innerHTML = html;
-            display.classList.add('active');
-        }
-
-        // Render toggles
-        function renderToggles() {
-            let html = '';
-            
-            // Implement toggle logic based on grass/zone combination
-            const grassType = document.getElementById('grassType').value;
-            const zone = document.getElementById('zone').value;
-
-            // Example toggle for Bermuda Zone 7 overseed
-            if (grassType === 'bermudagrass' && zone === '7') {
-                html += '<div class="toggle-section">';
-                html += '<h4>Do you overseed with ryegrass for winter color?</h4>';
-                html += '<div class="toggle-options">';
-                html += '<button class="toggle-btn" onclick="setToggle(\'overseed\', \'yes\')">Yes</button>';
-                html += '<button class="toggle-btn" onclick="setToggle(\'overseed\', \'no\')">No</button>';
-                html += '</div></div>';
-            }
-
-            return html;
-        }
-
-        // Set toggle
-        function setToggle(key, value) {
-            toggleStates[key] = value;
-            saveState();
-            loadProgram();
         }
 
         // Save task state
         function saveTaskState(taskId) {
             const checkbox = document.getElementById(taskId);
             localStorage.setItem(taskId, checkbox.checked);
-        }
-
-        // Show varieties modal
-        function showVarieties() {
-            const grassType = document.getElementById('grassType').value;
-            const zone = document.getElementById('zone').value;
-            
-            let html = '<p>Variety recommendations coming soon for your grass type and zone.</p>';
-            
-            document.getElementById('varietyModalBody').innerHTML = html;
-            document.getElementById('varietyModal').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Equipment management
-        function addEquipment() {
-            const name = document.getElementById('equipmentName').value;
-            const purchase = document.getElementById('equipmentPurchase').value;
-            
-            if (!name) return;
-            
-            const equipment = JSON.parse(localStorage.getItem('equipment') || '[]');
-            equipment.push({ name, purchase, id: Date.now() });
-            localStorage.setItem('equipment', JSON.stringify(equipment));
-            
-            document.getElementById('equipmentName').value = '';
-            document.getElementById('equipmentPurchase').value = '';
-            loadEquipment();
-        }
-
-        function loadEquipment() {
-            const equipment = JSON.parse(localStorage.getItem('equipment') || '[]');
-            const list = document.getElementById('equipmentList');
-            
-            list.innerHTML = equipment.map(item => `
-                <div class="equipment-item">
-                    <div><strong>${item.name}</strong><br><small>${item.purchase || 'No date'}</small></div>
-                    <button class="delete-btn" onclick="deleteEquipment(${item.id})">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function deleteEquipment(id) {
-            const equipment = JSON.parse(localStorage.getItem('equipment') || '[]');
-            localStorage.setItem('equipment', JSON.stringify(equipment.filter(item => item.id !== id)));
-            loadEquipment();
-        }
-
-        // Activity management
-        function addActivity() {
-            const date = document.getElementById('activityDate').value;
-            const description = document.getElementById('activityDescription').value;
-            
-            if (!date || !description) return;
-            
-            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
-            activities.unshift({ date, description, id: Date.now() });
-            localStorage.setItem('activities', JSON.stringify(activities));
-            
-            document.getElementById('activityDate').value = '';
-            document.getElementById('activityDescription').value = '';
-            loadActivities();
-        }
-
-        function loadActivities() {
-            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
-            const list = document.getElementById('activityList');
-            
-            list.innerHTML = activities.slice(0, 10).map(item => `
-                <div class="activity-item">
-                    <div><strong>${item.date}</strong><br>${item.description}</div>
-                    <button class="delete-btn" onclick="deleteActivity(${item.id})">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function deleteActivity(id) {
-            const activities = JSON.parse(localStorage.getItem('activities') || '[]');
-            localStorage.setItem('activities', JSON.stringify(activities.filter(item => item.id !== id)));
-            loadActivities();
         }
 
         // Initialize
