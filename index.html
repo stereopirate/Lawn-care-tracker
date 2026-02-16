@@ -317,6 +317,200 @@
             { id: 'umass', name: 'UMass Extension', count: 3, url: 'https://ag.umass.edu/turf', topics: 'Cool-Season Grasses, Sports Turf, Northern Management' }
         ];
 
+        // Grass type reference data - research-backed from university extensions
+        const GRASS_INFO = {
+            'tall-fescue': {
+                name: 'Tall Fescue',
+                season: 'Cool Season',
+                mowHeight: '3 - 4 inches',
+                mowHeightSummer: '3.5 - 4 inches',
+                waterPerWeek: '1 - 1.5 inches',
+                idealSoilPH: '5.8 - 6.5',
+                idealSoilTemp: '50 - 65°F for growth',
+                sunNeeds: 'Full sun to partial shade (4-6 hrs)',
+                fertPerYear: '3 - 4 lbs N per 1,000 sq ft',
+                peakGrowth: 'Spring & Fall',
+                dormancy: 'May slow/brown in summer heat',
+                bestFeature: 'Deep root system, excellent drought tolerance for a cool-season grass',
+                commonIssues: ['Brown patch in humid summers', 'Pythium blight in wet conditions', 'Can thin in heavy shade'],
+                keyTips: [
+                    'September is the #1 most important month - fertilize heavily and overseed',
+                    'Raise mowing height in summer to reduce heat stress',
+                    'Never remove more than 1/3 of the blade at a time',
+                    'Core aerate in fall for best results'
+                ],
+                zoneNotes: {
+                    '4': 'Excellent choice - very cold hardy. Focus on spring/fall feeding.',
+                    '5': 'Ideal zone. Standard cool-season program works perfectly.',
+                    '6': 'Great performance. Watch for brown patch in humid summers.',
+                    '7': 'Transition zone - use heat-tolerant varieties (Firecracker LS, Mustang 4). Summer stress is real.',
+                    '8': 'Challenging - will struggle in summer. Consider warm-season alternatives.',
+                    '9': 'Not recommended - too hot. Switch to bermuda, zoysia, or st. augustine.'
+                },
+                source: 'Penn State Extension, Purdue Extension, NC State Extension'
+            },
+            'kentucky-bluegrass': {
+                name: 'Kentucky Bluegrass',
+                season: 'Cool Season',
+                mowHeight: '2.5 - 3.5 inches',
+                mowHeightSummer: '3 - 3.5 inches',
+                waterPerWeek: '1 - 1.5 inches',
+                idealSoilPH: '6.0 - 7.0',
+                idealSoilTemp: '50 - 65°F for growth',
+                sunNeeds: 'Full sun (6+ hours)',
+                fertPerYear: '3 - 5 lbs N per 1,000 sq ft',
+                peakGrowth: 'Spring & Fall',
+                dormancy: 'Goes dormant in summer heat (turns brown, recovers in fall)',
+                bestFeature: 'Self-repairing via rhizomes - fills in bare spots naturally',
+                commonIssues: ['Dollar spot', 'Summer patch', 'Necrotic ring spot', 'Needs more water than fescue'],
+                keyTips: [
+                    'Needs more sun than fescue - struggles below 6 hours direct sun',
+                    'Will go dormant in summer but bounces back in fall',
+                    'Slow to establish from seed (14-30 days germination)',
+                    'Fall is the best time to seed and fertilize heavily'
+                ],
+                zoneNotes: {
+                    '4': 'Premium choice - thrives in cold climates. The classic northern lawn grass.',
+                    '5': 'Excellent. Standard KBG program works great.',
+                    '6': 'Good but expect summer dormancy in hot years.',
+                    '7': 'Difficult - summer stress is significant. Blend with tall fescue.',
+                    '8': 'Not recommended without irrigation and shade.',
+                    '9': 'Not viable - too hot.'
+                },
+                source: 'Penn State Extension, Michigan State Extension, University of Minnesota'
+            },
+            'perennial-ryegrass': {
+                name: 'Perennial Ryegrass',
+                season: 'Cool Season',
+                mowHeight: '1.5 - 2.5 inches',
+                mowHeightSummer: '2.5 - 3 inches',
+                waterPerWeek: '1 inch',
+                idealSoilPH: '6.0 - 7.0',
+                idealSoilTemp: '50 - 65°F for growth',
+                sunNeeds: 'Full sun to light shade',
+                fertPerYear: '2 - 4 lbs N per 1,000 sq ft',
+                peakGrowth: 'Spring & Fall',
+                dormancy: 'Poor heat tolerance - can die in extreme heat',
+                bestFeature: 'Fastest germination (5-10 days) - great for quick fill and overseeding',
+                commonIssues: ['Gray leaf spot', 'Pythium blight', 'Poor heat/drought tolerance', 'Crown rust'],
+                keyTips: [
+                    'Best used in blends with KBG or fescue rather than as a standalone',
+                    'Excellent for overseeding warm-season lawns in winter',
+                    'Germinates very fast - great for quick repairs',
+                    'Mow frequently to maintain density'
+                ],
+                zoneNotes: {
+                    '4': 'Good in blends. Can winterkill in extreme cold.',
+                    '5': 'Works well in blends with KBG.',
+                    '6': 'Good for blends and overseeding.',
+                    '7': 'Best as winter overseed for warm-season lawns.',
+                    '8': 'Winter overseed only.',
+                    '9': 'Winter overseed only.'
+                },
+                source: 'Rutgers Extension, Penn State Extension'
+            },
+            'bermuda': {
+                name: 'Bermudagrass',
+                season: 'Warm Season',
+                mowHeight: '0.5 - 2 inches',
+                mowHeightSummer: '1 - 2 inches',
+                waterPerWeek: '1 - 1.25 inches',
+                idealSoilPH: '6.0 - 6.5',
+                idealSoilTemp: '65°F+ for active growth',
+                sunNeeds: 'Full sun required (8+ hours ideal)',
+                fertPerYear: '3 - 5 lbs N per 1,000 sq ft',
+                peakGrowth: 'Summer (June - August)',
+                dormancy: 'Goes dormant and turns brown below 50°F',
+                bestFeature: 'Extremely aggressive growth - repairs damage quickly, excellent traffic tolerance',
+                commonIssues: ['Spring dead spot', 'Large patch', 'Invasive into flower beds', 'Winter dormancy (brown)'],
+                keyTips: [
+                    'Do NOT fertilize until fully greened up in spring (soil 65°F+)',
+                    'Mow low and frequently for the best lawn',
+                    'Scalp in early spring to remove brown thatch and speed green-up',
+                    'Apply pre-emergent in late February/early March'
+                ],
+                zoneNotes: {
+                    '4': 'Not viable - too cold.',
+                    '5': 'Not recommended - winter damage is likely.',
+                    '6': 'Marginal - only cold-hardy varieties (Latitude 36, NorthBridge).',
+                    '7': 'Good with cold-hardy varieties. Expect 4-5 months dormancy.',
+                    '8': 'Excellent - this is bermuda country.',
+                    '9': 'Excellent - thrives with proper management.'
+                },
+                source: 'NC State Extension, Texas A&M AgriLife, University of Georgia Extension'
+            },
+            'zoysia': {
+                name: 'Zoysiagrass',
+                season: 'Warm Season',
+                mowHeight: '1 - 2 inches',
+                mowHeightSummer: '1.5 - 2 inches',
+                waterPerWeek: '0.75 - 1 inch',
+                idealSoilPH: '6.0 - 6.5',
+                idealSoilTemp: '65°F+ for active growth',
+                sunNeeds: 'Full sun to moderate shade (4+ hours)',
+                fertPerYear: '2 - 3 lbs N per 1,000 sq ft',
+                peakGrowth: 'Late Spring - Summer',
+                dormancy: 'Goes dormant below 55°F - turns golden brown',
+                bestFeature: 'Dense, carpet-like texture with good shade tolerance for a warm-season grass',
+                commonIssues: ['Large patch disease', 'Slow to establish', 'Heavy thatch buildup', 'Slow spring green-up'],
+                keyTips: [
+                    'Patience required - zoysia is slow to spread and fill in',
+                    'Dethatch or core aerate regularly to prevent thatch buildup',
+                    'Needs less fertilizer than bermuda - don\'t over-feed',
+                    'Last to green up in spring and first to go dormant in fall'
+                ],
+                zoneNotes: {
+                    '4': 'Not recommended - too cold.',
+                    '5': 'Marginal - only the hardiest varieties (Zenith, Meyer).',
+                    '6': 'Good option with cold-hardy varieties. Expect long dormancy.',
+                    '7': 'Excellent transition zone choice - good compromise grass.',
+                    '8': 'Excellent performance.',
+                    '9': 'Good but bermuda or st. augustine may perform better.'
+                },
+                source: 'Kansas State Extension, Clemson Extension, NC State Extension'
+            },
+            'st-augustine': {
+                name: 'St. Augustinegrass',
+                season: 'Warm Season',
+                mowHeight: '3 - 4 inches',
+                mowHeightSummer: '3.5 - 4 inches',
+                waterPerWeek: '1 - 1.5 inches',
+                idealSoilPH: '6.0 - 6.5',
+                idealSoilTemp: '65°F+ for active growth',
+                sunNeeds: 'Full sun to moderate shade (best warm-season shade tolerance)',
+                fertPerYear: '2 - 4 lbs N per 1,000 sq ft',
+                peakGrowth: 'Summer',
+                dormancy: 'Goes dormant below 55°F, sensitive to freeze damage',
+                bestFeature: 'Best shade tolerance of any warm-season grass - thick, lush growth',
+                commonIssues: ['Chinch bugs (major pest)', 'Gray leaf spot', 'SAD virus (St. Augustine Decline)', 'Poor cold tolerance'],
+                keyTips: [
+                    'Must be established by sod or plugs - no viable seed available',
+                    'Keep mowing height high (3.5-4") for healthiest lawn',
+                    'Watch closely for chinch bug damage in hot, dry periods',
+                    'Do not over-fertilize with nitrogen - increases disease risk'
+                ],
+                zoneNotes: {
+                    '4': 'Not viable.',
+                    '5': 'Not viable.',
+                    '6': 'Not viable - no cold tolerance.',
+                    '7': 'Very risky - freeze damage likely.',
+                    '8': 'Good in southern Zone 8. Protect from hard freezes.',
+                    '9': 'Excellent - ideal climate for st. augustine.'
+                },
+                source: 'University of Florida IFAS, Texas A&M AgriLife, LSU AgCenter'
+            }
+        };
+
+        // Zone climate descriptions
+        const ZONE_INFO = {
+            '4': { temp: '-30 to -20°F', climate: 'Northern Cold', description: 'Long, cold winters. Short growing season. Cool-season grasses only.' },
+            '5': { temp: '-20 to -10°F', climate: 'Northern', description: 'Cold winters, moderate summers. Ideal for cool-season grasses.' },
+            '6': { temp: '-10 to 0°F', climate: 'Moderate', description: 'Moderate winters. Good for cool-season grasses, some warm-season with care.' },
+            '7': { temp: '0 to 10°F', climate: 'Transition Zone', description: 'The toughest zone for lawns. Both cool and warm-season grasses face challenges.' },
+            '8': { temp: '10 to 20°F', climate: 'Southern', description: 'Mild winters, hot summers. Warm-season grasses thrive here.' },
+            '9': { temp: '20 to 30°F', climate: 'Deep South / Gulf', description: 'Very mild winters, long hot summers. Warm-season grasses dominate.' }
+        };
+
         function LawnCareTracker() {
             const [activities, setActivities] = useState([]);
             const [view, setView] = useState(null);
@@ -921,72 +1115,244 @@
                     specificGrass: '',
                     soilType: ''
                 });
+                const [editing, setEditing] = useState(!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone);
 
                 const save = () => {
                     localStorage.setItem('lawnProfile', JSON.stringify(profileData));
                     setLawnProfile(profileData);
-                    alert('✅ Profile saved!');
-                    setView(null);
+                    setEditing(false);
                 };
 
+                const grassInfo = GRASS_INFO[profileData.specificGrass];
+                const zoneInfo = ZONE_INFO[profileData.zone];
+
+                // Get current month tasks from grassPrograms if available
+                const getCurrentMonthTasks = () => {
+                    if (!profileData.specificGrass || !profileData.zone) return null;
+                    const keyMap = {
+                        'tall-fescue': 'tallFescue',
+                        'kentucky-bluegrass': 'kentuckyBluegrass',
+                        'perennial-ryegrass': 'perennialRyegrass',
+                        'bermuda': 'bermuda',
+                        'zoysia': 'zoysia',
+                        'st-augustine': 'stAugustine'
+                    };
+                    const programKey = keyMap[profileData.specificGrass] + '_zone' + profileData.zone;
+                    const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
+                    if (!program || !program.schedule) return null;
+
+                    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                    const currentMonth = months[new Date().getMonth()];
+
+                    // Find exact month match or a range match (e.g. "June-August")
+                    return program.schedule.find(s => {
+                        if (s.month === currentMonth) return true;
+                        if (s.month && s.month.includes('-')) {
+                            const parts = s.month.split('-');
+                            const startIdx = months.indexOf(parts[0]);
+                            const endIdx = months.indexOf(parts[1]);
+                            const curIdx = months.indexOf(currentMonth);
+                            if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
+                        }
+                        return false;
+                    });
+                };
+
+                const currentTasks = getCurrentMonthTasks();
+
+                // Edit form
+                if (editing) {
+                    return (
+                        <div>
+                            <h2 className="text-2xl font-bold mb-6">🌱 Lawn Profile</h2>
+                            <div className="bg-white rounded-lg shadow p-4 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Lawn Size (sq ft)</label>
+                                    <input
+                                        type="number"
+                                        value={profileData.lawnSize}
+                                        onChange={(e) => setProfileData({...profileData, lawnSize: e.target.value})}
+                                        placeholder="5000"
+                                        className="w-full px-4 py-3 border-2 rounded-lg"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Climate Zone</label>
+                                    <select
+                                        value={profileData.zone}
+                                        onChange={(e) => setProfileData({...profileData, zone: e.target.value})}
+                                        className="w-full px-4 py-3 border-2 rounded-lg"
+                                    >
+                                        <option value="">Select...</option>
+                                        <option value="4">Zone 4 - Northern Cold</option>
+                                        <option value="5">Zone 5 - Northern</option>
+                                        <option value="6">Zone 6 - Moderate</option>
+                                        <option value="7">Zone 7 - Transition Zone</option>
+                                        <option value="8">Zone 8 - Southern</option>
+                                        <option value="9">Zone 9 - Deep South / Gulf</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Grass Type</label>
+                                    <select
+                                        value={profileData.specificGrass}
+                                        onChange={(e) => setProfileData({...profileData, specificGrass: e.target.value})}
+                                        className="w-full px-4 py-3 border-2 rounded-lg"
+                                    >
+                                        <option value="">Select...</option>
+                                        <optgroup label="Cool Season">
+                                            <option value="tall-fescue">Tall Fescue</option>
+                                            <option value="kentucky-bluegrass">Kentucky Bluegrass</option>
+                                            <option value="perennial-ryegrass">Perennial Ryegrass</option>
+                                        </optgroup>
+                                        <optgroup label="Warm Season">
+                                            <option value="bermuda">Bermudagrass</option>
+                                            <option value="zoysia">Zoysia</option>
+                                            <option value="st-augustine">St. Augustine</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <button onClick={save} className="w-full py-4 bg-[#367C2B] text-white rounded-xl font-bold text-lg">
+                                    💾 Save Profile
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+
+                // Overview display (shown after save)
                 return (
-                    <div>
-                        <h2 className="text-2xl font-bold mb-6">🌱 Lawn Profile</h2>
-
-                        <div className="bg-white rounded-lg shadow p-4 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Lawn Size (sq ft)</label>
-                                <input
-                                    type="number"
-                                    value={profileData.lawnSize}
-                                    onChange={(e) => setProfileData({...profileData, lawnSize: e.target.value})}
-                                    placeholder="5000"
-                                    className="w-full px-4 py-3 border-2 rounded-lg"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Climate Zone</label>
-                                <select
-                                    value={profileData.zone}
-                                    onChange={(e) => setProfileData({...profileData, zone: e.target.value})}
-                                    className="w-full px-4 py-3 border-2 rounded-lg"
-                                >
-                                    <option value="">Select...</option>
-                                    <option value="4">Zone 4</option>
-                                    <option value="5">Zone 5</option>
-                                    <option value="6">Zone 6</option>
-                                    <option value="7">Zone 7</option>
-                                    <option value="8">Zone 8</option>
-                                    <option value="9">Zone 9</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Grass Type</label>
-                                <select
-                                    value={profileData.specificGrass}
-                                    onChange={(e) => setProfileData({...profileData, specificGrass: e.target.value})}
-                                    className="w-full px-4 py-3 border-2 rounded-lg"
-                                >
-                                    <option value="">Select...</option>
-                                    <optgroup label="Cool Season">
-                                        <option value="tall-fescue">Tall Fescue</option>
-                                        <option value="kentucky-bluegrass">Kentucky Bluegrass</option>
-                                        <option value="perennial-ryegrass">Perennial Ryegrass</option>
-                                    </optgroup>
-                                    <optgroup label="Warm Season">
-                                        <option value="bermuda">Bermudagrass</option>
-                                        <option value="zoysia">Zoysia</option>
-                                        <option value="st-augustine">St. Augustine</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-
-                            <button onClick={save} className="w-full py-4 bg-[#367C2B] text-white rounded-xl font-bold text-lg">
-                                💾 Save Profile
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <h2 className="text-2xl font-bold">🌱 My Yard</h2>
+                            <button onClick={() => setEditing(true)} className="px-4 py-2 text-sm font-semibold text-[#367C2B] border-2 border-[#367C2B] rounded-lg hover:bg-[#367C2B]/10">
+                                Edit Profile
                             </button>
                         </div>
+
+                        {/* Lawn summary header */}
+                        <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] rounded-xl p-5 text-white shadow-lg">
+                            <div className="text-lg font-bold">{grassInfo ? grassInfo.name : profileData.specificGrass}</div>
+                            <div className="text-sm opacity-90 mt-1">
+                                {grassInfo && <span>{grassInfo.season}</span>}
+                                {zoneInfo && <span> · Zone {profileData.zone} ({zoneInfo.climate})</span>}
+                                {profileData.lawnSize && <span> · {Number(profileData.lawnSize).toLocaleString()} sq ft</span>}
+                            </div>
+                            {grassInfo && (
+                                <div className="mt-3 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>
+                            )}
+                        </div>
+
+                        {/* Zone compatibility note */}
+                        {grassInfo && grassInfo.zoneNotes && grassInfo.zoneNotes[profileData.zone] && (
+                            <div className={`rounded-xl p-4 border-l-4 ${
+                                grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('not recommended') ||
+                                grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('not viable')
+                                    ? 'bg-red-50 border-red-500'
+                                    : grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('challenging') ||
+                                      grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('difficult') ||
+                                      grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('marginal')
+                                        ? 'bg-yellow-50 border-yellow-500'
+                                        : 'bg-[#e8f5e9] border-[#367C2B]'
+                            }`}>
+                                <div className="font-bold text-sm mb-1">Zone {profileData.zone} Compatibility</div>
+                                <div className="text-sm text-gray-700">{grassInfo.zoneNotes[profileData.zone]}</div>
+                            </div>
+                        )}
+
+                        {/* Quick reference stats */}
+                        {grassInfo && (
+                            <div className="bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Quick Reference</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                        <div className="text-xs text-gray-500 mb-1">Mow Height</div>
+                                        <div className="text-sm font-bold text-gray-800">{grassInfo.mowHeight}</div>
+                                        <div className="text-xs text-gray-400 mt-1">Summer: {grassInfo.mowHeightSummer}</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                        <div className="text-xs text-gray-500 mb-1">Water / Week</div>
+                                        <div className="text-sm font-bold text-gray-800">{grassInfo.waterPerWeek}</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                        <div className="text-xs text-gray-500 mb-1">Sun Needs</div>
+                                        <div className="text-sm font-bold text-gray-800">{grassInfo.sunNeeds}</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                        <div className="text-xs text-gray-500 mb-1">Fertilizer / Year</div>
+                                        <div className="text-sm font-bold text-gray-800">{grassInfo.fertPerYear}</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                        <div className="text-xs text-gray-500 mb-1">Ideal Soil pH</div>
+                                        <div className="text-sm font-bold text-gray-800">{grassInfo.idealSoilPH}</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                        <div className="text-xs text-gray-500 mb-1">Peak Growth</div>
+                                        <div className="text-sm font-bold text-gray-800">{grassInfo.peakGrowth}</div>
+                                    </div>
+                                </div>
+                                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                                    <div className="text-xs text-blue-600 font-semibold mb-1">Dormancy</div>
+                                    <div className="text-sm text-gray-700">{grassInfo.dormancy}</div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Current month tasks from grassPrograms */}
+                        {currentTasks && (
+                            <div className="bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-1">This Month's Tasks</h3>
+                                <div className="text-xs text-gray-500 mb-3">{currentTasks.month}{currentTasks.importance ? ` - ${currentTasks.importance}` : ''}</div>
+                                <ul className="space-y-2">
+                                    {currentTasks.tasks.map((task, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                            <span className="text-[#367C2B] mt-0.5 font-bold">·</span>
+                                            <span>{task}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                {currentTasks.soilTemp && (
+                                    <div className="mt-3 text-xs text-gray-500">Target soil temp: {currentTasks.soilTemp}</div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Key tips */}
+                        {grassInfo && grassInfo.keyTips && (
+                            <div className="bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Key Tips for {grassInfo.name}</h3>
+                                <ul className="space-y-2">
+                                    {grassInfo.keyTips.map((tip, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                            <span className="text-[#367C2B] mt-0.5">💡</span>
+                                            <span>{tip}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Common issues */}
+                        {grassInfo && grassInfo.commonIssues && (
+                            <div className="bg-white rounded-xl shadow-lg p-4">
+                                <h3 className="text-sm font-bold text-orange-600 uppercase mb-3">Watch Out For</h3>
+                                <ul className="space-y-2">
+                                    {grassInfo.commonIssues.map((issue, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                            <span className="text-orange-500 mt-0.5">⚠️</span>
+                                            <span>{issue}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Research source */}
+                        {grassInfo && grassInfo.source && (
+                            <div className="text-xs text-gray-400 text-center mt-2 px-4">
+                                Research sources: {grassInfo.source}
+                            </div>
+                        )}
                     </div>
                 );
             };
@@ -1218,7 +1584,7 @@
                                     </button>
                                     <button onClick={() => setView('profile')} className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 flex items-center gap-3">
                                         <span className="text-2xl">🌱</span>
-                                        <span className="text-lg font-semibold">Lawn Profile</span>
+                                        <span className="text-lg font-semibold">My Yard</span>
                                     </button>
                                     <button onClick={() => setView('sources')} className="w-full text-left px-4 py-3 rounded-lg hover:bg-[#367C2B]/10 flex items-center gap-3">
                                         <span className="text-2xl">📚</span>
