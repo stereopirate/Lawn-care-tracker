@@ -22,6 +22,14 @@
         #root {
             min-height: 100vh;
         }
+        @keyframes slideUpBounce {
+            0% { transform: translateY(100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 4px 14px rgba(255, 222, 0, 0.4); }
+            50% { box-shadow: 0 4px 24px rgba(255, 222, 0, 0.7); }
+        }
     </style>
     <div id="root"></div>
 
@@ -1801,16 +1809,16 @@
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleCompare(product); }}
-                                            className={`px-2 py-1 rounded text-xs font-semibold ${
+                                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                                                 isCompared
-                                                    ? 'bg-[#367C2B] text-white'
+                                                    ? 'bg-[#367C2B] text-white shadow-md ring-2 ring-[#367C2B]/30'
                                                     : compareList.length >= 3
                                                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                        : 'bg-gray-100 text-gray-600 hover:bg-[#367C2B]/10'
+                                                        : 'bg-gray-100 text-gray-700 hover:bg-[#367C2B] hover:text-white hover:shadow'
                                             }`}
                                             disabled={!isCompared && compareList.length >= 3}
                                         >
-                                            {isCompared ? '✓ Compare' : '+ Compare'}
+                                            {isCompared ? '✓ Selected' : '+ Compare'}
                                         </button>
                                         <span className="text-gray-400 text-xs">{isExpanded ? '▲' : '▼'}</span>
                                     </div>
@@ -1879,35 +1887,37 @@
                                 </button>
                             </div>
 
-                            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                                {/* Product names header */}
-                                <div className="grid gap-0 border-b-2 border-[#367C2B]" style={{gridTemplateColumns: `120px repeat(${compareList.length}, 1fr)`}}>
-                                    <div className="p-3 bg-gray-50 font-bold text-xs text-gray-500 uppercase">Spec</div>
-                                    {compareList.map(p => (
-                                        <div key={p.id} className="p-3 bg-[#367C2B]/5 text-center">
-                                            <div className="text-sm font-bold text-gray-900">{p.name}</div>
-                                            <div className="text-xs text-[#367C2B]">{p.brand}</div>
-                                            <button onClick={() => toggleCompare(p)} className="mt-1 text-xs text-red-500 hover:text-red-700">Remove</button>
-                                        </div>
-                                    ))}
-                                </div>
+                            <div className="overflow-x-auto -mx-2 px-2 pb-2">
+                                <div className="bg-white rounded-xl shadow-lg overflow-hidden" style={{minWidth: `${120 + compareList.length * 150}px`}}>
+                                    {/* Product names header */}
+                                    <div className="grid gap-0 border-b-2 border-[#367C2B]" style={{gridTemplateColumns: `120px repeat(${compareList.length}, 1fr)`}}>
+                                        <div className="p-3 bg-gray-50 font-bold text-xs text-gray-500 uppercase">Spec</div>
+                                        {compareList.map(p => (
+                                            <div key={p.id} className="p-3 bg-[#367C2B]/5 text-center">
+                                                <div className="text-sm font-bold text-gray-900">{p.name}</div>
+                                                <div className="text-xs text-[#367C2B]">{p.brand}</div>
+                                                <button onClick={() => toggleCompare(p)} className="mt-1 text-xs text-red-500 hover:text-red-700">Remove</button>
+                                            </div>
+                                        ))}
+                                    </div>
 
-                                {/* Spec rows */}
-                                {specRows.map((row, i) => {
-                                    const values = compareList.map(p => row.fn ? row.fn(p) : (p[row.key] || '-'));
-                                    if (values.every(v => v === '-' || !v)) return null;
-                                    const allSame = values.every(v => v === values[0]);
-                                    return (
-                                        <div key={row.label} className={`grid gap-0 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b border-gray-100`} style={{gridTemplateColumns: `120px repeat(${compareList.length}, 1fr)`}}>
-                                            <div className="p-2 text-xs font-semibold text-gray-600">{row.label}</div>
-                                            {values.map((val, j) => (
-                                                <div key={j} className={`p-2 text-xs text-center ${!allSame && val !== '-' ? 'font-bold text-[#367C2B]' : 'text-gray-700'}`}>
-                                                    {val}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    );
-                                })}
+                                    {/* Spec rows */}
+                                    {specRows.map((row, i) => {
+                                        const values = compareList.map(p => row.fn ? row.fn(p) : (p[row.key] || '-'));
+                                        if (values.every(v => v === '-' || !v)) return null;
+                                        const allSame = values.every(v => v === values[0]);
+                                        return (
+                                            <div key={row.label} className={`grid gap-0 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b border-gray-100`} style={{gridTemplateColumns: `120px repeat(${compareList.length}, 1fr)`}}>
+                                                <div className="p-2 text-xs font-semibold text-gray-600">{row.label}</div>
+                                                {values.map((val, j) => (
+                                                    <div key={j} className={`p-2 text-xs text-center ${!allSame && val !== '-' ? 'font-bold text-[#367C2B]' : 'text-gray-700'}`}>
+                                                        {val}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     );
@@ -1915,17 +1925,7 @@
 
                 return (
                     <div>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold">📖 Product Guide</h2>
-                            {compareList.length >= 2 && (
-                                <button
-                                    onClick={() => setShowCompare(true)}
-                                    className="px-3 py-2 bg-[#367C2B] text-white rounded-lg text-sm font-semibold"
-                                >
-                                    Compare ({compareList.length})
-                                </button>
-                            )}
-                        </div>
+                        <h2 className="text-xl font-bold mb-4">📖 Product Guide</h2>
 
                         {/* Category tabs */}
                         <div className="flex gap-1 bg-gray-100 p-1 rounded-lg mb-4 overflow-x-auto">
@@ -1972,23 +1972,37 @@
                             </div>
                         </div>
 
-                        {/* Compare bar */}
+                        {/* Sticky compare bar */}
                         {compareList.length > 0 && (
-                            <div className="bg-[#e8f5e9] rounded-xl p-3 mb-4 flex items-center justify-between">
-                                <div className="text-sm text-[#367C2B]">
-                                    <span className="font-bold">{compareList.length}/3</span> selected: {compareList.map(p => p.name).join(' vs ')}
-                                </div>
-                                <div className="flex gap-2">
-                                    <button onClick={() => setCompareList([])} className="text-xs text-gray-500 hover:text-gray-700">Clear</button>
-                                    {compareList.length >= 2 && (
-                                        <button onClick={() => setShowCompare(true)} className="text-xs font-bold text-[#367C2B]">Compare →</button>
-                                    )}
+                            <div
+                                className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-[#367C2B] shadow-2xl"
+                                style={{animation: 'slideUpBounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'}}
+                            >
+                                <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-xs text-gray-500 font-semibold">{compareList.length}/3 selected</div>
+                                        <div className="text-sm font-bold text-gray-800 truncate">{compareList.map(p => p.name).join(' vs ')}</div>
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                        <button onClick={() => setCompareList([])} className="px-3 py-2 text-xs font-semibold text-gray-500 hover:text-gray-700 border border-gray-300 rounded-lg">
+                                            Clear
+                                        </button>
+                                        {compareList.length >= 2 && (
+                                            <button
+                                                onClick={() => setShowCompare(true)}
+                                                className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                                                style={{animation: 'pulseGlow 2s ease-in-out infinite'}}
+                                            >
+                                                Compare Now →
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}
 
                         {/* Product list */}
-                        <div className="space-y-2">
+                        <div className={`space-y-2 ${compareList.length > 0 ? 'pb-20' : ''}`}>
                             {filtered.map(product => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
