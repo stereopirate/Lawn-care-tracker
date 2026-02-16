@@ -22,33 +22,25 @@
         .header {
             background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
             color: white;
-            padding: 1.5rem 1rem;
+            padding: 1rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
         .header h1 {
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .header .tagline {
-            font-size: 0.95rem;
+            font-size: 0.875rem;
             opacity: 0.9;
-            margin-bottom: 1rem;
         }
 
         .nav {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            margin-top: 0.75rem;
         }
 
         .nav a {
@@ -59,124 +51,27 @@
             background: rgba(255,255,255,0.1);
             display: inline-block;
             font-size: 0.9rem;
+            margin-right: 0.5rem;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 1rem;
         }
 
-        .hero {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .hero h2 {
-            color: #2d5016;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: #4a7c2c;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: background 0.3s;
-        }
-
-        .cta-button:hover {
-            background: #3a6222;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .feature-card {
+        .card {
             background: white;
             border-radius: 8px;
             padding: 1.5rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-top: 4px solid #4a7c2c;
         }
 
-        .feature-card .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
+        .card h2 {
             color: #2d5016;
+            margin-bottom: 1rem;
             font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .feature-card p {
-            color: #666;
-            line-height: 1.5;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #4a7c2c;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .quick-start {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .quick-start h2 {
-            color: #2d5016;
-            margin-bottom: 1.5rem;
-            text-align: center;
         }
 
         .form-group {
@@ -221,26 +116,12 @@
             background: #3a6222;
         }
 
-        .program-section {
+        .program-display {
             display: none;
         }
 
-        .program-section.active {
+        .program-display.active {
             display: block;
-        }
-
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .card h2 {
-            color: #2d5016;
-            margin-bottom: 1rem;
-            font-size: 1.25rem;
         }
 
         .alert {
@@ -295,157 +176,102 @@
             color: #2d5016;
         }
 
-        @media (max-width: 768px) {
+        .weather-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .weather-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .weather-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2d5016;
+        }
+
+        .weather-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 640px) {
             .header h1 {
-                font-size: 1.5rem;
-            }
-
-            .hero h2 {
-                font-size: 1.5rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                font-size: 1.25rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-content">
-            <h1>🌱 Lawn Care Tracker</h1>
-            <p class="tagline">Research-Backed Lawn Care Programs from University Extensions</p>
-            <div class="nav">
-                <a href="#home" onclick="showHome()">Home</a>
-                <a href="#programs" onclick="showPrograms()">My Program</a>
-                <a href="about.html">About</a>
-            </div>
+        <h1>🌱 Lawn Care Tracker</h1>
+        <p class="tagline">Research-Backed Lawn Care Programs</p>
+        <div class="nav">
+            <a href="#programs">My Program</a>
+            <a href="about.html">About</a>
         </div>
     </div>
 
     <div class="container">
-        <!-- Home Dashboard -->
-        <div id="homeSection" class="home-section">
-            <div class="hero">
-                <h2>Science-Backed Lawn Care for DIY Homeowners</h2>
-                <p>Get personalized maintenance programs based on research from 19+ agricultural universities. Free forever, no ads, no product bias.</p>
-                <a href="#programs" class="cta-button" onclick="showPrograms()">Get Started →</a>
+        <!-- Weather & Conditions Dashboard -->
+        <div id="weatherDashboard"></div>
+
+        <!-- Program Selection -->
+        <div class="card" id="programSelector">
+            <h2>Select Your Lawn</h2>
+            <div class="form-group">
+                <label for="grassType">Grass Type</label>
+                <select id="grassType">
+                    <option value="">Choose your grass type...</option>
+                    <option value="tallFescue">Tall Fescue</option>
+                    <option value="kentuckyBluegrass">Kentucky Bluegrass</option>
+                    <option value="perennialRyegrass">Perennial Ryegrass</option>
+                    <option value="bermudagrass">Bermudagrass</option>
+                    <option value="stAugustine">St. Augustine</option>
+                    <option value="zoysiagrass">Zoysiagrass</option>
+                    <option value="centipedegrass">Centipedegrass</option>
+                </select>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">7</div>
-                    <div class="stat-label">Grass Types</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">6</div>
-                    <div class="stat-label">Climate Zones</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">24</div>
-                    <div class="stat-label">Programs</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">19+</div>
-                    <div class="stat-label">Universities</div>
-                </div>
+            <div class="form-group">
+                <label for="zone">Climate Zone</label>
+                <select id="zone">
+                    <option value="">Choose your zone...</option>
+                    <option value="4">Zone 4</option>
+                    <option value="5">Zone 5</option>
+                    <option value="6">Zone 6</option>
+                    <option value="7">Zone 7</option>
+                    <option value="8">Zone 8</option>
+                    <option value="9">Zone 9</option>
+                </select>
             </div>
 
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon">📅</div>
-                    <h3>Monthly Programs</h3>
-                    <p>Complete maintenance schedules tailored to your grass type and climate zone</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon">🌡️</div>
-                    <h3>Transition Zone Expertise</h3>
-                    <p>Specialized guidance for challenging climates where standard advice fails</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon">🌱</div>
-                    <h3>Variety Selection</h3>
-                    <p>Heat-tolerant, cold-hardy, and drought-resistant cultivar recommendations</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon">🐛</div>
-                    <h3>Problem Solving</h3>
-                    <p>Weed identification, disease diagnosis, and troubleshooting guides</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon">💧</div>
-                    <h3>Water Conservation</h3>
-                    <p>Drought management strategies and irrigation optimization</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon">💰</div>
-                    <h3>Cost Transparency</h3>
-                    <p>Real budget estimates for DIY vs professional lawn care</p>
-                </div>
-            </div>
+            <button class="btn" onclick="loadProgram()">Load My Program</button>
         </div>
 
-        <!-- Programs Section -->
-        <div id="programsSection" class="program-section">
-            <div class="quick-start">
-                <h2>Select Your Lawn</h2>
-                <div class="form-group">
-                    <label for="grassType">Grass Type</label>
-                    <select id="grassType">
-                        <option value="">Choose your grass type...</option>
-                        <option value="tallFescue">Tall Fescue</option>
-                        <option value="kentuckyBluegrass">Kentucky Bluegrass</option>
-                        <option value="perennialRyegrass">Perennial Ryegrass</option>
-                        <option value="bermudagrass">Bermudagrass</option>
-                        <option value="stAugustine">St. Augustine</option>
-                        <option value="zoysiagrass">Zoysiagrass</option>
-                        <option value="centipedegrass">Centipedegrass</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="zone">Climate Zone</label>
-                    <select id="zone">
-                        <option value="">Choose your zone...</option>
-                        <option value="4">Zone 4</option>
-                        <option value="5">Zone 5</option>
-                        <option value="6">Zone 6</option>
-                        <option value="7">Zone 7</option>
-                        <option value="8">Zone 8</option>
-                        <option value="9">Zone 9</option>
-                    </select>
-                </div>
-
-                <button class="btn" onclick="loadProgram()">Load My Program</button>
-            </div>
-
-            <div id="programDisplay"></div>
-        </div>
+        <!-- Program Display -->
+        <div id="programDisplay" class="program-display"></div>
     </div>
 
     <script src="grass-programs.js"></script>
     <script>
-        // Show/hide sections
-        function showHome() {
-            document.getElementById('homeSection').style.display = 'block';
-            document.getElementById('programsSection').classList.remove('active');
-            window.scrollTo(0, 0);
-        }
-
-        function showPrograms() {
-            document.getElementById('homeSection').style.display = 'none';
-            document.getElementById('programsSection').classList.add('active');
-            window.scrollTo(0, 0);
-        }
+        let currentProgram = null;
+        let weather = null;
 
         // Load saved state
         function loadState() {
@@ -455,10 +281,117 @@
                 document.getElementById('grassType').value = state.grassType || '';
                 document.getElementById('zone').value = state.zone || '';
                 if (state.grassType && state.zone) {
-                    showPrograms();
                     loadProgram();
                 }
             }
+            fetchWeather();
+        }
+
+        // Fetch weather data
+        async function fetchWeather() {
+            try {
+                // Use a default location for demo (Columbus, OH)
+                const lat = 40.1014;
+                const lon = -83.0235;
+                
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto&past_days=7`
+                );
+                
+                const data = await response.json();
+                
+                // Calculate soil temp (approximately 10-15°F below air temp)
+                const airTemp = data.current.temperature_2m;
+                const soilTemp = Math.round(airTemp - 12);
+                
+                // Calculate weekly rainfall
+                let weeklyRainfall = 0;
+                if (data.daily && data.daily.precipitation_sum) {
+                    weeklyRainfall = data.daily.precipitation_sum.reduce((sum, val) => sum + val, 0);
+                    weeklyRainfall = Math.round(weeklyRainfall * 10) / 10;
+                }
+                
+                weather = {
+                    temperature: Math.round(airTemp),
+                    soilTemp: soilTemp,
+                    humidity: data.current.relative_humidity_2m,
+                    highTemp: Math.round(data.daily.temperature_2m_max[0]),
+                    lowTemp: Math.round(data.daily.temperature_2m_min[0]),
+                    rainfall: weeklyRainfall,
+                    location: 'Columbus, OH'
+                };
+                
+                displayWeatherDashboard();
+            } catch (error) {
+                console.error('Weather fetch error:', error);
+                displayWeatherDashboard(); // Show placeholder
+            }
+        }
+
+        // Display weather dashboard
+        function displayWeatherDashboard() {
+            const dashboard = document.getElementById('weatherDashboard');
+            
+            if (!weather) {
+                dashboard.innerHTML = `
+                    <div class="weather-card">
+                        <h2>🌤️ Current Conditions</h2>
+                        <p>Loading weather data...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate recommendation based on conditions
+            let recommendation = '';
+            if (weather.soilTemp < 50) {
+                recommendation = '❄️ Soil too cold for most activities. Wait for warmer weather.';
+            } else if (weather.soilTemp >= 50 && weather.soilTemp <= 65) {
+                recommendation = '🌱 Good conditions for cool-season grass care and pre-emergent application.';
+            } else if (weather.soilTemp > 65 && weather.soilTemp <= 85) {
+                recommendation = '☀️ Ideal growing conditions. Good time for fertilizing and seeding.';
+            } else {
+                recommendation = '🔥 Very warm. Focus on watering and avoid stress-inducing activities.';
+            }
+
+            dashboard.innerHTML = `
+                <div class="weather-card">
+                    <h2>🌤️ Current Conditions - ${weather.location}</h2>
+                    
+                    <div class="weather-grid">
+                        <div class="weather-item">
+                            <div class="weather-value">${weather.temperature}°F</div>
+                            <div class="weather-label">Air Temperature</div>
+                            <div class="weather-label" style="font-size: 0.75rem; margin-top: 0.25rem;">
+                                High: ${weather.highTemp}° / Low: ${weather.lowTemp}°
+                            </div>
+                        </div>
+                        
+                        <div class="weather-item">
+                            <div class="weather-value">${weather.soilTemp}°F</div>
+                            <div class="weather-label">Soil Temperature</div>
+                            <div class="weather-label" style="font-size: 0.75rem; margin-top: 0.25rem;">
+                                at 4" depth
+                            </div>
+                        </div>
+                        
+                        <div class="weather-item">
+                            <div class="weather-value">${weather.humidity}%</div>
+                            <div class="weather-label">Humidity</div>
+                        </div>
+                        
+                        <div class="weather-item">
+                            <div class="weather-value">${weather.rainfall}"</div>
+                            <div class="weather-label">Weekly Rainfall</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #e8f5e9; border-radius: 6px; border-left: 4px solid #4a7c2c;">
+                        <strong>Current Recommendation:</strong><br>
+                        ${recommendation}
+                    </div>
+                </div>
+            `;
         }
 
         // Save state
@@ -481,38 +414,37 @@
             }
 
             const programKey = `${grassType}_zone${zone}`;
-            const program = grassPrograms[programKey];
+            currentProgram = grassPrograms[programKey];
 
-            if (!program) {
-                alert('No program available for this combination. This grass may not be suitable for your zone.');
+            if (!currentProgram) {
+                alert('No program available for this combination');
                 return;
             }
 
-            displayProgram(program);
+            displayProgram();
             saveState();
         }
 
         // Display program
-        function displayProgram(program) {
+        function displayProgram() {
+            if (!currentProgram) return;
+
             const display = document.getElementById('programDisplay');
             let html = '<div class="card">';
             
-            html += `<h2>${program.grassType} - Zone ${program.zone}</h2>`;
-            html += `<p>${program.description}</p>`;
+            html += `<h2>${currentProgram.grassType} - Zone ${currentProgram.zone}</h2>`;
+            html += `<p>${currentProgram.description}</p>`;
 
-            if (program.warning) {
-                html += `<div class="alert">${program.warning}</div>`;
+            if (currentProgram.warning) {
+                html += `<div class="alert">${currentProgram.warning}</div>`;
             }
 
             html += '<h3 style="margin-top: 2rem; color: #2d5016;">Monthly Schedule</h3>';
             
-            if (program.schedule && program.schedule.length > 0) {
-                program.schedule.forEach(month => {
+            if (currentProgram.schedule && currentProgram.schedule.length > 0) {
+                currentProgram.schedule.forEach(month => {
                     html += '<div class="month-section">';
                     html += `<h3>${month.month}</h3>`;
-                    if (month.importance) {
-                        html += `<p style="color: #d32f2f; font-weight: 600;">${month.importance}</p>`;
-                    }
                     if (month.tasks && month.tasks.length > 0) {
                         html += '<ul class="task-list">';
                         month.tasks.forEach((task, index) => {
@@ -529,10 +461,10 @@
                 });
             }
 
-            if (program.sources && program.sources.length > 0) {
+            if (currentProgram.sources && currentProgram.sources.length > 0) {
                 html += '<div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">';
                 html += '<strong>Research Sources:</strong><br>';
-                program.sources.forEach(source => {
+                currentProgram.sources.forEach(source => {
                     html += `<span class="source-tag">${source.institution}</span>`;
                 });
                 html += '</div>';
@@ -540,6 +472,7 @@
 
             html += '</div>';
             display.innerHTML = html;
+            display.classList.add('active');
         }
 
         // Save task state
