@@ -32,18 +32,86 @@
         // Comprehensive Product Database - COMPLETE
         const PRODUCT_DATABASE = {
             mowers: [
-                { id: 'm-other', name: 'Other (Specify)', brand: 'Other', type: 'Custom', deck: '', features: '', maintenanceSchedule: { oilChange: null, note: 'Custom mower - set your own maintenance schedule' } },
-                { id: 'm6', name: 'Craftsman M215', brand: 'Craftsman', type: 'Gas Push', deck: '21"', features: 'Briggs & Stratton, Side Discharge', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
-                { id: 'm3', name: 'EGO Power+ LM2142SP', brand: 'EGO', type: 'Battery Self-Propelled', deck: '21"', features: '56V, LED Headlights', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
-                { id: 'm4', name: 'Greenworks 25223', brand: 'Greenworks', type: 'Corded Electric', deck: '20"', features: '12 Amp, 3-in-1', maintenanceSchedule: { oilChange: null, note: 'Electric - no oil changes needed' } },
-                { id: 'm1', name: 'Honda HRX217VKA', brand: 'Honda', type: 'Gas Self-Propelled', deck: '21"', features: 'Variable Speed, Versamow', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100, note: 'Every 25 hours under heavy load' } },
-                { id: 'm5', name: 'Husqvarna LC221RH', brand: 'Husqvarna', type: 'Gas Self-Propelled', deck: '21"', features: 'Honda Engine, High Wheels', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
-                { id: 'm8', name: 'John Deere JS46', brand: 'John Deere', type: 'Gas Self-Propelled', deck: '22"', features: 'Rear Wheel Drive, 190cc', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
-                { id: 'm9', name: 'Makita XML08Z', brand: 'Makita', type: 'Battery Self-Propelled', deck: '21"', features: '36V x4, Commercial Grade', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
-                { id: 'm7', name: 'Ryobi 40V RY40190', brand: 'Ryobi', type: 'Battery Push', deck: '20"', features: '40V Lithium, Brushless', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
-                { id: 'm2', name: 'Toro Recycler 22"', brand: 'Toro', type: 'Gas Self-Propelled', deck: '22"', features: 'Personal Pace, SmartStow', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
-                { id: 'm11', name: 'Toro TimeMaster 30"', brand: 'Toro', type: 'Gas Self-Propelled', deck: '30"', features: 'Dual-Force Cutting, Personal Pace', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly', bladeService: 'yearly' } },
-                { id: 'm10', name: 'Troy-Bilt TB330', brand: 'Troy-Bilt', type: 'Gas Self-Propelled', deck: '21"', features: 'TriAction Cutting, 163cc', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } }
+                // Other option
+                { id: 'm-other', name: 'Other (Specify)', brand: 'Other', mowerCategory: '', type: 'Custom', deck: '', features: '', maintenanceSchedule: { oilChange: null, note: 'Custom mower - set your own maintenance schedule' } },
+                // Walk Behind - Top 25
+                { id: 'wb1', name: 'Honda HRX217VKA', brand: 'Honda', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: 'Variable Speed, Versamow, GCV200', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
+                { id: 'wb2', name: 'Honda HRN216VKA', brand: 'Honda', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: '3-in-1, Auto Choke, Twin Blade', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
+                { id: 'wb3', name: 'Honda HRS216PKA', brand: 'Honda', mowerCategory: 'Walk Behind', type: 'Gas Push', deck: '21"', features: 'Reliable, Side Discharge', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
+                { id: 'wb4', name: 'Toro Recycler 22" SmartStow', brand: 'Toro', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '22"', features: 'Personal Pace, SmartStow, Briggs 150cc', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
+                { id: 'wb5', name: 'Toro Super Recycler 21"', brand: 'Toro', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: 'Personal Pace, PoweReverse, Cast Aluminum', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
+                { id: 'wb6', name: 'Toro Recycler 21" 21352', brand: 'Toro', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: 'Briggs EXi 150cc, All-Wheel Drive', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
+                { id: 'wb7', name: 'Toro TimeMaster 30"', brand: 'Toro', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '30"', features: 'Dual-Force Cutting, Personal Pace, Briggs 223cc', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly', bladeService: 'yearly' } },
+                { id: 'wb8', name: 'EGO Power+ LM2142SP', brand: 'EGO', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '56V, 7.5Ah, LED Headlights, Select Cut', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb9', name: 'EGO Power+ LM2135SP', brand: 'EGO', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '56V, 5.0Ah, Touch Drive, Select Cut', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb10', name: 'Husqvarna LC221RH', brand: 'Husqvarna', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: 'Honda GCV160, Rear Wheel Drive, High Wheels', maintenanceSchedule: { oilChange: 50, airFilter: 50, sparkPlug: 100 } },
+                { id: 'wb11', name: 'Husqvarna LC121P', brand: 'Husqvarna', mowerCategory: 'Walk Behind', type: 'Gas Push', deck: '21"', features: 'Briggs 163cc, 3-in-1', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'wb12', name: 'Craftsman M215', brand: 'Craftsman', mowerCategory: 'Walk Behind', type: 'Gas Push', deck: '21"', features: 'Briggs & Stratton 140cc, Side Discharge', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'wb13', name: 'Craftsman M230', brand: 'Craftsman', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: 'Briggs 163cc, Front-Wheel Drive', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'wb14', name: 'Ryobi 40V RY40190', brand: 'Ryobi', mowerCategory: 'Walk Behind', type: 'Battery Push', deck: '20"', features: '40V Lithium 6Ah, Brushless Motor', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb15', name: 'Ryobi 40V RY401110', brand: 'Ryobi', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '40V Brushless, CrossCut Multi-Blade', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb16', name: 'Greenworks 25223', brand: 'Greenworks', mowerCategory: 'Walk Behind', type: 'Corded Electric', deck: '20"', features: '12 Amp, 3-in-1', maintenanceSchedule: { oilChange: null, note: 'Electric - no oil changes needed' } },
+                { id: 'wb17', name: 'Greenworks Pro 80V 21"', brand: 'Greenworks', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '80V 4Ah, Brushless, Steel Deck', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb18', name: 'Makita XML08Z', brand: 'Makita', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '18V X2 (36V) LXT x4, Commercial Grade', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb19', name: 'Troy-Bilt TB330', brand: 'Troy-Bilt', mowerCategory: 'Walk Behind', type: 'Gas Self-Propelled', deck: '21"', features: 'TriAction Cutting, Briggs 163cc, Rear-Wheel Drive', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'wb20', name: 'Milwaukee M18 FUEL 21"', brand: 'Milwaukee', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: 'M18 FUEL, Smart Speed Control', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb21', name: 'DeWalt DCMWSP244U2', brand: 'DeWalt', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21.5"', features: '2x 20V MAX, Rear Wheel Drive', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb22', name: 'Black+Decker BEMW472BH', brand: 'Black+Decker', mowerCategory: 'Walk Behind', type: 'Corded Electric', deck: '15"', features: '10 Amp, Lightweight, 6 Height Settings', maintenanceSchedule: { oilChange: null, note: 'Electric - no oil changes needed' } },
+                { id: 'wb23', name: 'Kobalt 80V 21"', brand: 'Kobalt', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '80V 6Ah, Brushless, Quick-Fold Handle', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb24', name: 'Snapper XD 82V', brand: 'Snapper', mowerCategory: 'Walk Behind', type: 'Battery Self-Propelled', deck: '21"', features: '82V Lithium, StepSense Auto Drive', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'wb25', name: 'Worx WG779', brand: 'Worx', mowerCategory: 'Walk Behind', type: 'Battery Push', deck: '14"', features: '40V Power Share, Compact, Intellicut', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                // Riding Mowers - Top 25
+                { id: 'rd1', name: 'John Deere S100', brand: 'John Deere', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '17.5 HP Briggs, Hydrostatic, Edge Cutting System', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd2', name: 'John Deere S130', brand: 'John Deere', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '22 HP V-Twin Briggs, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd3', name: 'John Deere S160', brand: 'John Deere', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '48"', features: '24 HP V-Twin ELS, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd4', name: 'John Deere S170', brand: 'John Deere', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '48"', features: '24 HP V-Twin, Cruise Control, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd5', name: 'John Deere X350', brand: 'John Deere', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '18.5 HP Kawasaki, Accel Deep Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd6', name: 'Husqvarna YTH18542', brand: 'Husqvarna', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '18.5 HP Briggs, Hydrostatic, Air Induction', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd7', name: 'Husqvarna YTH24V48', brand: 'Husqvarna', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '48"', features: '24 HP Briggs V-Twin, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd8', name: 'Husqvarna YTH22V46', brand: 'Husqvarna', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '46"', features: '22 HP Briggs V-Twin, Pedal-Operated', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd9', name: 'Husqvarna TS 142X', brand: 'Husqvarna', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: 'Kawasaki V-Twin, ClearCut Fab Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd10', name: 'Cub Cadet XT1 LT42', brand: 'Cub Cadet', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '18 HP Kohler, Hydrostatic, TightTurn', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd11', name: 'Cub Cadet XT1 LT46', brand: 'Cub Cadet', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '46"', features: '22 HP Kohler V-Twin, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd12', name: 'Cub Cadet XT2 LX46', brand: 'Cub Cadet', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '46"', features: '23 HP Kawasaki V-Twin, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd13', name: 'Cub Cadet CC30', brand: 'Cub Cadet', mowerCategory: 'Riding', type: 'Rear Engine Rider', deck: '30"', features: '10.5 HP Briggs, Compact, Easy Storage', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd14', name: 'Craftsman T110', brand: 'Craftsman', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '17.5 HP Briggs, Hydrostatic, Turn Tight', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd15', name: 'Craftsman T210', brand: 'Craftsman', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '18 HP Briggs, Hydrostatic, Turn Tight', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd16', name: 'Craftsman T240', brand: 'Craftsman', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '46"', features: '22 HP Briggs V-Twin, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd17', name: 'Troy-Bilt Pony 42"', brand: 'Troy-Bilt', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '15.5 HP Briggs, 7-Speed Manual', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd18', name: 'Troy-Bilt Bronco 42"', brand: 'Troy-Bilt', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '17 HP Briggs, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd19', name: 'Troy-Bilt Super Bronco 46"', brand: 'Troy-Bilt', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '46"', features: '22 HP Briggs V-Twin, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd20', name: 'Ariens Edge 34"', brand: 'Ariens', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '34"', features: '20 HP Kohler, Compact Design', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd21', name: 'Murray MT100 42"', brand: 'Murray', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '13.5 HP Briggs, 6-Speed Manual', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd22', name: 'Snapper SPX 42"', brand: 'Snapper', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '23 HP Briggs V-Twin, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'rd23', name: 'Poulan Pro PP155H42', brand: 'Poulan Pro', mowerCategory: 'Riding', type: 'Lawn Tractor', deck: '42"', features: '15.5 HP Briggs, Hydrostatic', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 100 } },
+                { id: 'rd24', name: 'Ryobi RYAC130-S', brand: 'Ryobi', mowerCategory: 'Riding', type: 'Electric Riding', deck: '30"', features: '50 Ah Battery, Brushless Motor', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'rd25', name: 'EGO Power+ T6', brand: 'EGO', mowerCategory: 'Riding', type: 'Electric Lawn Tractor', deck: '42"', features: '56V, Peak HP, Headlights, USB Port', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                // Zero Turn - Top 25
+                { id: 'zt1', name: 'John Deere Z335E', brand: 'John Deere', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '20 HP V-Twin, Accel Deep Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt2', name: 'John Deere Z370R', brand: 'John Deere', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '54"', features: '22 HP V-Twin, Accel Deep 42A Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt3', name: 'John Deere Z530M', brand: 'John Deere', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '54"', features: '24 HP Kawasaki V-Twin, Pro-Grade', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt4', name: 'Husqvarna Z254', brand: 'Husqvarna', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '54"', features: '26 HP Kohler, ClearCut Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt5', name: 'Husqvarna Z248F', brand: 'Husqvarna', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '48"', features: '23 HP Kawasaki, Stamped Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt6', name: 'Husqvarna MZ61', brand: 'Husqvarna', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '61"', features: '27 HP Briggs, Fabricated Deck, ROPS', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt7', name: 'Husqvarna Z454', brand: 'Husqvarna', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '54"', features: '23 HP Kawasaki, ClearCut Fab Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt8', name: 'Toro TimeCutter 42"', brand: 'Toro', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '22.5 HP Toro V-Twin, MyRIDE, Smart Speed', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
+                { id: 'zt9', name: 'Toro Titan 60"', brand: 'Toro', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '60"', features: '24.5 HP Toro V-Twin, IronForged Deck, MyRIDE', maintenanceSchedule: { oilChange: 50, airFilter: 'yearly', sparkPlug: 'yearly' } },
+                { id: 'zt10', name: 'Cub Cadet Ultima ZT1 42"', brand: 'Cub Cadet', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '22 HP Kohler V-Twin, High-Back Seat', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt11', name: 'Cub Cadet Ultima ZT1 50"', brand: 'Cub Cadet', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '50"', features: '23 HP Kawasaki V-Twin, AeroForce Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt12', name: 'Cub Cadet Ultima ZT2 54"', brand: 'Cub Cadet', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '54"', features: '24 HP Kawasaki V-Twin, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt13', name: 'Ariens IKON XD 42"', brand: 'Ariens', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '22 HP Kohler, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt14', name: 'Ariens IKON XD 52"', brand: 'Ariens', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '52"', features: '23 HP Kawasaki, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt15', name: 'Ariens Apex 52"', brand: 'Ariens', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '52"', features: '23 HP Kawasaki, Heavy-Duty Fabricated', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt16', name: 'EGO Z6 42"', brand: 'EGO', mowerCategory: 'Zero Turn', type: 'Battery ZTR', deck: '42"', features: '56V, e-Steer, Brushless Motors', maintenanceSchedule: { oilChange: null, note: 'Battery-powered - no oil changes needed' } },
+                { id: 'zt17', name: 'Bad Boy MZ 42"', brand: 'Bad Boy', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '22 HP Kohler, Welded Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt18', name: 'Bad Boy MZ Magnum 54"', brand: 'Bad Boy', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '54"', features: '27 HP Kohler, Fabricated Deck, ROPS', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt19', name: 'Gravely ZT HD 44"', brand: 'Gravely', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '44"', features: '22 HP Kawasaki, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt20', name: 'Gravely ZT X 42"', brand: 'Gravely', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '21.5 HP Kawasaki, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt21', name: 'Spartan RZ-C 42"', brand: 'Spartan', mowerCategory: 'Zero Turn', type: 'Residential ZTR', deck: '42"', features: '22 HP Briggs, Welded Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt22', name: 'Spartan RZ Pro 54"', brand: 'Spartan', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '54"', features: '25 HP Briggs, Fabricated Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt23', name: 'Ferris IS 600Z', brand: 'Ferris', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '48"', features: '25 HP Briggs, iCD Cutting System', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt24', name: 'Exmark Radius S-Series 42"', brand: 'Exmark', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '42"', features: '22 HP Kohler, UltraCut Series 3', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } },
+                { id: 'zt25', name: 'Scag Liberty Z 48"', brand: 'Scag', mowerCategory: 'Zero Turn', type: 'Commercial ZTR', deck: '48"', features: '22 HP Kohler, Cutter Deck', maintenanceSchedule: { oilChange: 50, airFilter: 100, sparkPlug: 100 } }
             ],
             spreaders: [
                 { id: 'sp1', name: 'Echo RB-60 Spreader', brand: 'Echo', type: 'Broadcast', capacity: '60 lbs', features: 'Edge Guard, Pneumatic Tires', maintenanceSchedule: { cleaning: 'after each use', tires: 'check pressure 15 psi', note: 'Maintenance-free gear case' } },
@@ -157,7 +225,8 @@
                 icon: '🌱',
                 color: 'bg-[#367C2B]',
                 fields: [
-                    { name: 'mowerUsed', label: 'Mower Model', type: 'product-select', productType: 'mowers' },
+                    { name: 'mowerType', label: 'Mower Type', type: 'select', options: ['Walk Behind', 'Riding', 'Zero Turn'] },
+                    { name: 'mowerUsed', label: 'Mower Model', type: 'product-select', productType: 'mowers', filterBy: 'mowerType', filterProp: 'mowerCategory' },
                     { name: 'mowHeight', label: 'Mow Height', type: 'select', options: ['1.5"', '2"', '2.5"', '3"', '3.5"', '4"'] },
                     { name: 'clippings', label: 'Clippings', type: 'select', options: ['Bagging', 'Mulching', 'Side Discharge'] },
                     { name: 'duration', label: 'Duration (minutes)', type: 'number', placeholder: '45' }
@@ -171,6 +240,7 @@
                     { name: 'category', label: 'Treatment Category', type: 'treatment-category', required: true },
                     { name: 'product', label: 'Product', type: 'treatment-product', required: true },
                     { name: 'spreader', label: 'Spreader (Optional)', type: 'product-select', productType: 'spreaders' },
+                    { name: 'spreaderSetting', label: 'Spreader Setting', type: 'text', placeholder: 'e.g., 3.5, D, or 14' },
                     { name: 'applicationRate', label: 'Application Rate', type: 'text', placeholder: '0.5 oz per 1,000 sq ft' },
                     { name: 'coverage', label: 'Coverage (sq ft)', type: 'number', placeholder: '5000' }
                 ]
@@ -199,6 +269,8 @@
                 color: 'bg-[#367C2B]',
                 fields: [
                     { name: 'product', label: 'Grass Seed', type: 'product-select', productType: 'seeds' },
+                    { name: 'spreader', label: 'Spreader (Optional)', type: 'product-select', productType: 'spreaders' },
+                    { name: 'spreaderSetting', label: 'Spreader Setting', type: 'text', placeholder: 'e.g., 3.5, D, or 14' },
                     { name: 'amountUsed', label: 'Amount Used (lbs)', type: 'number' }
                 ]
             },
@@ -519,18 +591,27 @@
                                             <div className="p-4 bg-yellow-50 border rounded">Select category first</div>
                                         )
                                     ) : field.type === 'product-select' ? (
-                                        <select
-                                            onChange={(e) => setLocalFormData({
-                                                ...localFormData,
-                                                data: {...localFormData.data, [field.name]: e.target.value}
-                                            })}
-                                            className="w-full px-4 py-2 border rounded-lg"
-                                        >
-                                            <option value="">Select...</option>
-                                            {(PRODUCT_DATABASE[field.productType] || []).map(p => (
-                                                <option key={p.id} value={p.name}>{p.brand} - {p.name}</option>
-                                            ))}
-                                        </select>
+                                        (() => {
+                                            let products = PRODUCT_DATABASE[field.productType] || [];
+                                            if (field.filterBy && localFormData.data[field.filterBy]) {
+                                                const filterVal = localFormData.data[field.filterBy];
+                                                products = products.filter(p => p[field.filterProp] === filterVal || p.id.includes('-other'));
+                                            }
+                                            return (
+                                                <select
+                                                    onChange={(e) => setLocalFormData({
+                                                        ...localFormData,
+                                                        data: {...localFormData.data, [field.name]: e.target.value}
+                                                    })}
+                                                    className="w-full px-4 py-2 border rounded-lg"
+                                                >
+                                                    <option value="">Select...</option>
+                                                    {products.map(p => (
+                                                        <option key={p.id} value={p.name}>{p.brand} - {p.name} {p.deck ? `(${p.deck})` : ''}</option>
+                                                    ))}
+                                                </select>
+                                            );
+                                        })()
                                     ) : field.type === 'select' ? (
                                         <select
                                             onChange={(e) => setLocalFormData({
@@ -656,13 +737,16 @@
             };
 
             const MyGarage = () => {
-                const [garageForm, setGarageForm] = useState({ name: '', type: 'mowers', selectedProduct: '', customName: '' });
+                const [garageForm, setGarageForm] = useState({ name: '', type: 'mowers', selectedProduct: '', customName: '', mowerType: '' });
 
-                const currentProducts = PRODUCT_DATABASE[garageForm.type] || [];
+                const allProducts = PRODUCT_DATABASE[garageForm.type] || [];
+                const currentProducts = (garageForm.type === 'mowers' && garageForm.mowerType)
+                    ? allProducts.filter(p => p.mowerCategory === garageForm.mowerType || p.id.includes('-other'))
+                    : allProducts;
                 const selectedProductData = currentProducts.find(p => p.id === garageForm.selectedProduct);
 
                 const handleTypeChange = (newType) => {
-                    setGarageForm({ name: '', type: newType, selectedProduct: '', customName: '' });
+                    setGarageForm({ name: '', type: newType, selectedProduct: '', customName: '', mowerType: '' });
                 };
 
                 const handleProductSelect = (productId) => {
@@ -723,6 +807,28 @@
                                         ))}
                                     </div>
                                 </div>
+
+                                {garageForm.type === 'mowers' && (
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-semibold mb-2">Mower Type</label>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {['Walk Behind', 'Riding', 'Zero Turn'].map(mt => (
+                                                <button
+                                                    key={mt}
+                                                    type="button"
+                                                    onClick={() => setGarageForm({ ...garageForm, mowerType: mt, selectedProduct: '', name: '', customName: '' })}
+                                                    className={`p-2 rounded-lg border-2 text-center text-sm font-semibold transition ${
+                                                        garageForm.mowerType === mt
+                                                            ? 'bg-[#367C2B] text-white border-[#367C2B]'
+                                                            : 'bg-white text-gray-700 border-gray-200 hover:border-[#367C2B]'
+                                                    }`}
+                                                >
+                                                    {mt}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold mb-2">Select {typeLabels[garageForm.type]}</label>
