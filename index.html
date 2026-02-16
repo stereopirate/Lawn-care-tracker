@@ -1003,3 +1003,48 @@
                                 <Dashboard />
                             </div>
                         )}
+                        {view === 'sources' && (
+                            <div>
+                                <button onClick={() => setView(null)} className="text-[#367C2B] mb-4">← Back</button>
+                                <ResearchSourcesPage />
+                            </div>
+                        )}
+                        {view === 'settings' && (
+                            <div>
+                                <button onClick={() => setView(null)} className="text-[#367C2B] mb-4">← Back</button>
+                                <Settings />
+                            </div>
+                        )}
+                    </div>
+
+                    {!view && (
+                        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-lg z-50">
+                            <div className="max-w-5xl mx-auto flex justify-around py-2">
+                                <button onClick={() => setView(null)} className="flex flex-col items-center p-2 text-[#367C2B]">
+                                    <span className="text-xl">🏠</span>
+                                    <span className="text-xs font-semibold">Home</span>
+                                </button>
+                                <button onClick={() => { setView('add'); setSelectedActivityType(null); }} className="flex flex-col items-center p-2 text-gray-600">
+                                    <span className="text-xl">➕</span>
+                                    <span className="text-xs font-semibold">Add</span>
+                                </button>
+                                <button onClick={() => setView('history')} className="flex flex-col items-center p-2 text-gray-600">
+                                    <span className="text-xl">📋</span>
+                                    <span className="text-xs font-semibold">History</span>
+                                </button>
+                                <button onClick={() => setView('dashboard')} className="flex flex-col items-center p-2 text-gray-600">
+                                    <span className="text-xl">📊</span>
+                                    <span className="text-xs font-semibold">Stats</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<LawnCareTracker />);
+    </script>
+</body>
+</html>
