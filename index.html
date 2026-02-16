@@ -85,7 +85,7 @@
             color: #555;
         }
 
-        select {
+        select, input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid #ddd;
@@ -94,7 +94,7 @@
             font-family: inherit;
         }
 
-        select:focus {
+        select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: #4a7c2c;
         }
@@ -210,6 +210,26 @@
             margin-top: 0.5rem;
         }
 
+        .equipment-item, .activity-item {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
         @media (max-width: 640px) {
             .header h1 {
                 font-size: 1.25rem;
@@ -266,12 +286,44 @@
 
         <!-- Program Display -->
         <div id="programDisplay" class="program-display"></div>
+
+        <!-- Equipment Tracker -->
+        <div class="card">
+            <h2>Equipment Tracker</h2>
+            <div class="form-group">
+                <label for="equipmentName">Equipment Name</label>
+                <input type="text" id="equipmentName" placeholder="e.g., Lawn Mower">
+            </div>
+            <div class="form-group">
+                <label for="equipmentPurchase">Purchase Date</label>
+                <input type="text" id="equipmentPurchase" placeholder="e.g., Spring 2023">
+            </div>
+            <button class="btn" onclick="addEquipment()">Add Equipment</button>
+            <div id="equipmentList" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="card">
+            <h2>Activity Log</h2>
+            <div class="form-group">
+                <label for="activityDate">Date</label>
+                <input type="text" id="activityDate" placeholder="e.g., May 15, 2024">
+            </div>
+            <div class="form-group">
+                <label for="activityDescription">Activity</label>
+                <textarea id="activityDescription" rows="3" placeholder="What did you do?"></textarea>
+            </div>
+            <button class="btn" onclick="addActivity()">Log Activity</button>
+            <div id="activityList" style="margin-top: 1rem;"></div>
+        </div>
     </div>
 
     <script src="grass-programs.js"></script>
     <script>
         let currentProgram = null;
         let weather = null;
+        let equipment = [];
+        let activities = [];
 
         // Load saved state
         function loadState() {
@@ -284,6 +336,21 @@
                     loadProgram();
                 }
             }
+            
+            // Load equipment
+            const savedEquipment = localStorage.getItem('lawnCareEquipment');
+            if (savedEquipment) {
+                equipment = JSON.parse(savedEquipment);
+                displayEquipment();
+            }
+            
+            // Load activities
+            const savedActivities = localStorage.getItem('lawnCareActivities');
+            if (savedActivities) {
+                activities = JSON.parse(savedActivities);
+                displayActivities();
+            }
+            
             fetchWeather();
         }
 
@@ -479,6 +546,68 @@
         function saveTaskState(taskId) {
             const checkbox = document.getElementById(taskId);
             localStorage.setItem(taskId, checkbox.checked);
+        }
+
+        // Equipment functions
+        function addEquipment() {
+            const name = document.getElementById('equipmentName').value;
+            const purchase = document.getElementById('equipmentPurchase').value;
+            
+            if (!name) return;
+            
+            equipment.push({ name, purchase, id: Date.now() });
+            localStorage.setItem('lawnCareEquipment', JSON.stringify(equipment));
+            
+            document.getElementById('equipmentName').value = '';
+            document.getElementById('equipmentPurchase').value = '';
+            displayEquipment();
+        }
+
+        function displayEquipment() {
+            const list = document.getElementById('equipmentList');
+            list.innerHTML = equipment.map(item => `
+                <div class="equipment-item">
+                    <div><strong>${item.name}</strong><br><small>${item.purchase || 'No date'}</small></div>
+                    <button class="delete-btn" onclick="deleteEquipment(${item.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteEquipment(id) {
+            equipment = equipment.filter(item => item.id !== id);
+            localStorage.setItem('lawnCareEquipment', JSON.stringify(equipment));
+            displayEquipment();
+        }
+
+        // Activity functions
+        function addActivity() {
+            const date = document.getElementById('activityDate').value;
+            const description = document.getElementById('activityDescription').value;
+            
+            if (!date || !description) return;
+            
+            activities.unshift({ date, description, id: Date.now() });
+            localStorage.setItem('lawnCareActivities', JSON.stringify(activities));
+            
+            document.getElementById('activityDate').value = '';
+            document.getElementById('activityDescription').value = '';
+            displayActivities();
+        }
+
+        function displayActivities() {
+            const list = document.getElementById('activityList');
+            list.innerHTML = activities.slice(0, 10).map(item => `
+                <div class="activity-item">
+                    <div><strong>${item.date}</strong><br>${item.description}</div>
+                    <button class="delete-btn" onclick="deleteActivity(${item.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteActivity(id) {
+            activities = activities.filter(item => item.id !== id);
+            localStorage.setItem('lawnCareActivities', JSON.stringify(activities));
+            displayActivities();
         }
 
         // Initialize
