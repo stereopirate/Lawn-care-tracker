@@ -48,10 +48,15 @@
         .menu-slide { animation: fadeSlideIn 0.2s ease-out; }
         .cite-btn {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 16px; height: 16px; border-radius: 50%; font-size: 10px; font-weight: 700;
+            width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700;
             color: #367C2B; background: #e8f5e9; border: 1px solid #367C2B; cursor: pointer;
             line-height: 1; vertical-align: middle; margin-left: 4px; flex-shrink: 0;
             transition: background 0.15s ease, transform 0.1s ease;
+            position: relative; -webkit-tap-highlight-color: transparent;
+        }
+        .cite-btn::before {
+            content: ''; position: absolute;
+            top: -14px; left: -14px; right: -14px; bottom: -14px;
         }
         .cite-btn:hover, .cite-btn:active { background: #367C2B; color: white; transform: scale(1.1); }
         .cite-popup {
@@ -77,17 +82,22 @@
 
             useEffect(() => {
                 if (!open) return;
-                const handleClick = (e) => {
+                const handleClose = (e) => {
                     if (popupRef.current && !popupRef.current.contains(e.target) &&
                         btnRef.current && !btnRef.current.contains(e.target)) {
                         setOpen(false);
                     }
                 };
-                document.addEventListener('mousedown', handleClick);
-                document.addEventListener('touchstart', handleClick);
+                // Delay listener registration so the opening tap/click doesn't
+                // immediately trigger the close handler on mobile
+                const raf = requestAnimationFrame(() => {
+                    document.addEventListener('mousedown', handleClose);
+                    document.addEventListener('touchstart', handleClose);
+                });
                 return () => {
-                    document.removeEventListener('mousedown', handleClick);
-                    document.removeEventListener('touchstart', handleClick);
+                    cancelAnimationFrame(raf);
+                    document.removeEventListener('mousedown', handleClose);
+                    document.removeEventListener('touchstart', handleClose);
                 };
             }, [open]);
 
@@ -112,13 +122,19 @@
                 return style;
             };
 
+            const toggle = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setOpen(prev => !prev);
+            };
+
             return (
                 <span style={{position: 'relative', display: 'inline'}}>
                     <button
                         ref={btnRef}
                         className="cite-btn"
-                        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-                        title="View sources"
+                        onClick={toggle}
+                        onTouchEnd={toggle}
                         aria-label={`Sources for ${label || 'this claim'}`}
                     >i</button>
                     {open && ReactDOM.createPortal(
