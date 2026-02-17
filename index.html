@@ -48,18 +48,22 @@
         .menu-slide { animation: fadeSlideIn 0.2s ease-out; }
         .cite-btn {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700;
-            color: #367C2B; background: #e8f5e9; border: 1px solid #367C2B; cursor: pointer;
+            width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700;
+            color: #367C2B; background: #e8f5e9; border: 1.5px solid #367C2B; cursor: pointer;
             line-height: 1; vertical-align: middle; margin-left: 4px; flex-shrink: 0;
             transition: background 0.15s ease, transform 0.1s ease;
-            position: relative; z-index: 1; -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            position: relative; z-index: 2; -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation; user-select: none;
+            min-width: 22px; min-height: 22px; padding: 0;
         }
         .cite-btn::before {
-            content: ''; position: absolute; z-index: 1;
-            top: -14px; left: -14px; right: -14px; bottom: -14px;
+            content: ''; position: absolute; z-index: 2;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
         }
         .cite-btn:hover, .cite-btn:active { background: #367C2B; color: white; transform: scale(1.1); }
+        .cite-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9998;
+        }
         .cite-popup {
             position: fixed; z-index: 9999; background: white; border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.18); border: 1px solid #e0e0e0;
@@ -75,101 +79,46 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // Citation tooltip component - shows source links on tap
+        // Citation tooltip component - shows source links on tap/click
+        // Uses a simple overlay approach instead of portals or document listeners
         const CitationBadge = ({ sources, label }) => {
             const [open, setOpen] = useState(false);
-            const btnRef = useRef(null);
-            const popupRef = useRef(null);
-            const justTouched = useRef(false);
-
-            useEffect(() => {
-                if (!open) return;
-                const handleClose = (e) => {
-                    if (popupRef.current && !popupRef.current.contains(e.target) &&
-                        btnRef.current && !btnRef.current.contains(e.target)) {
-                        setOpen(false);
-                    }
-                };
-                // Use a longer delay so ALL synthetic events from the opening
-                // tap (touchstart → touchend → mousedown → click) finish first
-                const timer = setTimeout(() => {
-                    document.addEventListener('mousedown', handleClose);
-                    document.addEventListener('touchstart', handleClose);
-                }, 300);
-                return () => {
-                    clearTimeout(timer);
-                    document.removeEventListener('mousedown', handleClose);
-                    document.removeEventListener('touchstart', handleClose);
-                };
-            }, [open]);
 
             if (!sources || sources.length === 0) return null;
 
-            const getPopupStyle = () => {
-                if (!btnRef.current) return {};
-                const rect = btnRef.current.getBoundingClientRect();
-                const spaceBelow = window.innerHeight - rect.bottom;
-                const spaceRight = window.innerWidth - rect.left;
-                const style = {};
-                if (spaceBelow > 200) {
-                    style.top = rect.bottom + 6;
-                } else {
-                    style.bottom = window.innerHeight - rect.top + 6;
-                }
-                if (spaceRight > 340) {
-                    style.left = Math.max(8, rect.left - 20);
-                } else {
-                    style.right = 8;
-                }
-                return style;
-            };
-
-            const handleTouch = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                justTouched.current = true;
-                setOpen(prev => !prev);
-                setTimeout(() => { justTouched.current = false; }, 400);
-            };
-
-            const handleClick = (e) => {
-                // Skip if this click was generated from a touch we already handled
-                if (justTouched.current) return;
-                e.preventDefault();
-                e.stopPropagation();
-                setOpen(prev => !prev);
-            };
-
             return (
-                <span style={{position: 'relative', display: 'inline'}}>
+                <span style={{position: 'relative', display: 'inline-block', verticalAlign: 'middle'}}>
                     <button
-                        ref={btnRef}
                         className="cite-btn"
-                        onTouchEnd={handleTouch}
-                        onClick={handleClick}
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
                         aria-label={`Sources for ${label || 'this claim'}`}
                     >i</button>
-                    {open && ReactDOM.createPortal(
-                        <div ref={popupRef} className="cite-popup" style={getPopupStyle()}>
-                            <div style={{fontSize: 11, fontWeight: 700, color: '#367C2B', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px'}}>
-                                {label ? `Source: ${label}` : 'Sources'}
-                            </div>
-                            {sources.map((s, i) => (
-                                <div key={i} style={{marginBottom: i < sources.length - 1 ? 8 : 0}}>
-                                    {s.url ? (
-                                        <a href={s.url} target="_blank" rel="noopener noreferrer" style={{fontSize: 13}}>
-                                            {s.name || s.institution}
-                                        </a>
-                                    ) : (
-                                        <span style={{fontSize: 13, fontWeight: 600, color: '#333'}}>{s.name || s.institution}</span>
-                                    )}
-                                    {(s.topic || s.title) && (
-                                        <div style={{fontSize: 11, color: '#666', marginTop: 1}}>{s.topic || s.title}</div>
-                                    )}
+                    {open && (
+                        <React.Fragment>
+                            <div className="cite-overlay" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(false); }} />
+                            <div className="cite-popup" style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8}}>
+                                    <div style={{fontSize: 11, fontWeight: 700, color: '#367C2B', textTransform: 'uppercase', letterSpacing: '0.5px'}}>
+                                        {label ? `Source: ${label}` : 'Sources'}
+                                    </div>
+                                    <button onClick={(e) => { e.stopPropagation(); setOpen(false); }} style={{background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: '#999', padding: '0 0 0 8px', lineHeight: 1}}>×</button>
                                 </div>
-                            ))}
-                        </div>,
-                        document.body
+                                {sources.map((s, i) => (
+                                    <div key={i} style={{marginBottom: i < sources.length - 1 ? 8 : 0}}>
+                                        {s.url ? (
+                                            <a href={s.url} target="_blank" rel="noopener noreferrer" style={{fontSize: 13}}>
+                                                {s.name || s.institution}
+                                            </a>
+                                        ) : (
+                                            <span style={{fontSize: 13, fontWeight: 600, color: '#333'}}>{s.name || s.institution}</span>
+                                        )}
+                                        {(s.topic || s.title) && (
+                                            <div style={{fontSize: 11, color: '#666', marginTop: 1}}>{s.topic || s.title}</div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </React.Fragment>
                     )}
                 </span>
             );
