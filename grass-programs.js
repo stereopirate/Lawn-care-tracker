@@ -100,8 +100,8 @@ const grassPrograms = {
             }
         ],
         sources: [
-            { institution: "Penn State Extension", title: "Tall Fescue Maintenance" },
-            { institution: "Purdue Extension", title: "Cool-Season Grass Care" }
+            { institution: "Penn State Extension", title: "Tall Fescue Lawn Maintenance Calendar", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "Purdue Extension", title: "Cool-Season Grass Care", url: "https://www.purdue.edu/hla/sites/turf/tall-fescue/" }
         ]
     },
 
@@ -157,8 +157,8 @@ const grassPrograms = {
             }
         ],
         sources: [
-            { institution: "Penn State Extension" },
-            { institution: "Purdue Extension" }
+            { institution: "Penn State Extension", title: "Lawn Maintenance Calendar", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "Purdue Extension", title: "Cool-Season Lawn Care", url: "https://www.purdue.edu/hla/sites/turf/tall-fescue/" }
         ]
     },
 
@@ -212,8 +212,8 @@ const grassPrograms = {
             }
         ],
         sources: [
-            { institution: "Penn State Extension" },
-            { institution: "NC State Extension" }
+            { institution: "Penn State Extension", title: "Tall Fescue Maintenance", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "NC State Extension", title: "Carolina Lawns: Tall Fescue", url: "https://content.ces.ncsu.edu/carolina-lawns" }
         ]
     },
 
@@ -242,4 +242,35 @@ const grassPrograms = {
                 month: "June-August",
                 importance: "CRITICAL - Heat Stress Period",
                 tasks: [
-                    "RAISE mowing to 4 inches (critical for summer​​​​​​​​​​​​​​​​
+                    "RAISE mowing to 4 inches (critical for summer survival)",
+                    "Minimize fertilization - 0.5 lb N max if needed",
+                    "Water deeply 1.5 inches per week",
+                    "Watch for brown patch disease",
+                    "Accept some browning - it will recover in fall"
+                ]
+            },
+            {
+                month: "September",
+                importance: "MOST IMPORTANT MONTH",
+                tasks: [
+                    "Heavy fertilization: 1.5 lb N per 1,000 sq ft",
+                    "Core aerate",
+                    "Overseed heavily: 8-10 lbs per 1,000 sq ft (transition zone needs more)",
+                    "Soil test"
+                ]
+            },
+            {
+                month: "October-November",
+                tasks: [
+                    "Fall fertilization: 1 lb N per 1,000 sq ft each month",
+                    "Apply lime if pH below 6.0",
+                    "Continue mowing until dormant"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "NC State Extension", title: "Tall Fescue in the Transition Zone", url: "https://content.ces.ncsu.edu/carolina-lawns" },
+            { institution: "Virginia Tech Extension", title: "Tall Fescue Management", url: "https://ext.vt.edu/lawn-garden.html" }
+        ]
+    }
+};
