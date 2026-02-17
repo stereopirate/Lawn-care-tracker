@@ -52,10 +52,11 @@
             color: #367C2B; background: #e8f5e9; border: 1px solid #367C2B; cursor: pointer;
             line-height: 1; vertical-align: middle; margin-left: 4px; flex-shrink: 0;
             transition: background 0.15s ease, transform 0.1s ease;
-            position: relative; -webkit-tap-highlight-color: transparent;
+            position: relative; z-index: 1; -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .cite-btn::before {
-            content: ''; position: absolute;
+            content: ''; position: absolute; z-index: 1;
             top: -14px; left: -14px; right: -14px; bottom: -14px;
         }
         .cite-btn:hover, .cite-btn:active { background: #367C2B; color: white; transform: scale(1.1); }
@@ -79,6 +80,7 @@
             const [open, setOpen] = useState(false);
             const btnRef = useRef(null);
             const popupRef = useRef(null);
+            const justTouched = useRef(false);
 
             useEffect(() => {
                 if (!open) return;
@@ -88,14 +90,14 @@
                         setOpen(false);
                     }
                 };
-                // Delay listener registration so the opening tap/click doesn't
-                // immediately trigger the close handler on mobile
-                const raf = requestAnimationFrame(() => {
+                // Use a longer delay so ALL synthetic events from the opening
+                // tap (touchstart → touchend → mousedown → click) finish first
+                const timer = setTimeout(() => {
                     document.addEventListener('mousedown', handleClose);
                     document.addEventListener('touchstart', handleClose);
-                });
+                }, 300);
                 return () => {
-                    cancelAnimationFrame(raf);
+                    clearTimeout(timer);
                     document.removeEventListener('mousedown', handleClose);
                     document.removeEventListener('touchstart', handleClose);
                 };
@@ -122,7 +124,17 @@
                 return style;
             };
 
-            const toggle = (e) => {
+            const handleTouch = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                justTouched.current = true;
+                setOpen(prev => !prev);
+                setTimeout(() => { justTouched.current = false; }, 400);
+            };
+
+            const handleClick = (e) => {
+                // Skip if this click was generated from a touch we already handled
+                if (justTouched.current) return;
                 e.preventDefault();
                 e.stopPropagation();
                 setOpen(prev => !prev);
@@ -133,7 +145,8 @@
                     <button
                         ref={btnRef}
                         className="cite-btn"
-                        onClick={toggle}
+                        onTouchEnd={handleTouch}
+                        onClick={handleClick}
                         aria-label={`Sources for ${label || 'this claim'}`}
                     >i</button>
                     {open && ReactDOM.createPortal(
