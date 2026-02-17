@@ -46,13 +46,107 @@
         .btn-press:active { transform: scale(0.95); opacity: 0.9; }
         .nav-item { transition: background-color 0.2s ease, color 0.2s ease; }
         .menu-slide { animation: fadeSlideIn 0.2s ease-out; }
+        .cite-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 16px; height: 16px; border-radius: 50%; font-size: 10px; font-weight: 700;
+            color: #367C2B; background: #e8f5e9; border: 1px solid #367C2B; cursor: pointer;
+            line-height: 1; vertical-align: middle; margin-left: 4px; flex-shrink: 0;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+        .cite-btn:hover, .cite-btn:active { background: #367C2B; color: white; transform: scale(1.1); }
+        .cite-popup {
+            position: fixed; z-index: 9999; background: white; border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.18); border: 1px solid #e0e0e0;
+            padding: 12px 16px; max-width: 320px; min-width: 220px;
+            animation: fadeSlideIn 0.15s ease-out;
+        }
+        .cite-popup a { color: #367C2B; text-decoration: underline; font-weight: 600; }
+        .cite-popup a:hover { color: #2d6323; }
     </style>
     <div id="root"></div>
 
     <script src="grass-programs.js"></script>
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        
+        const { useState, useEffect, useRef } = React;
+
+        // Citation tooltip component - shows source links on tap
+        const CitationBadge = ({ sources, label }) => {
+            const [open, setOpen] = useState(false);
+            const btnRef = useRef(null);
+            const popupRef = useRef(null);
+
+            useEffect(() => {
+                if (!open) return;
+                const handleClick = (e) => {
+                    if (popupRef.current && !popupRef.current.contains(e.target) &&
+                        btnRef.current && !btnRef.current.contains(e.target)) {
+                        setOpen(false);
+                    }
+                };
+                document.addEventListener('mousedown', handleClick);
+                document.addEventListener('touchstart', handleClick);
+                return () => {
+                    document.removeEventListener('mousedown', handleClick);
+                    document.removeEventListener('touchstart', handleClick);
+                };
+            }, [open]);
+
+            if (!sources || sources.length === 0) return null;
+
+            const getPopupStyle = () => {
+                if (!btnRef.current) return {};
+                const rect = btnRef.current.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const spaceRight = window.innerWidth - rect.left;
+                const style = {};
+                if (spaceBelow > 200) {
+                    style.top = rect.bottom + 6;
+                } else {
+                    style.bottom = window.innerHeight - rect.top + 6;
+                }
+                if (spaceRight > 340) {
+                    style.left = Math.max(8, rect.left - 20);
+                } else {
+                    style.right = 8;
+                }
+                return style;
+            };
+
+            return (
+                <span style={{position: 'relative', display: 'inline'}}>
+                    <button
+                        ref={btnRef}
+                        className="cite-btn"
+                        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+                        title="View sources"
+                        aria-label={`Sources for ${label || 'this claim'}`}
+                    >i</button>
+                    {open && ReactDOM.createPortal(
+                        <div ref={popupRef} className="cite-popup" style={getPopupStyle()}>
+                            <div style={{fontSize: 11, fontWeight: 700, color: '#367C2B', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px'}}>
+                                {label ? `Source: ${label}` : 'Sources'}
+                            </div>
+                            {sources.map((s, i) => (
+                                <div key={i} style={{marginBottom: i < sources.length - 1 ? 8 : 0}}>
+                                    {s.url ? (
+                                        <a href={s.url} target="_blank" rel="noopener noreferrer" style={{fontSize: 13}}>
+                                            {s.name || s.institution}
+                                        </a>
+                                    ) : (
+                                        <span style={{fontSize: 13, fontWeight: 600, color: '#333'}}>{s.name || s.institution}</span>
+                                    )}
+                                    {(s.topic || s.title) && (
+                                        <div style={{fontSize: 11, color: '#666', marginTop: 1}}>{s.topic || s.title}</div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>,
+                        document.body
+                    )}
+                </span>
+            );
+        };
+
         // Comprehensive Product Database - COMPLETE
         const PRODUCT_DATABASE = {
             mowers: [
@@ -381,7 +475,11 @@
                     '8': 'Challenging - will struggle in summer. Consider warm-season alternatives.',
                     '9': 'Not recommended - too hot. Switch to bermuda, zoysia, or st. augustine.'
                 },
-                source: 'Penn State Extension, Purdue Extension, NC State Extension'
+                sources: [
+                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Tall Fescue Lawn Maintenance Calendar' },
+                    { name: 'Purdue Extension', url: 'https://www.purdue.edu/hla/sites/turf/tall-fescue/', topic: 'Tall Fescue Management' },
+                    { name: 'NC State Extension', url: 'https://content.ces.ncsu.edu/carolina-lawns', topic: 'Carolina Lawns: Tall Fescue' }
+                ]
             },
             'kentucky-bluegrass': {
                 name: 'Kentucky Bluegrass',
@@ -411,7 +509,11 @@
                     '8': 'Not recommended without irrigation and shade.',
                     '9': 'Not viable - too hot.'
                 },
-                source: 'Penn State Extension, Michigan State Extension, University of Minnesota'
+                sources: [
+                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Kentucky Bluegrass Lawn Maintenance' },
+                    { name: 'Michigan State Extension', url: 'https://www.canr.msu.edu/turf/kentucky-bluegrass', topic: 'Kentucky Bluegrass Care' },
+                    { name: 'University of Minnesota Extension', url: 'https://extension.umn.edu/lawn-care/kentucky-bluegrass', topic: 'KBG for Northern Climates' }
+                ]
             },
             'perennial-ryegrass': {
                 name: 'Perennial Ryegrass',
@@ -441,7 +543,10 @@
                     '8': 'Winter overseed only.',
                     '9': 'Winter overseed only.'
                 },
-                source: 'Rutgers Extension, Penn State Extension'
+                sources: [
+                    { name: 'Rutgers Cooperative Extension', url: 'https://njaes.rutgers.edu/fs1316/', topic: 'Perennial Ryegrass Turf Management' },
+                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Perennial Ryegrass Maintenance' }
+                ]
             },
             'bermuda': {
                 name: 'Bermudagrass',
@@ -471,7 +576,11 @@
                     '8': 'Excellent - this is bermuda country.',
                     '9': 'Excellent - thrives with proper management.'
                 },
-                source: 'NC State Extension, Texas A&M AgriLife, University of Georgia Extension'
+                sources: [
+                    { name: 'NC State Extension', url: 'https://content.ces.ncsu.edu/carolina-lawns', topic: 'Bermudagrass Maintenance' },
+                    { name: 'Texas A&M AgriLife', url: 'https://agrilifeextension.tamu.edu/bermudagrass/', topic: 'Bermudagrass Management Guide' },
+                    { name: 'UGA Extension', url: 'https://extension.uga.edu/publications/lawn-garden.html', topic: 'Bermudagrass Calendar' }
+                ]
             },
             'zoysia': {
                 name: 'Zoysiagrass',
@@ -501,7 +610,11 @@
                     '8': 'Excellent performance.',
                     '9': 'Good but bermuda or st. augustine may perform better.'
                 },
-                source: 'Kansas State Extension, Clemson Extension, NC State Extension'
+                sources: [
+                    { name: 'Kansas State Extension', url: 'https://www.bookstore.ksre.ksu.edu/pubs/MF3280.pdf', topic: 'Zoysiagrass Lawn Care' },
+                    { name: 'Clemson Extension', url: 'https://www.clemson.edu/extension/hgic/plants/landscape/lawns/hgic1214.html', topic: 'Zoysiagrass Maintenance' },
+                    { name: 'NC State Extension', url: 'https://content.ces.ncsu.edu/carolina-lawns', topic: 'Zoysiagrass in the Transition Zone' }
+                ]
             },
             'st-augustine': {
                 name: 'St. Augustinegrass',
@@ -531,7 +644,11 @@
                     '8': 'Good in southern Zone 8. Protect from hard freezes.',
                     '9': 'Excellent - ideal climate for st. augustine.'
                 },
-                source: 'University of Florida IFAS, Texas A&M AgriLife, LSU AgCenter'
+                sources: [
+                    { name: 'UF/IFAS Extension', url: 'https://edis.ifas.ufl.edu/topic-st-augustinegrass', topic: 'St. Augustinegrass for Florida Lawns' },
+                    { name: 'Texas A&M AgriLife', url: 'https://agrilifeextension.tamu.edu/st-augustinegrass/', topic: 'St. Augustinegrass Management' },
+                    { name: 'LSU AgCenter', url: 'https://www.lsuagcenter.com/topics/lawn_garden/lawns', topic: 'St. Augustinegrass Care' }
+                ]
             }
         };
 
@@ -686,7 +803,12 @@
                     <div className={`${bannerBg} border-l-4 ${bannerBorder} px-4 py-2.5 animate-fade-in`}>
                         <div className="max-w-5xl mx-auto flex items-center gap-2">
                             <span className="text-lg">{bannerIcon}</span>
-                            <span className="text-sm font-semibold text-gray-700">{bannerText}</span>
+                            <span className="text-sm font-semibold text-gray-700">{bannerText}
+                                <CitationBadge sources={[
+                                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Seasonal lawn care timing' },
+                                    { name: 'NC State Extension', url: 'https://content.ces.ncsu.edu/carolina-lawns', topic: 'Regional seasonal guidelines' }
+                                ]} label="Seasonal timing" />
+                            </span>
                         </div>
                     </div>
                 );
@@ -722,8 +844,13 @@
                                 </div>
                                 <div className="text-center p-2">
                                     <div className="text-3xl font-bold text-[#367C2B]">{weather.soilTemp}°</div>
-                                    <div className="text-xs text-gray-600 mt-1">Soil Temp</div>
-                                    <div className="text-xs text-gray-500">at 4" depth</div>
+                                    <div className="text-xs text-gray-600 mt-1">Soil Temp
+                                        <CitationBadge sources={[
+                                            { name: 'Open-Meteo API', url: 'https://open-meteo.com/', topic: 'Air temp data' },
+                                            { name: 'Estimation method', topic: 'Soil temp ≈ air temp minus 7°F (approximation for 4" depth)' }
+                                        ]} label="Soil temp estimate" />
+                                    </div>
+                                    <div className="text-xs text-gray-500">est. at 4" depth</div>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-gray-100">
@@ -739,7 +866,12 @@
                         </div>
 
                         <div className="bg-[#e8f5e9] rounded-xl p-4 border-l-4 border-[#4a7c2c]">
-                            <div className="font-bold text-sm text-[#367C2B] mb-1">Recommendation:</div>
+                            <div className="font-bold text-sm text-[#367C2B] mb-1">Recommendation:
+                                <CitationBadge sources={[
+                                    { name: 'Purdue Extension', url: 'https://www.purdue.edu/hla/sites/turf/', topic: 'Soil temperature and grass activity thresholds' },
+                                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Cool-season grass growth windows' }
+                                ]} label="Soil temp thresholds" />
+                            </div>
                             <div className="text-sm text-gray-700">{recommendation}</div>
                         </div>
 
@@ -1498,7 +1630,9 @@
                             <div className="text-lg font-bold">{grassInfo ? grassInfo.name : profileData.specificGrass}</div>
                             <div className="text-sm opacity-90 mt-1">
                                 {grassInfo && <span>{grassInfo.season}</span>}
-                                {zoneInfo && <span> · Zone {profileData.zone} ({zoneInfo.climate})</span>}
+                                {zoneInfo && <span> · Zone {profileData.zone} ({zoneInfo.climate})
+                                    <CitationBadge sources={[{ name: 'USDA Plant Hardiness Zone Map', url: 'https://planthardiness.ars.usda.gov/', topic: 'Official zone classifications' }]} label="USDA Zone" />
+                                </span>}
                                 {profileData.lawnSize && <span> · {Number(profileData.lawnSize).toLocaleString()} sq ft</span>}
                             </div>
                             {grassInfo && (
@@ -1518,7 +1652,7 @@
                                         ? 'bg-yellow-50 border-yellow-500'
                                         : 'bg-[#e8f5e9] border-[#367C2B]'
                             }`}>
-                                <div className="font-bold text-sm mb-1">Zone {profileData.zone} Compatibility</div>
+                                <div className="font-bold text-sm mb-1">Zone {profileData.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
                                 <div className="text-sm text-gray-700">{grassInfo.zoneNotes[profileData.zone]}</div>
                             </div>
                         )}
@@ -1526,7 +1660,7 @@
                         {/* Quick reference stats */}
                         {grassInfo && (
                             <div className="bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Quick Reference</h3>
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Quick Reference <CitationBadge sources={grassInfo.sources} label="Grass care specs" /></h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="bg-gray-50 rounded-lg p-3 text-center">
                                         <div className="text-xs text-gray-500 mb-1">Mow Height</div>
@@ -1570,7 +1704,7 @@
                         {/* Current month tasks from grassPrograms */}
                         {currentTasks && (
                             <div className="bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-1">This Month's Tasks</h3>
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-1">This Month's Tasks <CitationBadge sources={grassInfo ? grassInfo.sources : null} label="Monthly program" /></h3>
                                 <div className="text-xs text-gray-500 mb-3">{currentTasks.month}{currentTasks.importance ? ` - ${currentTasks.importance}` : ''}</div>
                                 <ul className="space-y-2">
                                     {currentTasks.tasks.map((task, i) => (
@@ -1620,7 +1754,7 @@
                             return (
                                 <div className="bg-white rounded-xl shadow-lg p-4">
                                     <div className="flex items-center justify-between mb-3">
-                                        <h3 className="text-sm font-bold text-[#367C2B] uppercase">Full Year Program</h3>
+                                        <h3 className="text-sm font-bold text-[#367C2B] uppercase">Full Year Program <CitationBadge sources={program.sources} label="Annual program" /></h3>
                                         <button
                                             onClick={() => setShowFullProgram(!showFullProgram)}
                                             className="text-xs font-semibold text-[#367C2B] border border-[#367C2B] rounded-lg px-3 py-1 hover:bg-[#367C2B]/10"
@@ -1663,8 +1797,15 @@
                                                 </div>
                                             ))}
                                             {program.sources && program.sources.length > 0 && (
-                                                <div className="text-xs text-gray-400 text-center mt-2">
-                                                    Sources: {program.sources.map(s => s.institution).join(', ')}
+                                                <div className="text-xs text-gray-400 text-center mt-3 pt-3 border-t border-gray-100">
+                                                    Sources: {program.sources.map((s, i) => (
+                                                        <span key={i}>
+                                                            {i > 0 && ', '}
+                                                            {s.url ? (
+                                                                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] underline hover:text-[#2d6323]">{s.institution}</a>
+                                                            ) : s.institution}
+                                                        </span>
+                                                    ))}
                                                 </div>
                                             )}
                                         </div>
@@ -1679,7 +1820,7 @@
                         {/* Key tips */}
                         {grassInfo && grassInfo.keyTips && (
                             <div className="bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Key Tips for {grassInfo.name}</h3>
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Key Tips for {grassInfo.name} <CitationBadge sources={grassInfo.sources} label="Care tips" /></h3>
                                 <ul className="space-y-2">
                                     {grassInfo.keyTips.map((tip, i) => (
                                         <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
@@ -1694,7 +1835,7 @@
                         {/* Common issues */}
                         {grassInfo && grassInfo.commonIssues && (
                             <div className="bg-white rounded-xl shadow-lg p-4">
-                                <h3 className="text-sm font-bold text-orange-600 uppercase mb-3">Watch Out For</h3>
+                                <h3 className="text-sm font-bold text-orange-600 uppercase mb-3">Watch Out For <CitationBadge sources={grassInfo.sources} label="Common issues" /></h3>
                                 <ul className="space-y-2">
                                     {grassInfo.commonIssues.map((issue, i) => (
                                         <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
@@ -1706,10 +1847,27 @@
                             </div>
                         )}
 
-                        {/* Research source */}
-                        {grassInfo && grassInfo.source && (
-                            <div className="text-xs text-gray-400 text-center mt-2 px-4">
-                                Research sources: {grassInfo.source}
+                        {/* Research sources with links */}
+                        {grassInfo && grassInfo.sources && grassInfo.sources.length > 0 && (
+                            <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+                                <div className="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-1">
+                                    <span>📚</span> Research Sources
+                                </div>
+                                <div className="space-y-1">
+                                    {grassInfo.sources.map((s, i) => (
+                                        <div key={i} className="flex items-start gap-2 text-xs">
+                                            <span className="text-[#367C2B] mt-0.5">·</span>
+                                            {s.url ? (
+                                                <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">
+                                                    {s.name}
+                                                </a>
+                                            ) : (
+                                                <span className="text-gray-600 font-semibold">{s.name}</span>
+                                            )}
+                                            {s.topic && <span className="text-gray-400">— {s.topic}</span>}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
