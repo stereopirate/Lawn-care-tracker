@@ -9,9 +9,42 @@ This file provides context, conventions, and development guidance for AI assista
 **Easy Green** is a research-backed lawn care tracking Progressive Web App (PWA). It is entirely client-side — no backend, no build step, no npm. The app runs directly in the browser using CDN-loaded dependencies.
 
 - **App name**: Easy Green – Your Lawn Care Made Simple
+- **Live URL**: `https://stereopirate.github.io/Lawn-care-tracker/`
 - **Primary file**: `index.html` (~2,440 lines, contains all React app logic)
 - **Theme color**: `#367C2B` (forest green)
-- **Target users**: Homeowners tracking lawn maintenance by grass type and USDA hardiness zone
+- **Target users**: DIY homeowners tracking their own lawn and landscape maintenance by grass type and USDA hardiness zone
+- **Hosting**: GitHub Pages (free tier) — the app must remain statically hostable with zero server costs
+
+---
+
+## Project Rules (Owner Instructions)
+
+These rules come directly from the project owner and **must be followed in every session**:
+
+### 1. Keep It Simple and Free
+- The app must remain hostable on **GitHub Pages for free** — no paid services, no backend, no databases, no server-side logic
+- Avoid adding complexity that would require a build step, server, or paid CDN beyond the existing free CDN dependencies
+
+### 2. Always Work from the Latest Files
+- Before making any changes, always read the **current state of the file** being modified — do not rely on memory or prior conversation turns
+- After changes are approved, the updated files should be treated as the new canonical version
+
+### 3. Provide a Preview After Every Change
+- After any code change to `index.html` or other UI files, **provide an updated preview** (rendered HTML snippet or description of what changed visually) so the owner can review before publishing
+
+### 4. Mobile-First Design
+- **Primary design target is mobile** — assume the user is on a phone in their yard
+- Critical information must be immediately visible; secondary details go behind accordions, collapsibles, or "show more" patterns
+- Never add information-dense layouts that only work on desktop
+
+### 5. Suggest UX Improvements
+- When relevant, **proactively suggest improvements** that would benefit a DIY homeowner tracking lawn and landscape maintenance
+- Keep suggestions practical and tied to real homeowner workflows (e.g., seasonal reminders, equipment maintenance alerts, quick-log shortcuts)
+
+### 6. Never Remove Content Without Explicit Approval
+- **Do not remove any existing feature, section, or piece of content** unless the owner has explicitly requested its removal
+- When in doubt, ask before deleting — additions are always safer than removals
+- If a change requires removing something, state clearly what will be removed and get confirmation first
 
 ---
 
@@ -154,10 +187,13 @@ The app uses a `currentView` state variable to switch between views — there is
 
 Since there is no build step, development is direct file editing:
 
-1. Edit `index.html`, `grass-programs.js`, or `v4-new-components.js`
-2. Open `index.html` in a browser (or serve via any static file server)
-3. Hard-refresh to pick up changes (Ctrl+Shift+R / Cmd+Shift+R)
-4. Test on both desktop and mobile viewport sizes
+1. **Read the current file** before making any edits — always reference the latest version
+2. Edit `index.html`, `grass-programs.js`, or `v4-new-components.js`
+3. **Provide a preview** of the changed UI or describe what changed visually after every edit
+4. Wait for owner approval before treating the change as final
+5. Open `index.html` in a browser (or serve via any static file server) for local testing
+6. Hard-refresh to pick up changes (Ctrl+Shift+R / Cmd+Shift+R)
+7. Test at **mobile viewport first** (375px wide), then desktop
 
 **No linter, formatter, or test runner is configured.** Testing is manual via browser.
 
@@ -176,9 +212,12 @@ npx serve .
 - **Do not introduce a build step** (webpack, Vite, etc.) without explicit instruction — this is intentional
 - **Do not add npm** or a `package.json` — the CDN approach is intentional for zero-dependency deployment
 - **Do not use React Router** — view navigation is state-based
-- **Mobile-first**: All UI changes must be tested at mobile viewport. Citation tooltips must use the fixed-center popup approach, not hover-based tooltips
+- **Mobile-first**: Design for 375px phone screens first. Important info is always visible; secondary info goes in accordions or "show more" patterns. Citation tooltips must use the fixed-center popup approach, not hover-based tooltips
+- **Never remove content** without explicit owner approval — ask before deleting any feature, section, or data
+- **GitHub Pages only**: No backends, no paid APIs, no server-side logic — the app must remain a free static site
 - **All lawn care recommendations must cite sources** from `RESEARCH_SOURCES` — do not add uncited claims
 - **Grass program data** is authoritative and based on university extension research — do not alter schedules without sourced justification
+- **Suggest UX improvements** relevant to a DIY homeowner's workflow when opportunities arise
 
 ---
 
