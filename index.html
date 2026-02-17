@@ -48,10 +48,15 @@
         .menu-slide { animation: fadeSlideIn 0.2s ease-out; }
         .cite-btn {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 16px; height: 16px; border-radius: 50%; font-size: 10px; font-weight: 700;
+            width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700;
             color: #367C2B; background: #e8f5e9; border: 1px solid #367C2B; cursor: pointer;
             line-height: 1; vertical-align: middle; margin-left: 4px; flex-shrink: 0;
             transition: background 0.15s ease, transform 0.1s ease;
+            position: relative; -webkit-tap-highlight-color: transparent;
+        }
+        .cite-btn::before {
+            content: ''; position: absolute;
+            top: -14px; left: -14px; right: -14px; bottom: -14px;
         }
         .cite-btn:hover, .cite-btn:active { background: #367C2B; color: white; transform: scale(1.1); }
         .cite-popup {
@@ -77,17 +82,22 @@
 
             useEffect(() => {
                 if (!open) return;
-                const handleClick = (e) => {
+                const handleClose = (e) => {
                     if (popupRef.current && !popupRef.current.contains(e.target) &&
                         btnRef.current && !btnRef.current.contains(e.target)) {
                         setOpen(false);
                     }
                 };
-                document.addEventListener('mousedown', handleClick);
-                document.addEventListener('touchstart', handleClick);
+                // Delay listener registration so the opening tap/click doesn't
+                // immediately trigger the close handler on mobile
+                const raf = requestAnimationFrame(() => {
+                    document.addEventListener('mousedown', handleClose);
+                    document.addEventListener('touchstart', handleClose);
+                });
                 return () => {
-                    document.removeEventListener('mousedown', handleClick);
-                    document.removeEventListener('touchstart', handleClick);
+                    cancelAnimationFrame(raf);
+                    document.removeEventListener('mousedown', handleClose);
+                    document.removeEventListener('touchstart', handleClose);
                 };
             }, [open]);
 
@@ -112,13 +122,19 @@
                 return style;
             };
 
+            const toggle = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setOpen(prev => !prev);
+            };
+
             return (
                 <span style={{position: 'relative', display: 'inline'}}>
                     <button
                         ref={btnRef}
                         className="cite-btn"
-                        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-                        title="View sources"
+                        onClick={toggle}
+                        onTouchEnd={toggle}
                         aria-label={`Sources for ${label || 'this claim'}`}
                     >i</button>
                     {open && ReactDOM.createPortal(
@@ -803,12 +819,7 @@
                     <div className={`${bannerBg} border-l-4 ${bannerBorder} px-4 py-2.5 animate-fade-in`}>
                         <div className="max-w-5xl mx-auto flex items-center gap-2">
                             <span className="text-lg">{bannerIcon}</span>
-                            <span className="text-sm font-semibold text-gray-700">{bannerText}
-                                <CitationBadge sources={[
-                                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Seasonal lawn care timing' },
-                                    { name: 'NC State Extension', url: 'https://content.ces.ncsu.edu/carolina-lawns', topic: 'Regional seasonal guidelines' }
-                                ]} label="Seasonal timing" />
-                            </span>
+                            <span className="text-sm font-semibold text-gray-700">{bannerText}</span>
                         </div>
                     </div>
                 );
@@ -844,12 +855,7 @@
                                 </div>
                                 <div className="text-center p-2">
                                     <div className="text-3xl font-bold text-[#367C2B]">{weather.soilTemp}°</div>
-                                    <div className="text-xs text-gray-600 mt-1">Soil Temp
-                                        <CitationBadge sources={[
-                                            { name: 'Open-Meteo API', url: 'https://open-meteo.com/', topic: 'Air temp data' },
-                                            { name: 'Estimation method', topic: 'Soil temp ≈ air temp minus 7°F (approximation for 4" depth)' }
-                                        ]} label="Soil temp estimate" />
-                                    </div>
+                                    <div className="text-xs text-gray-600 mt-1">Soil Temp</div>
                                     <div className="text-xs text-gray-500">est. at 4" depth</div>
                                 </div>
                             </div>
@@ -866,12 +872,7 @@
                         </div>
 
                         <div className="bg-[#e8f5e9] rounded-xl p-4 border-l-4 border-[#4a7c2c]">
-                            <div className="font-bold text-sm text-[#367C2B] mb-1">Recommendation:
-                                <CitationBadge sources={[
-                                    { name: 'Purdue Extension', url: 'https://www.purdue.edu/hla/sites/turf/', topic: 'Soil temperature and grass activity thresholds' },
-                                    { name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Cool-season grass growth windows' }
-                                ]} label="Soil temp thresholds" />
-                            </div>
+                            <div className="font-bold text-sm text-[#367C2B] mb-1">Recommendation:</div>
                             <div className="text-sm text-gray-700">{recommendation}</div>
                         </div>
 
@@ -898,43 +899,6 @@
                                 </div>
                             );
                         })()}
-                    </div>
-                );
-            };
-
-            const HomeStats = () => {
-                const now = new Date();
-                const yearActivities = activities.filter(a => new Date(a.date).getFullYear() === now.getFullYear());
-                const stats = {
-                    total: yearActivities.length,
-                    mowing: yearActivities.filter(a => a.type === 'mowing').length,
-                    fertilizer: yearActivities.filter(a => a.type === 'fertilizer').length,
-                    watering: yearActivities.filter(a => a.type === 'watering').length
-                };
-
-                if (activities.length === 0) return null;
-
-                return (
-                    <div className="mb-6 animate-fade-in">
-                        <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">This Year's Stats</h3>
-                        <div className="grid grid-cols-4 gap-2">
-                            <div className="bg-white rounded-xl p-3 shadow-md text-center border-t-2 border-[#367C2B]">
-                                <div className="text-2xl font-bold text-[#367C2B]">{stats.total}</div>
-                                <div className="text-xs text-gray-500">Total</div>
-                            </div>
-                            <div className="bg-white rounded-xl p-3 shadow-md text-center border-t-2 border-[#367C2B]">
-                                <div className="text-2xl font-bold text-[#367C2B]">{stats.mowing}</div>
-                                <div className="text-xs text-gray-500">Mows</div>
-                            </div>
-                            <div className="bg-white rounded-xl p-3 shadow-md text-center border-t-2 border-[#F97316]">
-                                <div className="text-2xl font-bold text-[#F97316]">{stats.fertilizer}</div>
-                                <div className="text-xs text-gray-500">Feeds</div>
-                            </div>
-                            <div className="bg-white rounded-xl p-3 shadow-md text-center border-t-2 border-[#3B82F6]">
-                                <div className="text-2xl font-bold text-[#3B82F6]">{stats.watering}</div>
-                                <div className="text-xs text-gray-500">Water</div>
-                            </div>
-                        </div>
                     </div>
                 );
             };
@@ -2452,7 +2416,6 @@
                         {!view && (
                             <div>
                                 <WeatherSnapshot />
-                                <HomeStats />
                             </div>
                         )}
                         {view === 'add' && (
