@@ -134,7 +134,6 @@
                         ref={btnRef}
                         className="cite-btn"
                         onClick={toggle}
-                        onTouchEnd={toggle}
                         aria-label={`Sources for ${label || 'this claim'}`}
                     >i</button>
                     {open && ReactDOM.createPortal(
@@ -1701,7 +1700,7 @@
 
                             const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
                             const currentMonth = months[new Date().getMonth()];
-                            const [showFullProgram, setShowFullProgram] = React.useState(false);
+                            const [showFullProgram, setShowFullProgram] = React.useState(true);
 
                             const isCurrentMonth = (monthStr) => {
                                 if (monthStr === currentMonth) return true;
