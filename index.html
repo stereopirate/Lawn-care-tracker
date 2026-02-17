@@ -1144,7 +1144,7 @@
                 };
 
                 const typeLabels = { mowers: 'Mower', spreaders: 'Spreader', trimmers: 'Trimmer' };
-                const typeIcons = { mowers: '🚜', spreaders: '📡', trimmers: '✂️' };
+                const typeImages = { mowers: 'activity-mowing.png', spreaders: 'activity-fertilizer.png', trimmers: 'activity-trimming.png' };
 
                 return (
                     <div>
@@ -1155,7 +1155,7 @@
                             </button>
                         </div>
 
-                        <div className="bg-white rounded-lg shadow p-4 mb-4">
+                        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
                             <h3 className="font-bold mb-4">Add Equipment</h3>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-4">
@@ -1166,13 +1166,18 @@
                                                 key={key}
                                                 type="button"
                                                 onClick={() => handleTypeChange(key)}
-                                                className={`p-3 rounded-lg border-2 text-center transition ${
+                                                className={`p-3 rounded-lg border-2 text-center transition btn-press ${
                                                     garageForm.type === key
                                                         ? 'bg-[#367C2B] text-white border-[#367C2B]'
                                                         : 'bg-white text-gray-700 border-gray-200 hover:border-[#367C2B]'
                                                 }`}
                                             >
-                                                <div className="text-2xl">{typeIcons[key]}</div>
+                                                <img
+                                                    src={typeImages[key]}
+                                                    alt={label}
+                                                    className="w-12 h-12 mx-auto object-contain"
+                                                    style={garageForm.type === key ? {filter: 'brightness(0) invert(1)'} : {}}
+                                                />
                                                 <div className="text-xs font-semibold mt-1">{label}</div>
                                             </button>
                                         ))}
@@ -1269,7 +1274,11 @@
                                             <div key={item.id} className="bg-gray-50 p-4 rounded-lg">
                                                 <div className="flex justify-between items-start">
                                                     <div className="flex gap-3">
-                                                        <div className="text-3xl">{typeIcons[item.type] || '🔧'}</div>
+                                                        <img
+                                                            src={typeImages[item.type] || 'activity-general.png'}
+                                                            alt={typeLabels[item.type] || item.type}
+                                                            className="w-12 h-12 object-contain"
+                                                        />
                                                         <div>
                                                             <div className="font-bold">{item.name}</div>
                                                             {item.brand && item.brand !== 'Custom' && (
