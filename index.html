@@ -953,19 +953,24 @@
                 );
 
                 let soilRec = '';
-                let soilRecColor = 'text-gray-600';
+                let soilRecColor = 'text-gray-700';
+                let soilRecBg = 'bg-gray-50 border-gray-200';
                 if (weather.soilTemp < 50) {
                     soilRec = '❄️ Too cold for most lawn activity';
-                    soilRecColor = 'text-blue-600';
+                    soilRecColor = 'text-blue-700';
+                    soilRecBg = 'bg-blue-50 border-blue-200';
                 } else if (weather.soilTemp >= 50 && weather.soilTemp <= 65) {
                     soilRec = '🌱 Good for cool-season grass care';
                     soilRecColor = 'text-green-700';
+                    soilRecBg = 'bg-green-50 border-green-200';
                 } else if (weather.soilTemp > 65 && weather.soilTemp <= 85) {
                     soilRec = '☀️ Ideal growing conditions';
                     soilRecColor = 'text-[#367C2B]';
+                    soilRecBg = 'bg-[#367C2B]/10 border-[#367C2B]/30';
                 } else {
                     soilRec = '🔥 Very warm — focus on watering';
-                    soilRecColor = 'text-orange-600';
+                    soilRecColor = 'text-orange-700';
+                    soilRecBg = 'bg-orange-50 border-orange-200';
                 }
 
                 const uvLabel = weather.uvIndex !== null
@@ -1021,7 +1026,7 @@
                         </div>
 
                         {/* === SOIL TEMP — KEY LAWN METRIC === */}
-                        <div className="bg-white rounded-xl shadow-md p-4 mb-3 border-l-4 border-amber-500">
+                        <div className="bg-white rounded-xl shadow-md p-4 mb-2 border-l-4 border-amber-500">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <div className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-0.5">Soil Temperature</div>
@@ -1034,7 +1039,12 @@
                                     <div className="text-3xl">🌍</div>
                                 </div>
                             </div>
-                            <div className={`text-sm font-semibold mt-2 ${soilRecColor}`}>{soilRec}</div>
+                        </div>
+
+                        {/* === SOIL RECOMMENDATION === */}
+                        <div className={`rounded-xl border p-3 mb-3 ${soilRecBg}`}>
+                            <div className="text-xs font-bold uppercase tracking-wide mb-0.5 opacity-60">Lawn Recommendation</div>
+                            <div className={`text-sm font-bold ${soilRecColor}`}>{soilRec}</div>
                         </div>
 
                         {/* === LAST ACTIVITY === */}
@@ -1430,7 +1440,7 @@
                                                         : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-[#367C2B]'
                                                 }`}
                                             >
-                                                <div className="w-12 h-12 mx-auto rounded-full overflow-hidden bg-white">
+                                                <div className="w-12 h-12 mx-auto rounded-lg overflow-hidden bg-white">
                                                     <img
                                                         src={typeImages[key]}
                                                         alt={label}
