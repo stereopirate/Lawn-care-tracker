@@ -678,7 +678,6 @@
             });
             const [zipLookupLoading, setZipLookupLoading] = useState(false);
             const [zipLookupError, setZipLookupError] = useState('');
-            const [homeZipInput, setHomeZipInput] = useState('');
 
             useEffect(() => {
                 const stored = localStorage.getItem('lawnCareActivities');
@@ -900,7 +899,6 @@
                         const merged = { ...(existing ? JSON.parse(existing) : {}), zone, lat, lon, zipCode: zip };
                         localStorage.setItem('lawnProfile', JSON.stringify(merged));
                         setLawnProfile(merged);
-                        setHomeZipInput('');
                     } else {
                         setZipLookupError('Zone not found for that zip code. Please select manually.');
                     }
@@ -912,6 +910,10 @@
             };
 
             const WeatherSnapshot = () => {
+                // Local state for the zip input so typing never triggers a root re-render
+                // (which would unmount this component and drop keyboard focus).
+                const [zipInput, setZipInput] = useState('');
+
                 if (weatherLoading) {
                     return (
                         <div className="bg-white rounded-xl shadow-md p-6 mb-4 animate-pulse">
@@ -933,15 +935,15 @@
                                 type="text"
                                 inputMode="numeric"
                                 maxLength={5}
-                                value={homeZipInput}
-                                onChange={(e) => { setZipLookupError(''); setHomeZipInput(e.target.value); }}
-                                onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(homeZipInput); }}
+                                value={zipInput}
+                                onChange={(e) => setZipInput(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(zipInput); }}
                                 placeholder="e.g. 43201"
                                 className="flex-1 px-3 py-2 border-2 rounded-lg text-sm"
                             />
                             <button
                                 type="button"
-                                onClick={() => lookupZoneByZip(homeZipInput)}
+                                onClick={() => lookupZoneByZip(zipInput)}
                                 disabled={zipLookupLoading}
                                 className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap"
                             >
@@ -1260,6 +1262,7 @@
                                         <input
                                             type={field.type}
                                             placeholder={field.placeholder}
+                                            value={localFormData.data[field.name] || ''}
                                             onChange={(e) => setLocalFormData({
                                                 ...localFormData,
                                                 data: {...localFormData.data, [field.name]: e.target.value}
@@ -1273,6 +1276,7 @@
                             <div className="mb-4">
                                 <label className="block text-sm font-semibold mb-2">Notes (Optional)</label>
                                 <textarea
+                                    value={localFormData.notes}
                                     onChange={(e) => setLocalFormData({...localFormData, notes: e.target.value})}
                                     rows="3"
                                     className="w-full px-4 py-2 border rounded-lg"
@@ -1640,22 +1644,25 @@
             };
 
             const LawnProfile = () => {
-                // profileFormData, setProfileFormData, profileEditing, setProfileEditing,
-                // zipLookupLoading, zipLookupError, lookupZoneByZip are all lifted to
-                // LawnCareTracker so they survive any re-render of the parent.
+                // Local form state so that typing in any field does not update root state
+                // (which would cause LawnCareTracker to re-render, unmount this component,
+                // and drop keyboard focus after every character).
+                const [localForm, setLocalForm] = useState({...profileFormData});
 
                 const save = () => {
-                    localStorage.setItem('lawnProfile', JSON.stringify(profileFormData));
-                    setLawnProfile(profileFormData);
+                    const toSave = {...localForm};
+                    localStorage.setItem('lawnProfile', JSON.stringify(toSave));
+                    setLawnProfile(toSave);
+                    setProfileFormData(toSave);
                     setProfileEditing(false);
                 };
 
-                const grassInfo = GRASS_INFO[profileFormData.specificGrass];
-                const zoneInfo = ZONE_INFO[profileFormData.zone];
+                const grassInfo = GRASS_INFO[localForm.specificGrass];
+                const zoneInfo = ZONE_INFO[localForm.zone];
 
                 // Get current month tasks from grassPrograms if available
                 const getCurrentMonthTasks = () => {
-                    if (!profileFormData.specificGrass || !profileFormData.zone) return null;
+                    if (!localForm.specificGrass || !localForm.zone) return null;
                     const keyMap = {
                         'tall-fescue': 'tallFescue',
                         'kentucky-bluegrass': 'kentuckyBluegrass',
@@ -1665,7 +1672,7 @@
                         'st-augustine': 'stAugustine'
                     };
                     // Programs are keyed by parent zone (e.g. zone 6, not 6a/6b)
-                    const programKey = keyMap[profileFormData.specificGrass] + '_zone' + getParentZone(profileFormData.zone);
+                    const programKey = keyMap[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
                     const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                     if (!program || !program.schedule) return null;
 
@@ -1698,8 +1705,8 @@
                                     <label className="block text-sm font-medium mb-2">Lawn Size (sq ft)</label>
                                     <input
                                         type="number"
-                                        value={profileFormData.lawnSize}
-                                        onChange={(e) => setProfileFormData({...profileFormData, lawnSize: e.target.value})}
+                                        value={localForm.lawnSize}
+                                        onChange={(e) => setLocalForm({...localForm, lawnSize: e.target.value})}
                                         placeholder="5000"
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     />
@@ -1711,15 +1718,15 @@
                                             type="text"
                                             inputMode="numeric"
                                             maxLength={5}
-                                            value={profileFormData.zipCode || ''}
-                                            onChange={(e) => { setZipLookupError(''); setProfileFormData({...profileFormData, zipCode: e.target.value}); }}
-                                            onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(); }}
+                                            value={localForm.zipCode || ''}
+                                            onChange={(e) => setLocalForm({...localForm, zipCode: e.target.value})}
+                                            onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(localForm.zipCode); }}
                                             placeholder="e.g. 43201"
                                             className="flex-1 px-4 py-3 border-2 rounded-lg"
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => lookupZoneByZip()}
+                                            onClick={() => lookupZoneByZip(localForm.zipCode)}
                                             disabled={zipLookupLoading}
                                             className="px-4 py-3 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap"
                                         >
@@ -1727,17 +1734,17 @@
                                         </button>
                                     </div>
                                     {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
-                                    {profileFormData.zone && ZONE_INFO[profileFormData.zone] && !zipLookupError && (
+                                    {localForm.zone && ZONE_INFO[localForm.zone] && !zipLookupError && (
                                         <div className="mt-1 text-xs text-[#367C2B] font-medium">
-                                            Zone {profileFormData.zone.toUpperCase()} detected — {ZONE_INFO[profileFormData.zone].temp}
+                                            Zone {localForm.zone.toUpperCase()} detected — {ZONE_INFO[localForm.zone].temp}
                                         </div>
                                     )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-2">USDA Climate Zone <span className="font-normal text-gray-500">(or select manually)</span></label>
                                     <select
-                                        value={profileFormData.zone}
-                                        onChange={(e) => { setZipLookupError(''); setProfileFormData({...profileFormData, zone: e.target.value}); }}
+                                        value={localForm.zone}
+                                        onChange={(e) => setLocalForm({...localForm, zone: e.target.value})}
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     >
                                         <option value="">Select...</option>
@@ -1770,8 +1777,8 @@
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Grass Type</label>
                                     <select
-                                        value={profileFormData.specificGrass}
-                                        onChange={(e) => setProfileFormData({...profileFormData, specificGrass: e.target.value})}
+                                        value={localForm.specificGrass}
+                                        onChange={(e) => setLocalForm({...localForm, specificGrass: e.target.value})}
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     >
                                         <option value="">Select...</option>
@@ -1807,13 +1814,13 @@
 
                         {/* Lawn summary header */}
                         <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] rounded-xl p-5 text-white shadow-lg">
-                            <div className="text-lg font-bold">{grassInfo ? grassInfo.name : profileFormData.specificGrass}</div>
+                            <div className="text-lg font-bold">{grassInfo ? grassInfo.name : localForm.specificGrass}</div>
                             <div className="text-sm opacity-90 mt-1">
                                 {grassInfo && <span>{grassInfo.season}</span>}
-                                {zoneInfo && <span> · Zone {profileFormData.zone} ({zoneInfo.climate})
+                                {zoneInfo && <span> · Zone {localForm.zone} ({zoneInfo.climate})
                                     <CitationBadge sources={[{ name: 'USDA Plant Hardiness Zone Map', url: 'https://planthardiness.ars.usda.gov/', topic: 'Official zone classifications' }]} label="USDA Zone" />
                                 </span>}
-                                {profileFormData.lawnSize && <span> · {Number(profileFormData.lawnSize).toLocaleString()} sq ft</span>}
+                                {localForm.lawnSize && <span> · {Number(localForm.lawnSize).toLocaleString()} sq ft</span>}
                             </div>
                             {grassInfo && (
                                 <div className="mt-3 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>
@@ -1823,7 +1830,7 @@
                         {/* Zone compatibility note */}
                         {(() => {
                             const zoneNote = grassInfo && grassInfo.zoneNotes &&
-                                (grassInfo.zoneNotes[profileFormData.zone] || grassInfo.zoneNotes[getParentZone(profileFormData.zone)]);
+                                (grassInfo.zoneNotes[localForm.zone] || grassInfo.zoneNotes[getParentZone(localForm.zone)]);
                             if (!zoneNote) return null;
                             const noteLower = zoneNote.toLowerCase();
                             const colorClass = noteLower.includes('not recommended') || noteLower.includes('not viable')
@@ -1833,7 +1840,7 @@
                                     : 'bg-[#e8f5e9] border-[#367C2B]';
                             return (
                                 <div className={`rounded-xl p-4 border-l-4 ${colorClass}`}>
-                                    <div className="font-bold text-sm mb-1">Zone {profileFormData.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
+                                    <div className="font-bold text-sm mb-1">Zone {localForm.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
                                     <div className="text-sm text-gray-700">{zoneNote}</div>
                                 </div>
                             );
@@ -1904,7 +1911,7 @@
 
                         {/* Full annual program */}
                         {(() => {
-                            if (!profileFormData.specificGrass || !profileFormData.zone) return null;
+                            if (!localForm.specificGrass || !localForm.zone) return null;
                             const keyMap = {
                                 'tall-fescue': 'tallFescue',
                                 'kentucky-bluegrass': 'kentuckyBluegrass',
@@ -1914,7 +1921,7 @@
                                 'st-augustine': 'stAugustine'
                             };
                             // Programs are keyed by parent zone (e.g. zone 6, not 6a/6b)
-                            const programKey = keyMap[profileFormData.specificGrass] + '_zone' + getParentZone(profileFormData.zone);
+                            const programKey = keyMap[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
                             const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                             if (!program || !program.schedule) return null;
 
