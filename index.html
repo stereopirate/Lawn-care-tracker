@@ -629,15 +629,30 @@
             }
         };
 
-        // Zone climate descriptions
+        // Zone climate descriptions (includes sub-zones a/b for precise identification)
         const ZONE_INFO = {
-            '4': { temp: '-30 to -20°F', climate: 'Northern Cold', description: 'Long, cold winters. Short growing season. Cool-season grasses only.' },
-            '5': { temp: '-20 to -10°F', climate: 'Northern', description: 'Cold winters, moderate summers. Ideal for cool-season grasses.' },
-            '6': { temp: '-10 to 0°F', climate: 'Moderate', description: 'Moderate winters. Good for cool-season grasses, some warm-season with care.' },
-            '7': { temp: '0 to 10°F', climate: 'Transition Zone', description: 'The toughest zone for lawns. Both cool and warm-season grasses face challenges.' },
-            '8': { temp: '10 to 20°F', climate: 'Southern', description: 'Mild winters, hot summers. Warm-season grasses thrive here.' },
-            '9': { temp: '20 to 30°F', climate: 'Deep South / Gulf', description: 'Very mild winters, long hot summers. Warm-season grasses dominate.' }
+            '4':  { temp: '-30 to -20°F', climate: 'Northern Cold', description: 'Long, cold winters. Short growing season. Cool-season grasses only.' },
+            '4a': { temp: '-30 to -25°F', climate: 'Northern Cold', description: 'Extreme cold winters. Short growing season. Cool-season grasses only.' },
+            '4b': { temp: '-25 to -20°F', climate: 'Northern Cold', description: 'Very cold winters. Short growing season. Cool-season grasses only.' },
+            '5':  { temp: '-20 to -10°F', climate: 'Northern', description: 'Cold winters, moderate summers. Ideal for cool-season grasses.' },
+            '5a': { temp: '-20 to -15°F', climate: 'Northern', description: 'Cold winters, moderate summers. Ideal for cool-season grasses.' },
+            '5b': { temp: '-15 to -10°F', climate: 'Northern', description: 'Cold winters, moderate summers. Ideal for cool-season grasses.' },
+            '6':  { temp: '-10 to 0°F', climate: 'Moderate', description: 'Moderate winters. Good for cool-season grasses, some warm-season with care.' },
+            '6a': { temp: '-10 to -5°F', climate: 'Moderate', description: 'Moderate winters, cooler half. Great for cool-season grasses; warm-season marginal.' },
+            '6b': { temp: '-5 to 0°F', climate: 'Moderate', description: 'Moderate winters, warmer half. Cool-season grasses excel; select warm-season varieties possible.' },
+            '7':  { temp: '0 to 10°F', climate: 'Transition Zone', description: 'The toughest zone for lawns. Both cool and warm-season grasses face challenges.' },
+            '7a': { temp: '0 to 5°F', climate: 'Transition Zone', description: 'Transition zone, cooler half. Cool-season grasses can struggle in summer heat.' },
+            '7b': { temp: '5 to 10°F', climate: 'Transition Zone', description: 'Transition zone, warmer half. Warm-season grasses become more reliable.' },
+            '8':  { temp: '10 to 20°F', climate: 'Southern', description: 'Mild winters, hot summers. Warm-season grasses thrive here.' },
+            '8a': { temp: '10 to 15°F', climate: 'Southern', description: 'Mild winters, hot summers. Warm-season grasses thrive; cool-season overseeding possible.' },
+            '8b': { temp: '15 to 20°F', climate: 'Southern', description: 'Mild winters, long hot summers. Warm-season grasses dominate.' },
+            '9':  { temp: '20 to 30°F', climate: 'Deep South / Gulf', description: 'Very mild winters, long hot summers. Warm-season grasses dominate.' },
+            '9a': { temp: '20 to 25°F', climate: 'Deep South / Gulf', description: 'Very mild winters, long hot summers. Warm-season grasses dominate.' },
+            '9b': { temp: '25 to 30°F', climate: 'Deep South / Gulf', description: 'Nearly frost-free, intense heat and humidity. Warm-season grasses only.' }
         };
+
+        // Strip a/b sub-zone suffix to get parent zone key (e.g. '6b' → '6')
+        const getParentZone = (zone) => zone ? zone.replace(/[ab]$/i, '') : zone;
 
         function LawnCareTracker() {
             const [activities, setActivities] = useState([]);
@@ -1527,9 +1542,37 @@
                     lawnSize: '',
                     zone: '',
                     specificGrass: '',
-                    soilType: ''
+                    soilType: '',
+                    zipCode: ''
                 });
                 const [editing, setEditing] = useState(!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone);
+                const [zipLookupLoading, setZipLookupLoading] = React.useState(false);
+                const [zipLookupError, setZipLookupError] = React.useState('');
+
+                const lookupZoneByZip = async () => {
+                    const zip = (profileData.zipCode || '').trim();
+                    if (!/^\d{5}$/.test(zip)) {
+                        setZipLookupError('Enter a valid 5-digit US zip code.');
+                        return;
+                    }
+                    setZipLookupError('');
+                    setZipLookupLoading(true);
+                    try {
+                        const res = await fetch(`https://phzmapi.org/${zip}.json`);
+                        if (!res.ok) throw new Error('Not found');
+                        const data = await res.json();
+                        const zone = (data.zone || '').toLowerCase().trim();
+                        if (zone && ZONE_INFO[zone]) {
+                            setProfileData(prev => ({ ...prev, zone }));
+                        } else {
+                            setZipLookupError('Zone not found for that zip code. Please select manually.');
+                        }
+                    } catch (e) {
+                        setZipLookupError('Could not look up zone. Check your connection or select manually.');
+                    } finally {
+                        setZipLookupLoading(false);
+                    }
+                };
 
                 const save = () => {
                     localStorage.setItem('lawnProfile', JSON.stringify(profileData));
@@ -1551,7 +1594,8 @@
                         'zoysia': 'zoysia',
                         'st-augustine': 'stAugustine'
                     };
-                    const programKey = keyMap[profileData.specificGrass] + '_zone' + profileData.zone;
+                    // Programs are keyed by parent zone (e.g. zone 6, not 6a/6b)
+                    const programKey = keyMap[profileData.specificGrass] + '_zone' + getParentZone(profileData.zone);
                     const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                     if (!program || !program.schedule) return null;
 
@@ -1591,19 +1635,66 @@
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Climate Zone</label>
+                                    <label className="block text-sm font-medium mb-2">Find Your Zone by Zip Code</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            maxLength={5}
+                                            value={profileData.zipCode || ''}
+                                            onChange={(e) => { setZipLookupError(''); setProfileData({...profileData, zipCode: e.target.value}); }}
+                                            onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(); }}
+                                            placeholder="e.g. 43201"
+                                            className="flex-1 px-4 py-3 border-2 rounded-lg"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={lookupZoneByZip}
+                                            disabled={zipLookupLoading}
+                                            className="px-4 py-3 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap"
+                                        >
+                                            {zipLookupLoading ? 'Looking up...' : 'Look Up'}
+                                        </button>
+                                    </div>
+                                    {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
+                                    {profileData.zone && ZONE_INFO[profileData.zone] && !zipLookupError && (
+                                        <div className="mt-1 text-xs text-[#367C2B] font-medium">
+                                            Zone {profileData.zone.toUpperCase()} detected — {ZONE_INFO[profileData.zone].temp}
+                                        </div>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">USDA Climate Zone <span className="font-normal text-gray-500">(or select manually)</span></label>
                                     <select
                                         value={profileData.zone}
-                                        onChange={(e) => setProfileData({...profileData, zone: e.target.value})}
+                                        onChange={(e) => { setZipLookupError(''); setProfileData({...profileData, zone: e.target.value}); }}
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     >
                                         <option value="">Select...</option>
-                                        <option value="4">Zone 4 - Northern Cold</option>
-                                        <option value="5">Zone 5 - Northern</option>
-                                        <option value="6">Zone 6 - Moderate</option>
-                                        <option value="7">Zone 7 - Transition Zone</option>
-                                        <option value="8">Zone 8 - Southern</option>
-                                        <option value="9">Zone 9 - Deep South / Gulf</option>
+                                        <optgroup label="Zone 4 — Northern Cold (-30 to -20°F)">
+                                            <option value="4a">Zone 4a (-30 to -25°F)</option>
+                                            <option value="4b">Zone 4b (-25 to -20°F)</option>
+                                        </optgroup>
+                                        <optgroup label="Zone 5 — Northern (-20 to -10°F)">
+                                            <option value="5a">Zone 5a (-20 to -15°F)</option>
+                                            <option value="5b">Zone 5b (-15 to -10°F)</option>
+                                        </optgroup>
+                                        <optgroup label="Zone 6 — Moderate (-10 to 0°F)">
+                                            <option value="6a">Zone 6a (-10 to -5°F)</option>
+                                            <option value="6b">Zone 6b (-5 to 0°F)</option>
+                                        </optgroup>
+                                        <optgroup label="Zone 7 — Transition Zone (0 to 10°F)">
+                                            <option value="7a">Zone 7a (0 to 5°F)</option>
+                                            <option value="7b">Zone 7b (5 to 10°F)</option>
+                                        </optgroup>
+                                        <optgroup label="Zone 8 — Southern (10 to 20°F)">
+                                            <option value="8a">Zone 8a (10 to 15°F)</option>
+                                            <option value="8b">Zone 8b (15 to 20°F)</option>
+                                        </optgroup>
+                                        <optgroup label="Zone 9 — Deep South / Gulf (20 to 30°F)">
+                                            <option value="9a">Zone 9a (20 to 25°F)</option>
+                                            <option value="9b">Zone 9b (25 to 30°F)</option>
+                                        </optgroup>
                                     </select>
                                 </div>
                                 <div>
@@ -1660,21 +1751,23 @@
                         </div>
 
                         {/* Zone compatibility note */}
-                        {grassInfo && grassInfo.zoneNotes && grassInfo.zoneNotes[profileData.zone] && (
-                            <div className={`rounded-xl p-4 border-l-4 ${
-                                grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('not recommended') ||
-                                grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('not viable')
-                                    ? 'bg-red-50 border-red-500'
-                                    : grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('challenging') ||
-                                      grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('difficult') ||
-                                      grassInfo.zoneNotes[profileData.zone].toLowerCase().includes('marginal')
-                                        ? 'bg-yellow-50 border-yellow-500'
-                                        : 'bg-[#e8f5e9] border-[#367C2B]'
-                            }`}>
-                                <div className="font-bold text-sm mb-1">Zone {profileData.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
-                                <div className="text-sm text-gray-700">{grassInfo.zoneNotes[profileData.zone]}</div>
-                            </div>
-                        )}
+                        {(() => {
+                            const zoneNote = grassInfo && grassInfo.zoneNotes &&
+                                (grassInfo.zoneNotes[profileData.zone] || grassInfo.zoneNotes[getParentZone(profileData.zone)]);
+                            if (!zoneNote) return null;
+                            const noteLower = zoneNote.toLowerCase();
+                            const colorClass = noteLower.includes('not recommended') || noteLower.includes('not viable')
+                                ? 'bg-red-50 border-red-500'
+                                : noteLower.includes('challenging') || noteLower.includes('difficult') || noteLower.includes('marginal')
+                                    ? 'bg-yellow-50 border-yellow-500'
+                                    : 'bg-[#e8f5e9] border-[#367C2B]';
+                            return (
+                                <div className={`rounded-xl p-4 border-l-4 ${colorClass}`}>
+                                    <div className="font-bold text-sm mb-1">Zone {profileData.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
+                                    <div className="text-sm text-gray-700">{zoneNote}</div>
+                                </div>
+                            );
+                        })()}
 
                         {/* Quick reference stats */}
                         {grassInfo && (
@@ -1750,7 +1843,8 @@
                                 'zoysia': 'zoysia',
                                 'st-augustine': 'stAugustine'
                             };
-                            const programKey = keyMap[profileData.specificGrass] + '_zone' + profileData.zone;
+                            // Programs are keyed by parent zone (e.g. zone 6, not 6a/6b)
+                            const programKey = keyMap[profileData.specificGrass] + '_zone' + getParentZone(profileData.zone);
                             const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                             if (!program || !program.schedule) return null;
 
