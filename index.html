@@ -664,14 +664,29 @@
             const [equipment, setEquipment] = useState([]);
             const [lawnProfile, setLawnProfile] = useState(null);
             const [statsView, setStatsView] = useState('year');
+            // Lifted out of LawnProfile so editing state survives LawnCareTracker re-renders.
+            // Lazy initializers read localStorage once so there's no flash on first render.
+            const [profileFormData, setProfileFormData] = useState(() => {
+                const s = localStorage.getItem('lawnProfile');
+                return s ? JSON.parse(s) : { lawnSize: '', zone: '', specificGrass: '', soilType: '', zipCode: '' };
+            });
+            const [profileEditing, setProfileEditing] = useState(() => {
+                const s = localStorage.getItem('lawnProfile');
+                if (!s) return true;
+                const p = JSON.parse(s);
+                return !p.specificGrass || !p.zone;
+            });
+            const [zipLookupLoading, setZipLookupLoading] = useState(false);
+            const [zipLookupError, setZipLookupError] = useState('');
+            const [homeZipInput, setHomeZipInput] = useState('');
 
             useEffect(() => {
                 const stored = localStorage.getItem('lawnCareActivities');
                 if (stored) setActivities(JSON.parse(stored));
-                
+
                 const storedEquipment = localStorage.getItem('lawnCareEquipment');
                 if (storedEquipment) setEquipment(JSON.parse(storedEquipment));
-                
+
                 const storedProfile = localStorage.getItem('lawnProfile');
                 if (storedProfile) {
                     const p = JSON.parse(storedProfile);
@@ -861,6 +876,41 @@
                 );
             };
 
+            // Shared zip-code lookup used by both the homepage widget and My Yard form
+            const lookupZoneByZip = async (zipOverride) => {
+                const zip = (zipOverride || profileFormData.zipCode || '').trim();
+                if (!/^\d{5}$/.test(zip)) {
+                    setZipLookupError('Enter a valid 5-digit US zip code.');
+                    return;
+                }
+                setZipLookupError('');
+                setZipLookupLoading(true);
+                try {
+                    const res = await fetch(`https://phzmapi.org/${zip}.json`);
+                    if (!res.ok) throw new Error('Not found');
+                    const data = await res.json();
+                    const zone = (data.zone || '').toLowerCase().trim();
+                    if (zone && ZONE_INFO[zone]) {
+                        const lat = parseFloat(data.coordinates?.lat);
+                        const lon = parseFloat(data.coordinates?.lon);
+                        setProfileFormData(prev => ({ ...prev, zone, lat, lon, zipCode: zip }));
+                        fetchWeatherData(lat, lon, zip);
+                        // Persist immediately so weather survives navigation without requiring "Save Profile"
+                        const existing = localStorage.getItem('lawnProfile');
+                        const merged = { ...(existing ? JSON.parse(existing) : {}), zone, lat, lon, zipCode: zip };
+                        localStorage.setItem('lawnProfile', JSON.stringify(merged));
+                        setLawnProfile(merged);
+                        setHomeZipInput('');
+                    } else {
+                        setZipLookupError('Zone not found for that zip code. Please select manually.');
+                    }
+                } catch (e) {
+                    setZipLookupError('Could not look up zone. Check your connection or select manually.');
+                } finally {
+                    setZipLookupLoading(false);
+                }
+            };
+
             const WeatherSnapshot = () => {
                 if (weatherLoading) {
                     return (
@@ -873,12 +923,32 @@
                 }
 
                 if (!weather) return (
-                    <div className="bg-white rounded-xl shadow-md p-5 mb-4 flex items-center gap-3 border border-dashed border-gray-300">
-                        <div className="text-3xl">📍</div>
-                        <div>
-                            <div className="font-semibold text-gray-700 text-sm">No weather location set</div>
-                            <div className="text-xs text-gray-500 mt-0.5">Enter your zip code in <span className="font-medium text-[#367C2B]">My Yard</span> to see local weather conditions.</div>
+                    <div className="bg-white rounded-xl shadow-md p-5 mb-4 border border-dashed border-gray-300">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="text-2xl">📍</div>
+                            <div className="font-semibold text-gray-700 text-sm">Enter your zip code for local weather</div>
                         </div>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                maxLength={5}
+                                value={homeZipInput}
+                                onChange={(e) => { setZipLookupError(''); setHomeZipInput(e.target.value); }}
+                                onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(homeZipInput); }}
+                                placeholder="e.g. 43201"
+                                className="flex-1 px-3 py-2 border-2 rounded-lg text-sm"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => lookupZoneByZip(homeZipInput)}
+                                disabled={zipLookupLoading}
+                                className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap"
+                            >
+                                {zipLookupLoading ? 'Looking up...' : 'Get Weather'}
+                            </button>
+                        </div>
+                        {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
                     </div>
                 );
 
@@ -1560,58 +1630,22 @@
             };
 
             const LawnProfile = () => {
-                const [profileData, setProfileData] = useState(lawnProfile || {
-                    lawnSize: '',
-                    zone: '',
-                    specificGrass: '',
-                    soilType: '',
-                    zipCode: ''
-                });
-                const [editing, setEditing] = useState(!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone);
-                const [zipLookupLoading, setZipLookupLoading] = React.useState(false);
-                const [zipLookupError, setZipLookupError] = React.useState('');
-
-                const lookupZoneByZip = async () => {
-                    const zip = (profileData.zipCode || '').trim();
-                    if (!/^\d{5}$/.test(zip)) {
-                        setZipLookupError('Enter a valid 5-digit US zip code.');
-                        return;
-                    }
-                    setZipLookupError('');
-                    setZipLookupLoading(true);
-                    try {
-                        const res = await fetch(`https://phzmapi.org/${zip}.json`);
-                        if (!res.ok) throw new Error('Not found');
-                        const data = await res.json();
-                        const zone = (data.zone || '').toLowerCase().trim();
-                        if (zone && ZONE_INFO[zone]) {
-                            const lat = parseFloat(data.coordinates?.lat);
-                            const lon = parseFloat(data.coordinates?.lon);
-                            setProfileData(prev => ({ ...prev, zone, lat, lon }));
-                            // Immediately refresh weather for the user's real location
-                            fetchWeatherData(lat, lon, zip);
-                        } else {
-                            setZipLookupError('Zone not found for that zip code. Please select manually.');
-                        }
-                    } catch (e) {
-                        setZipLookupError('Could not look up zone. Check your connection or select manually.');
-                    } finally {
-                        setZipLookupLoading(false);
-                    }
-                };
+                // profileFormData, setProfileFormData, profileEditing, setProfileEditing,
+                // zipLookupLoading, zipLookupError, lookupZoneByZip are all lifted to
+                // LawnCareTracker so they survive any re-render of the parent.
 
                 const save = () => {
-                    localStorage.setItem('lawnProfile', JSON.stringify(profileData));
-                    setLawnProfile(profileData);
-                    setEditing(false);
+                    localStorage.setItem('lawnProfile', JSON.stringify(profileFormData));
+                    setLawnProfile(profileFormData);
+                    setProfileEditing(false);
                 };
 
-                const grassInfo = GRASS_INFO[profileData.specificGrass];
-                const zoneInfo = ZONE_INFO[profileData.zone];
+                const grassInfo = GRASS_INFO[profileFormData.specificGrass];
+                const zoneInfo = ZONE_INFO[profileFormData.zone];
 
                 // Get current month tasks from grassPrograms if available
                 const getCurrentMonthTasks = () => {
-                    if (!profileData.specificGrass || !profileData.zone) return null;
+                    if (!profileFormData.specificGrass || !profileFormData.zone) return null;
                     const keyMap = {
                         'tall-fescue': 'tallFescue',
                         'kentucky-bluegrass': 'kentuckyBluegrass',
@@ -1621,7 +1655,7 @@
                         'st-augustine': 'stAugustine'
                     };
                     // Programs are keyed by parent zone (e.g. zone 6, not 6a/6b)
-                    const programKey = keyMap[profileData.specificGrass] + '_zone' + getParentZone(profileData.zone);
+                    const programKey = keyMap[profileFormData.specificGrass] + '_zone' + getParentZone(profileFormData.zone);
                     const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                     if (!program || !program.schedule) return null;
 
@@ -1645,7 +1679,7 @@
                 const currentTasks = getCurrentMonthTasks();
 
                 // Edit form
-                if (editing) {
+                if (profileEditing) {
                     return (
                         <div>
                             <h2 className="text-2xl font-bold mb-6">🌱 Lawn Profile</h2>
@@ -1654,8 +1688,8 @@
                                     <label className="block text-sm font-medium mb-2">Lawn Size (sq ft)</label>
                                     <input
                                         type="number"
-                                        value={profileData.lawnSize}
-                                        onChange={(e) => setProfileData({...profileData, lawnSize: e.target.value})}
+                                        value={profileFormData.lawnSize}
+                                        onChange={(e) => setProfileFormData({...profileFormData, lawnSize: e.target.value})}
                                         placeholder="5000"
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     />
@@ -1667,15 +1701,15 @@
                                             type="text"
                                             inputMode="numeric"
                                             maxLength={5}
-                                            value={profileData.zipCode || ''}
-                                            onChange={(e) => { setZipLookupError(''); setProfileData({...profileData, zipCode: e.target.value}); }}
+                                            value={profileFormData.zipCode || ''}
+                                            onChange={(e) => { setZipLookupError(''); setProfileFormData({...profileFormData, zipCode: e.target.value}); }}
                                             onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(); }}
                                             placeholder="e.g. 43201"
                                             className="flex-1 px-4 py-3 border-2 rounded-lg"
                                         />
                                         <button
                                             type="button"
-                                            onClick={lookupZoneByZip}
+                                            onClick={() => lookupZoneByZip()}
                                             disabled={zipLookupLoading}
                                             className="px-4 py-3 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap"
                                         >
@@ -1683,17 +1717,17 @@
                                         </button>
                                     </div>
                                     {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
-                                    {profileData.zone && ZONE_INFO[profileData.zone] && !zipLookupError && (
+                                    {profileFormData.zone && ZONE_INFO[profileFormData.zone] && !zipLookupError && (
                                         <div className="mt-1 text-xs text-[#367C2B] font-medium">
-                                            Zone {profileData.zone.toUpperCase()} detected — {ZONE_INFO[profileData.zone].temp}
+                                            Zone {profileFormData.zone.toUpperCase()} detected — {ZONE_INFO[profileFormData.zone].temp}
                                         </div>
                                     )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-2">USDA Climate Zone <span className="font-normal text-gray-500">(or select manually)</span></label>
                                     <select
-                                        value={profileData.zone}
-                                        onChange={(e) => { setZipLookupError(''); setProfileData({...profileData, zone: e.target.value}); }}
+                                        value={profileFormData.zone}
+                                        onChange={(e) => { setZipLookupError(''); setProfileFormData({...profileFormData, zone: e.target.value}); }}
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     >
                                         <option value="">Select...</option>
@@ -1726,8 +1760,8 @@
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Grass Type</label>
                                     <select
-                                        value={profileData.specificGrass}
-                                        onChange={(e) => setProfileData({...profileData, specificGrass: e.target.value})}
+                                        value={profileFormData.specificGrass}
+                                        onChange={(e) => setProfileFormData({...profileFormData, specificGrass: e.target.value})}
                                         className="w-full px-4 py-3 border-2 rounded-lg"
                                     >
                                         <option value="">Select...</option>
@@ -1756,20 +1790,20 @@
                     <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
                             <h2 className="text-2xl font-bold">🌱 My Yard</h2>
-                            <button onClick={() => setEditing(true)} className="px-4 py-2 text-sm font-semibold text-[#367C2B] border-2 border-[#367C2B] rounded-lg hover:bg-[#367C2B]/10">
+                            <button onClick={() => setProfileEditing(true)} className="px-4 py-2 text-sm font-semibold text-[#367C2B] border-2 border-[#367C2B] rounded-lg hover:bg-[#367C2B]/10">
                                 Edit Profile
                             </button>
                         </div>
 
                         {/* Lawn summary header */}
                         <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] rounded-xl p-5 text-white shadow-lg">
-                            <div className="text-lg font-bold">{grassInfo ? grassInfo.name : profileData.specificGrass}</div>
+                            <div className="text-lg font-bold">{grassInfo ? grassInfo.name : profileFormData.specificGrass}</div>
                             <div className="text-sm opacity-90 mt-1">
                                 {grassInfo && <span>{grassInfo.season}</span>}
-                                {zoneInfo && <span> · Zone {profileData.zone} ({zoneInfo.climate})
+                                {zoneInfo && <span> · Zone {profileFormData.zone} ({zoneInfo.climate})
                                     <CitationBadge sources={[{ name: 'USDA Plant Hardiness Zone Map', url: 'https://planthardiness.ars.usda.gov/', topic: 'Official zone classifications' }]} label="USDA Zone" />
                                 </span>}
-                                {profileData.lawnSize && <span> · {Number(profileData.lawnSize).toLocaleString()} sq ft</span>}
+                                {profileFormData.lawnSize && <span> · {Number(profileFormData.lawnSize).toLocaleString()} sq ft</span>}
                             </div>
                             {grassInfo && (
                                 <div className="mt-3 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>
@@ -1779,7 +1813,7 @@
                         {/* Zone compatibility note */}
                         {(() => {
                             const zoneNote = grassInfo && grassInfo.zoneNotes &&
-                                (grassInfo.zoneNotes[profileData.zone] || grassInfo.zoneNotes[getParentZone(profileData.zone)]);
+                                (grassInfo.zoneNotes[profileFormData.zone] || grassInfo.zoneNotes[getParentZone(profileFormData.zone)]);
                             if (!zoneNote) return null;
                             const noteLower = zoneNote.toLowerCase();
                             const colorClass = noteLower.includes('not recommended') || noteLower.includes('not viable')
@@ -1789,7 +1823,7 @@
                                     : 'bg-[#e8f5e9] border-[#367C2B]';
                             return (
                                 <div className={`rounded-xl p-4 border-l-4 ${colorClass}`}>
-                                    <div className="font-bold text-sm mb-1">Zone {profileData.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
+                                    <div className="font-bold text-sm mb-1">Zone {profileFormData.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
                                     <div className="text-sm text-gray-700">{zoneNote}</div>
                                 </div>
                             );
@@ -1860,7 +1894,7 @@
 
                         {/* Full annual program */}
                         {(() => {
-                            if (!profileData.specificGrass || !profileData.zone) return null;
+                            if (!profileFormData.specificGrass || !profileFormData.zone) return null;
                             const keyMap = {
                                 'tall-fescue': 'tallFescue',
                                 'kentucky-bluegrass': 'kentuckyBluegrass',
@@ -1870,7 +1904,7 @@
                                 'st-augustine': 'stAugustine'
                             };
                             // Programs are keyed by parent zone (e.g. zone 6, not 6a/6b)
-                            const programKey = keyMap[profileData.specificGrass] + '_zone' + getParentZone(profileData.zone);
+                            const programKey = keyMap[profileFormData.specificGrass] + '_zone' + getParentZone(profileFormData.zone);
                             const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                             if (!program || !program.schedule) return null;
 
