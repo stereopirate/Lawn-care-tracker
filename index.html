@@ -397,22 +397,7 @@
             );
         }
 
-        return (
-            <div className="bg-amber-50 border-b border-amber-200 px-4 py-2">
-                <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <span className="local-badge">💾 Local Only</span>
-                        <span className="text-xs text-gray-600 truncate">Data saved to this browser only</span>
-                    </div>
-                    <button
-                        onClick={onSignIn}
-                        className="flex-shrink-0 text-xs font-bold text-[#367C2B] bg-white border border-[#367C2B] rounded-lg px-3 py-1.5 hover:bg-[#367C2B]/10 whitespace-nowrap"
-                    >
-                        Sign In / Sign Up →
-                    </button>
-                </div>
-            </div>
-        );
+        return null;
     };
 
     // ─── Citation Badge ─────────────────────────────────────────────────────────
@@ -2145,12 +2130,6 @@
                             <div className="text-2xl font-bold text-white">🌱 GrassCoach</div>
                         </button>
                         <div className="flex items-center gap-2">
-                            {/* Account icon shortcut */}
-                            {fb.configured && !currentUser && (
-                                <button onClick={() => setShowAuthModal(true)} className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-white text-xs font-bold transition btn-press">
-                                    Sign In
-                                </button>
-                            )}
                             <button onClick={() => setView(view === 'menu' ? null : 'menu')} className="p-2 rounded-lg hover:bg-white/20 btn-press transition">
                                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -2175,6 +2154,27 @@
                                         <span className="text-lg font-semibold">{item.label}</span>
                                     </button>
                                 ))}
+                                <div className="border-t border-gray-100 mt-2 pt-2">
+                                    <button
+                                        onClick={() => {
+                                            if (!currentUser) {
+                                                setView(null);
+                                                setShowAuthModal(true);
+                                            } else {
+                                                setView('settings');
+                                                setSelectedActivityType(null);
+                                            }
+                                        }}
+                                        className="w-full text-left px-4 py-3 rounded-lg nav-item hover:bg-[#367C2B]/10 flex items-center gap-3"
+                                    >
+                                        <svg className="w-7 h-7 flex-shrink-0 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        <span className="text-lg font-semibold text-gray-700">
+                                            {currentUser ? (currentUser.displayName || currentUser.email || 'My Account') : 'Sign In / Create Account'}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}
