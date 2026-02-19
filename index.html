@@ -2127,7 +2127,10 @@
                 <header className="sticky top-0 z-40" style={{background: 'linear-gradient(135deg, #367C2B 0%, #4a9c3a 100%)'}}>
                     <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
                         <button onClick={() => { setView(null); setSelectedActivityType(null); }} className="flex items-center btn-press">
-                            <div className="text-2xl font-bold text-white">🌱 Yardstick</div>
+                            <div className="flex items-center gap-2">
+                                <img src="logo.svg" alt="Yardstick logo" className="h-9 w-9" />
+                                <span className="text-2xl font-bold text-white">Yardstick</span>
+                            </div>
                         </button>
                         <div className="flex items-center gap-2">
                             <button onClick={() => setView(view === 'menu' ? null : 'menu')} className="p-2 rounded-lg hover:bg-white/20 btn-press transition">
