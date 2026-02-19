@@ -7,7 +7,7 @@
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#367C2B">
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
-    <title>GrassCoach - Research-Backed Lawn Care</title>
+    <title>Yardstick - Research-Backed Lawn Care</title>
 
 ```
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -19,7 +19,7 @@
      FIREBASE CONFIGURATION — REPLACE PLACEHOLDERS BELOW
      Steps:
      1. Go to console.firebase.google.com
-     2. Create project "GrassCoach"
+     2. Create project "Yardstick"
      3. Add a web app, copy the config object values below
      4. Enable Authentication > Google Sign-In + Email/Password
      5. Enable Firestore Database (production mode)
@@ -63,7 +63,7 @@
         }
     } else {
         window.__FIREBASE__ = { configured: false };
-        console.info('GrassCoach: Firebase not configured — running in local-only mode.');
+        console.info('Yardstick: Firebase not configured — running in local-only mode.');
     }
 
     // Signal React app that Firebase init is complete
@@ -309,7 +309,7 @@
                     {/* Logo */}
                     <div className="text-center mb-6">
                         <div className="text-4xl mb-2">🌱</div>
-                        <div className="text-xl font-extrabold text-gray-900">GrassCoach</div>
+                        <div className="text-xl font-extrabold text-gray-900">Yardstick</div>
                         <div className="text-sm text-gray-500 mt-1">
                             {mode === 'signin' ? 'Sign in to sync your lawn data across devices' : 'Create a free account to save your data to the cloud'}
                         </div>
@@ -1888,7 +1888,7 @@
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `grasscoach-backup-${new Date().toISOString().split('T')[0]}.json`;
+                link.download = `yardstick-backup-${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
             };
             const resetData = () => {
@@ -1950,7 +1950,7 @@
 
                     <div className="bg-white rounded-xl p-4 shadow">
                         <h3 className="text-lg font-bold mb-2">ℹ️ About</h3>
-                        <p className="text-sm text-gray-600 font-semibold">GrassCoach v9.0</p>
+                        <p className="text-sm text-gray-600 font-semibold">Yardstick v9.0</p>
                         <p className="text-xs text-gray-500 mt-1">Research-backed lawn care for DIY homeowners</p>
                         <div className="mt-4 pt-4 border-t border-gray-200">
                             <div className="border-l-3 border-[#367C2B] pl-3" style={{borderLeft: '3px solid #367C2B'}}>
@@ -1961,7 +1961,7 @@
                                     <li>+ Google Sign-In + email/password authentication</li>
                                     <li>+ Sync status banner shows cloud/local mode at a glance</li>
                                     <li>+ Account management in Settings</li>
-                                    <li>+ App rebranded to GrassCoach</li>
+                                    <li>+ App rebranded to Yardstick</li>
                                 </ul>
                             </div>
                         </div>
@@ -2106,7 +2106,7 @@
             return (
                 <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
                     <div className="text-5xl mb-4">🌱</div>
-                    <div className="text-xl font-bold text-[#367C2B] mb-2">GrassCoach</div>
+                    <div className="text-xl font-bold text-[#367C2B] mb-2">Yardstick</div>
                     <div className="text-sm text-gray-500">Loading your lawn data...</div>
                     <div className="mt-6 flex gap-1">
                         {[0,1,2].map(i => <div key={i} className="w-2 h-2 bg-[#367C2B] rounded-full animate-bounce" style={{animationDelay: `${i*0.15}s`}}></div>)}
@@ -2127,7 +2127,10 @@
                 <header className="sticky top-0 z-40" style={{background: 'linear-gradient(135deg, #367C2B 0%, #4a9c3a 100%)'}}>
                     <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
                         <button onClick={() => { setView(null); setSelectedActivityType(null); }} className="flex items-center btn-press">
-                            <div className="text-2xl font-bold text-white">🌱 GrassCoach</div>
+                            <div className="flex items-center gap-2">
+                                <img src="logo.svg" alt="Yardstick logo" className="h-9 w-9" />
+                                <span className="text-2xl font-bold text-white">Yardstick</span>
+                            </div>
                         </button>
                         <div className="flex items-center gap-2">
                             <button onClick={() => setView(view === 'menu' ? null : 'menu')} className="p-2 rounded-lg hover:bg-white/20 btn-press transition">
