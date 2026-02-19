@@ -180,16 +180,21 @@
             }
             const uid = currentUser.uid;
             const { db, collection, getDocs, doc, getDoc } = fb;
-            const [actSnap, eqSnap, profSnap] = await Promise.all([
-                getDocs(collection(db, 'users', uid, 'activities')),
-                getDocs(collection(db, 'users', uid, 'equipment')),
-                getDoc(doc(db, 'users', uid, 'profile', 'data')),
-            ]);
-            return {
-                activities: actSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                equipment:  eqSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                profile:    profSnap.exists() ? profSnap.data() : null,
-            };
+            try {
+                const [actSnap, eqSnap, profSnap] = await Promise.all([
+                    getDocs(collection(db, 'users', uid, 'activities')),
+                    getDocs(collection(db, 'users', uid, 'equipment')),
+                    getDoc(doc(db, 'users', uid, 'profile', 'data')),
+                ]);
+                return {
+                    activities: actSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+                    equipment:  eqSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+                    profile:    profSnap.exists() ? profSnap.data() : null,
+                };
+            } catch (e) {
+                console.error('Firestore loadAll failed:', e);
+                return { activities: [], equipment: [], profile: null };
+            }
         }, [isCloud, currentUser]);
 
         // ── WRITE activities ──────────────────────────────────────────────────
@@ -858,6 +863,9 @@
                 } else {
                     fetchWeatherData();
                 }
+                setDataLoading(false);
+            }).catch((e) => {
+                console.error('Failed to load data:', e);
                 setDataLoading(false);
             });
         }, [authReady, currentUser]);
