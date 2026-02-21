@@ -544,6 +544,82 @@ const grassPrograms = {
     // ─────────────────────────────────────────────────────────────────────────
     // PERENNIAL RYEGRASS — Cool Season
     // ─────────────────────────────────────────────────────────────────────────
+    perennialRyegrass_zone4: {
+        grassType: "Perennial Ryegrass",
+        zone: 4,
+        description: "Perennial Ryegrass in Zone 4 - marginal cold hardiness; best used in blends with Kentucky Bluegrass for quick germination and traffic tolerance. Winter-kill risk is real — use cold-hardy cultivars (Paragon, Pinnacle IV). Expect to re-seed bare patches after harsh winters.",
+        schedule: [
+            {
+                month: "April-May",
+                soilTemp: "50-55°F",
+                tasks: [
+                    "Apply pre-emergent when soil reaches 50-55°F (often late April in Zone 4)",
+                    "First fertilization: 0.75-1 lb N per 1,000 sq ft",
+                    "Begin mowing at 1.5-2.5 inches once growth is active"
+                ]
+            },
+            {
+                month: "June",
+                tasks: [
+                    "Second fertilization: 0.75 lb N per 1,000 sq ft",
+                    "Post-emergent broadleaf weed control if needed",
+                    "Mow frequently at 2-2.5 inches — ryegrass grows fast in cool temps"
+                ]
+            },
+            {
+                month: "July-August",
+                tasks: [
+                    "Raise mowing height to 2.5-3 inches for heat stress relief",
+                    "Water 1-1.5 inches per week — ryegrass does not tolerate drought well",
+                    "Monitor for gray leaf spot and crown rust in humid conditions",
+                    "Light fertilization only: 0.5 lb N per 1,000 sq ft if color fades"
+                ]
+            },
+            {
+                month: "September",
+                importance: "BEST SEEDING MONTH",
+                tasks: [
+                    "Heavy fertilization: 1-1.5 lb N per 1,000 sq ft",
+                    "Overseed thin and winter-kill patches: 5-8 lbs per 1,000 sq ft (germinates in 5-10 days)",
+                    "Core aerate before overseeding for best seed-to-soil contact",
+                    "Soil test every 2-3 years — aim for pH 6.0-7.0",
+                    "Time carefully: needs 6-8 weeks of establishment before hard frost"
+                ]
+            },
+            {
+                month: "October",
+                tasks: [
+                    "Fall fertilization: 1 lb N per 1,000 sq ft",
+                    "Apply lime if soil pH is below 6.0",
+                    "Continue mowing through October; last chance for early-October overseeding only",
+                    "Clean up leaves — leaf mat traps moisture and promotes disease"
+                ]
+            },
+            {
+                month: "November",
+                tasks: [
+                    "Final fertilization: 0.5-1 lb N per 1,000 sq ft (early November)",
+                    "Final mowing at 2-2.5 inches before dormancy",
+                    "Remove leaf debris — critical for preventing snow mold under cover"
+                ]
+            },
+            {
+                month: "December-March",
+                tasks: [
+                    "No maintenance needed",
+                    "Stay off frozen and snow-covered turf to prevent crown damage",
+                    "Watch for snow mold (pink or gray) when snow melts in spring",
+                    "Plan spring program including reseeding any winter-kill patches"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "University of Minnesota Extension", title: "Lawn Care in Cold Climates", url: "https://extension.umn.edu/lawn-care" },
+            { institution: "University of Wisconsin Extension", title: "Perennial Ryegrass in Zone 4", url: "https://wimastergardener.org/article/perennial-ryegrass-lolium-perenne/" },
+            { institution: "Michigan State University Extension", title: "Cool-Season Grass Management", url: "https://www.canr.msu.edu/resources/lawn_care" }
+        ]
+    },
+
     perennialRyegrass_zone5: {
         grassType: "Perennial Ryegrass",
         zone: 5,
