@@ -1065,49 +1065,78 @@
         // ── Season Banner ────────────────────────────────────────────────────────
         const SeasonBanner = () => {
             const month = new Date().getMonth();
-            let bannerText, bannerBg, bannerBorder, bannerIcon;
+            let seasonLabel, seasonDetail, bannerIcon, actionText, gradFrom, gradTo;
             if (weather) {
                 const avgSoil = weather.pastAvgSoilTemp ?? weather.soilTemp;
                 const trend = weather.soilTempTrend;
-                const trendStr = trend === 'warming' ? ' · warming trend' : trend === 'cooling' ? ' · cooling trend' : '';
+                const trendStr = trend === 'warming' ? ' · warming' : trend === 'cooling' ? ' · cooling' : '';
+                const soilStr = `Soil avg ${avgSoil}°F${trendStr}`;
                 if (weather.frostRiskDays !== null && weather.frostRiskDays <= 7) {
                     const when = weather.frostRiskDays === 0 ? 'next 24h' : `${weather.frostRiskDays} days`;
-                    bannerText = `Frost Alert — Freezing temps in ${when}. Hold seeding & treatments.`;
-                    bannerBg = 'bg-blue-100'; bannerBorder = 'border-blue-600'; bannerIcon = '🌡️';
+                    seasonLabel = 'Frost Alert'; bannerIcon = '🌡️';
+                    seasonDetail = `Freezing temps in ${when}`;
+                    actionText = '→ Hold seeding & treatments';
+                    gradFrom = '#1e3a5f'; gradTo = '#1e4875';
                 } else if (avgSoil < 45) {
-                    bannerText = `Dormant Season — soil avg ${avgSoil}°F${trendStr}. Plan spring pre-emergent timing.`;
-                    bannerBg = 'bg-blue-50'; bannerBorder = 'border-blue-400'; bannerIcon = '❄️';
+                    seasonLabel = 'Dormant Season'; bannerIcon = '❄️';
+                    seasonDetail = soilStr;
+                    actionText = '→ Plan pre-emergent timing';
+                    gradFrom = '#1e3a5f'; gradTo = '#1e4875';
                 } else if (avgSoil < 55) {
-                    bannerText = `Early Spring — soil avg ${avgSoil}°F${trendStr}. Pre-emergent window ${trend === 'warming' ? 'opening' : 'approaching'}.`;
-                    bannerBg = 'bg-amber-50'; bannerBorder = 'border-amber-400'; bannerIcon = '🌤️';
+                    seasonLabel = 'Early Spring'; bannerIcon = '🌤️';
+                    seasonDetail = soilStr;
+                    actionText = trend === 'warming' ? '→ Pre-emergent window opening' : '→ Check pre-emergent timing';
+                    gradFrom = '#6d3309'; gradTo = '#8a3f0a';
                 } else if (avgSoil <= 70) {
-                    bannerText = `Active Growing Season — soil avg ${avgSoil}°F${trendStr}. Prime time for lawn care.`;
-                    bannerBg = 'bg-[#e8f5e9]'; bannerBorder = 'border-[#367C2B]'; bannerIcon = '🌱';
+                    seasonLabel = 'Growing Season'; bannerIcon = '🌱';
+                    seasonDetail = soilStr;
+                    actionText = '→ Prime time for lawn care';
+                    gradFrom = '#1a4f14'; gradTo = '#2d6b20';
                 } else if (avgSoil <= 85) {
-                    bannerText = `Peak Summer — soil avg ${avgSoil}°F${trendStr}. Focus on watering and mow height.`;
-                    bannerBg = 'bg-orange-50'; bannerBorder = 'border-orange-400'; bannerIcon = '☀️';
+                    seasonLabel = 'Peak Summer'; bannerIcon = '☀️';
+                    seasonDetail = soilStr;
+                    actionText = '→ Raise mow height';
+                    gradFrom = '#7c2d12'; gradTo = '#9a3412';
                 } else {
-                    bannerText = `Heat Stress — soil avg ${avgSoil}°F. Water deeply and raise mow height.`;
-                    bannerBg = 'bg-red-50'; bannerBorder = 'border-red-400'; bannerIcon = '🔥';
+                    seasonLabel = 'Heat Stress'; bannerIcon = '🔥';
+                    seasonDetail = soilStr;
+                    actionText = '→ Water deeply';
+                    gradFrom = '#7f1d1d'; gradTo = '#991b1b';
                 }
             } else if (month >= 10 || month <= 1) {
-                bannerText = 'Dormant Season — Plan your spring pre-emergent timing';
-                bannerBg = 'bg-blue-50'; bannerBorder = 'border-blue-400'; bannerIcon = '❄️';
+                seasonLabel = 'Dormant Season'; bannerIcon = '❄️';
+                seasonDetail = 'Plan your spring pre-emergent timing';
+                actionText = '→ Plan pre-emergent timing';
+                gradFrom = '#1e3a5f'; gradTo = '#1e4875';
             } else if (month >= 2 && month <= 4) {
-                bannerText = 'Spring Season — Time for pre-emergent and first feeds';
-                bannerBg = 'bg-[#e8f5e9]'; bannerBorder = 'border-[#367C2B]'; bannerIcon = '🌱';
+                seasonLabel = 'Spring Season'; bannerIcon = '🌱';
+                seasonDetail = 'Time for pre-emergent and first feeds';
+                actionText = '→ Apply first feeds';
+                gradFrom = '#1a4f14'; gradTo = '#2d6b20';
             } else if (month >= 5 && month <= 7) {
-                bannerText = 'Summer Season — Focus on watering and mow height';
-                bannerBg = 'bg-orange-50'; bannerBorder = 'border-orange-400'; bannerIcon = '☀️';
+                seasonLabel = 'Summer Season'; bannerIcon = '☀️';
+                seasonDetail = 'Focus on watering and mow height';
+                actionText = '→ Raise mow height';
+                gradFrom = '#7c2d12'; gradTo = '#9a3412';
             } else {
-                bannerText = 'Fall Season — Best time to overseed and fertilize';
-                bannerBg = 'bg-amber-50'; bannerBorder = 'border-amber-400'; bannerIcon = '🍂';
+                seasonLabel = 'Fall Season'; bannerIcon = '🍂';
+                seasonDetail = 'Best time to overseed and fertilize';
+                actionText = '→ Overseed now';
+                gradFrom = '#6d3309'; gradTo = '#8a3f0a';
             }
             return (
-                <div className={`${bannerBg} border-l-4 ${bannerBorder} px-4 py-2.5 animate-fade-in`}>
-                    <div className="max-w-5xl mx-auto flex items-center gap-2">
-                        <span className="text-lg">{bannerIcon}</span>
-                        <span className="text-sm font-semibold text-gray-700">{bannerText}</span>
+                <div className="animate-fade-in" style={{background: `linear-gradient(135deg, ${gradFrom} 0%, ${gradTo} 100%)`}}>
+                    <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                            <span className="text-xl">{bannerIcon}</span>
+                            <div>
+                                <div className="text-xs font-bold text-white/60 uppercase tracking-widest">{seasonLabel}</div>
+                                <div className="text-xs text-white/80">{seasonDetail}</div>
+                            </div>
+                        </div>
+                        <div className="text-xs font-semibold text-white/90 bg-white/10 border border-white/20 rounded-lg px-2.5 py-1.5 whitespace-nowrap flex-shrink-0 ml-3">
+                            {actionText}
+                        </div>
                     </div>
                 </div>
             );
@@ -1197,7 +1226,7 @@
             const [zipInput, setZipInput] = useState('');
             if (weatherLoading) {
                 return (
-                    <div className="bg-white rounded-xl shadow-md p-6 mb-4 animate-pulse">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-3 animate-pulse">
                         <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
                         <div className="h-10 bg-gray-200 rounded w-1/2 mb-2"></div>
                         <div className="h-3 bg-gray-100 rounded w-1/4"></div>
@@ -1205,7 +1234,7 @@
                 );
             }
             if (!weather) return (
-                <div className="bg-white rounded-xl shadow-md p-5 mb-4 border border-dashed border-gray-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-3">
                     <div className="flex items-center gap-2 mb-3">
                         <div className="text-2xl">📍</div>
                         <div className="font-semibold text-gray-700 text-sm">Enter your zip code for local weather</div>
@@ -1223,82 +1252,70 @@
                 </div>
             );
 
-            let soilRec = '', soilRecColor = 'text-gray-700', soilRecBg = 'bg-gray-50 border-gray-200';
-            if (weather.soilTemp < 50) { soilRec = '❄️ Too cold for most lawn activity'; soilRecColor = 'text-blue-700'; soilRecBg = 'bg-blue-50 border-blue-200'; }
-            else if (weather.soilTemp <= 65) { soilRec = '🌱 Good for cool-season grass care'; soilRecColor = 'text-green-700'; soilRecBg = 'bg-green-50 border-green-200'; }
-            else if (weather.soilTemp <= 85) { soilRec = '☀️ Ideal growing conditions'; soilRecColor = 'text-[#367C2B]'; soilRecBg = 'bg-[#367C2B]/10 border-[#367C2B]/30'; }
-            else { soilRec = '🔥 Very warm — focus on watering'; soilRecColor = 'text-orange-700'; soilRecBg = 'bg-orange-50 border-orange-200'; }
+            let soilRec = '', soilRecColor = 'text-gray-700';
+            if (weather.soilTemp < 50) { soilRec = '❄️ Too cold for most lawn activity'; soilRecColor = 'text-blue-700'; }
+            else if (weather.soilTemp <= 65) { soilRec = '🌱 Good for cool-season grass care'; soilRecColor = 'text-green-700'; }
+            else if (weather.soilTemp <= 85) { soilRec = '☀️ Ideal growing conditions'; soilRecColor = 'text-[#367C2B]'; }
+            else { soilRec = '🔥 Very warm — focus on watering'; soilRecColor = 'text-orange-700'; }
 
             const uvLabel = weather.uvIndex !== null
                 ? weather.uvIndex <= 2 ? 'Low' : weather.uvIndex <= 5 ? 'Moderate' : weather.uvIndex <= 7 ? 'High' : 'Very High' : null;
 
             return (
-                <div className="mb-4 animate-fade-in">
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden mb-3">
-                        <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] px-4 pt-3 pb-2">
-                            <div className="flex items-center justify-between">
+                <div className="animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] px-4 pt-4 pb-3">
+                            <div className="flex items-start justify-between">
                                 <div>
-                                    <div className="text-xs font-semibold text-green-200 uppercase tracking-wide mb-0.5">{weather.location} — Current Conditions</div>
+                                    <div className="text-xs font-semibold text-green-200 uppercase tracking-widest mb-1">{weather.location} · Live</div>
                                     <div className="flex items-end gap-2">
-                                        <span className="text-5xl font-extrabold text-white leading-none">{weather.temperature}°</span>
-                                        <div className="pb-1">
-                                            <div className="text-sm text-green-100">Feels like {weather.feelsLike}°</div>
+                                        <span className="text-5xl font-black text-white leading-none">{weather.temperature}°</span>
+                                        <div className="pb-1.5">
+                                            <div className="text-sm font-semibold text-green-100">Feels like {weather.feelsLike}°</div>
                                             <div className="text-xs text-green-200">H: {weather.highTemp}° · L: {weather.lowTemp}°</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-4xl">{weather.conditionIcon}</div>
-                                    <div className="text-xs font-semibold text-green-100 mt-1">{weather.conditionLabel}</div>
+                                    <div className="text-xs font-semibold text-green-100 mt-1.5 bg-white/10 rounded-lg px-2 py-0.5">{weather.conditionLabel}</div>
                                 </div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 divide-x divide-gray-100 bg-gray-50">
-                            <div className="text-center py-2 px-1"><div className="text-sm font-bold text-gray-700">{weather.humidity}%</div><div className="text-xs text-gray-500">Humidity</div></div>
-                            <div className="text-center py-2 px-1"><div className="text-sm font-bold text-gray-700">{weather.windSpeed} mph</div><div className="text-xs text-gray-500">Wind {weather.windDirection}</div></div>
-                            <div className="text-center py-2 px-1"><div className="text-sm font-bold text-gray-700">{weather.rainfall}"</div><div className="text-xs text-gray-500">7-day Rain</div></div>
-                            <div className="text-center py-2 px-1">
+                        <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-gray-50">
+                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                                <div className="text-xs text-gray-400 mb-0.5">Humidity</div>
+                                <div className="text-sm font-bold text-gray-800">{weather.humidity}%</div>
+                            </div>
+                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                                <div className="text-xs text-gray-400 mb-0.5">Wind</div>
+                                <div className="text-sm font-bold text-gray-800">{weather.windSpeed} mph</div>
+                            </div>
+                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                                <div className="text-xs text-gray-400 mb-0.5">7-Day Rain</div>
+                                <div className="text-sm font-bold text-gray-800">{weather.rainfall}"</div>
+                            </div>
+                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
                                 {weather.precipProbability !== null
-                                    ? <><div className="text-sm font-bold text-gray-700">{weather.precipProbability}%</div><div className="text-xs text-gray-500">Rain Chance</div></>
-                                    : uvLabel ? <><div className="text-sm font-bold text-gray-700">UV {weather.uvIndex}</div><div className="text-xs text-gray-500">{uvLabel}</div></>
-                                    : <><div className="text-sm font-bold text-gray-700">—</div><div className="text-xs text-gray-500">UV</div></>}
+                                    ? <><div className="text-xs text-gray-400 mb-0.5">Rain %</div><div className="text-sm font-bold text-gray-800">{weather.precipProbability}%</div></>
+                                    : uvLabel ? <><div className="text-xs text-gray-400 mb-0.5">UV</div><div className="text-sm font-bold text-gray-800">{weather.uvIndex} {uvLabel}</div></>
+                                    : <><div className="text-xs text-gray-400 mb-0.5">UV</div><div className="text-sm font-bold text-gray-800">—</div></>}
+                            </div>
+                        </div>
+                        <div className="border-t border-gray-100 flex items-center divide-x divide-gray-100">
+                            <div className="flex-1 px-4 py-3">
+                                <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Soil Temp</div>
+                                <div className="flex items-baseline gap-1.5">
+                                    <span className="text-xl font-extrabold text-amber-600">{weather.soilTemp}°F</span>
+                                    <span className="text-xs text-gray-400">est. 4" depth</span>
+                                </div>
+                            </div>
+                            <div className="flex-1 px-4 py-3">
+                                <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Status</div>
+                                <div className={`text-xs font-bold ${soilRecColor}`}>{soilRec}</div>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl shadow-md p-4 mb-2 border-l-4 border-amber-500">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-0.5">Soil Temperature</div>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-extrabold text-amber-600">{weather.soilTemp}°F</span>
-                                    <span className="text-xs text-gray-500">est. at 4" depth</span>
-                                </div>
-                            </div>
-                            <div className="text-3xl">🌍</div>
-                        </div>
-                    </div>
-                    <div className={`rounded-xl border p-3 mb-3 ${soilRecBg}`}>
-                        <div className="text-xs font-bold uppercase tracking-wide mb-0.5 opacity-60">Lawn Recommendation</div>
-                        <div className={`text-sm font-bold ${soilRecColor}`}>{soilRec}</div>
-                    </div>
-                    {activities.length > 0 && (() => {
-                        const lastActivity = activities[activities.length - 1];
-                        const colors = ACTIVITY_COLORS[lastActivity.type] || ACTIVITY_COLORS.mowing;
-                        return (
-                            <div className={`bg-white rounded-xl shadow-md p-4 mb-3 border-l-4 ${colors.border} card-hover`}>
-                                <h3 className={`text-xs font-bold ${colors.text} uppercase mb-3`}>Last Activity</h3>
-                                <div className="flex items-center gap-3">
-                                    <div className="text-4xl">{ACTIVITY_TYPES[lastActivity.type].icon}</div>
-                                    <div className="flex-1">
-                                        <div className={`text-base font-bold ${colors.text}`}>{ACTIVITY_TYPES[lastActivity.type].name}</div>
-                                        <div className="text-xs text-gray-600 mt-1">
-                                            {(() => { const days = Math.floor((new Date() - new Date(lastActivity.date)) / (1000*60*60*24)); return days === 0 ? 'Today' : days === 1 ? 'Yesterday' : `${days} days ago`; })()}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })()}
                 </div>
             );
         };
@@ -2133,8 +2150,14 @@
                             </div>
                         </button>
                         <div className="flex items-center gap-2">
+                            <button onClick={() => { setView('add'); setSelectedActivityType(null); }} className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-1.5 rounded-full btn-press transition border border-white/20">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Log
+                            </button>
                             <button onClick={() => setView(view === 'menu' ? null : 'menu')} className="p-2 rounded-lg hover:bg-white/20 btn-press transition">
-                                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             </button>
@@ -2196,18 +2219,141 @@
 
                 <div className="max-w-5xl mx-auto p-2 md:p-3">
                     {!view && (
-                        <div>
-                            <WeatherSnapshot />
-                            <div className="grid grid-cols-2 gap-3 mb-4">
-                                <button onClick={() => setView('profile')} className="bg-white rounded-xl shadow-md p-4 border-l-4 border-[#367C2B] flex items-center gap-3 card-hover btn-press text-left">
-                                    <span className="text-3xl">🌱</span>
-                                    <div><div className="text-sm font-bold text-[#367C2B]">My Lawn</div><div className="text-xs text-gray-500">Profile & programs</div></div>
-                                </button>
-                                <button onClick={() => setView('garage')} className="bg-white rounded-xl shadow-md p-4 border-l-4 border-gray-400 flex items-center gap-3 card-hover btn-press text-left">
-                                    <span className="text-3xl">🏠</span>
-                                    <div><div className="text-sm font-bold text-gray-700">My Garage</div><div className="text-xs text-gray-500">Equipment & tools</div></div>
-                                </button>
+                        <div className="space-y-3">
+                            {/* Greeting */}
+                            <div className="flex items-start justify-between pt-1">
+                                <div>
+                                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                                        {(() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'; })()}
+                                    </div>
+                                    <div className="text-2xl font-extrabold text-gray-800 leading-tight">Your Lawn Dashboard</div>
+                                    {weather && <div className="text-xs text-gray-400 mt-0.5">{weather.location}</div>}
+                                </div>
+                                <div className="flex flex-col items-end gap-1.5 flex-shrink-0 ml-3">
+                                    {(() => {
+                                        const thisMonth = new Date().getMonth();
+                                        const thisYear = new Date().getFullYear();
+                                        const monthCount = activities.filter(a => { const d = new Date(a.date); return d.getMonth() === thisMonth && d.getFullYear() === thisYear; }).length;
+                                        return (
+                                            <div className="bg-[#e8f5e9] border border-[#367C2B]/30 text-[#367C2B] text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                                                {monthCount} {monthCount === 1 ? 'activity' : 'activities'} this month
+                                            </div>
+                                        );
+                                    })()}
+                                    {activities.length > 0 && (() => {
+                                        const last = activities[activities.length - 1];
+                                        const days = Math.floor((new Date() - new Date(last.date)) / (1000*60*60*24));
+                                        return <div className="text-xs text-gray-400">{days === 0 ? 'Last log: Today' : days === 1 ? 'Last log: Yesterday' : `Last log: ${days}d ago`}</div>;
+                                    })()}
+                                </div>
                             </div>
+                            {/* Weather card */}
+                            <WeatherSnapshot />
+                            {/* Primary CTA */}
+                            <button onClick={() => { setView('add'); setSelectedActivityType(null); }} className="w-full bg-[#367C2B] hover:bg-[#2d6323] text-white rounded-2xl py-4 flex items-center justify-center gap-3 btn-press transition" style={{boxShadow: '0 4px 18px rgba(54,124,43,0.32)'}}>
+                                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                </div>
+                                <span className="text-base font-extrabold tracking-wide">Log Activity</span>
+                            </button>
+                            {/* Recent activity strip */}
+                            {activities.length > 0 && (() => {
+                                const recent = [...activities].reverse().slice(0, 3);
+                                return (
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Recent Activity</div>
+                                            <button onClick={() => setView('history')} className="text-xs font-semibold text-[#367C2B]">View all →</button>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {recent.map(activity => {
+                                                const colors = ACTIVITY_COLORS[activity.type] || ACTIVITY_COLORS.mowing;
+                                                const type = ACTIVITY_TYPES[activity.type];
+                                                const days = Math.floor((new Date() - new Date(activity.date)) / (1000*60*60*24));
+                                                const when = days === 0 ? 'Today' : days === 1 ? 'Yesterday' : `${days} days ago`;
+                                                return (
+                                                    <div key={activity.id} className="bg-white rounded-xl border border-gray-100 shadow-sm px-3 py-2.5 flex items-center gap-3 card-hover">
+                                                        <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center text-base flex-shrink-0`}>{type.icon}</div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="text-sm font-bold text-gray-800">{type.name}</div>
+                                                            <div className="text-xs text-gray-400">{when}</div>
+                                                        </div>
+                                                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{backgroundColor: colors.hex}}></div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                            {/* Quick access 2×2 */}
+                            <div>
+                                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Quick Access</div>
+                                <div className="grid grid-cols-2 gap-2.5">
+                                    <button onClick={() => setView('profile')} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover btn-press text-left">
+                                        <div className="w-10 h-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+                                            <svg className="w-5 h-5 text-[#367C2B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                            </svg>
+                                        </div>
+                                        <div><div className="text-sm font-bold text-gray-800">My Lawn</div><div className="text-xs text-gray-400">Profile & care</div></div>
+                                    </button>
+                                    <button onClick={() => setView('garage')} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover btn-press text-left">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                        </div>
+                                        <div><div className="text-sm font-bold text-gray-800">My Garage</div><div className="text-xs text-gray-400">Equipment</div></div>
+                                    </button>
+                                    <button onClick={() => setView('history')} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover btn-press text-left">
+                                        <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                                            <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                            </svg>
+                                        </div>
+                                        <div><div className="text-sm font-bold text-gray-800">History</div><div className="text-xs text-gray-400">Past activities</div></div>
+                                    </button>
+                                    <button onClick={() => setView('dashboard')} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover btn-press text-left">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+                                            <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                            </svg>
+                                        </div>
+                                        <div><div className="text-sm font-bold text-gray-800">Dashboard</div><div className="text-xs text-gray-400">Stats & trends</div></div>
+                                    </button>
+                                </div>
+                            </div>
+                            {/* Monthly summary strip */}
+                            {(() => {
+                                const thisMonth = new Date().getMonth();
+                                const thisYear = new Date().getFullYear();
+                                const monthActivities = activities.filter(a => { const d = new Date(a.date); return d.getMonth() === thisMonth && d.getFullYear() === thisYear; });
+                                const monthCount = monthActivities.length;
+                                const lastMow = [...activities].reverse().find(a => a.type === 'mowing');
+                                const mowText = lastMow ? (() => { const d = Math.floor((new Date() - new Date(lastMow.date)) / (1000*60*60*24)); return d === 0 ? 'Mowed today' : d === 1 ? 'Mowed yesterday' : `Mowed ${d}d ago`; })() : null;
+                                const rainText = weather ? `${weather.rainfall}" rain` : null;
+                                const summaryParts = [monthCount > 0 ? `${monthCount} ${monthCount === 1 ? 'activity' : 'activities'}` : null, rainText, mowText].filter(Boolean);
+                                if (summaryParts.length === 0) return null;
+                                const monthName = new Date().toLocaleString('default', { month: 'long' });
+                                return (
+                                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-3 flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+                                            <svg className="w-4 h-4 text-[#367C2B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">This Month</div>
+                                            <div className="text-sm font-semibold text-gray-700 truncate">{summaryParts.join(' · ')}</div>
+                                        </div>
+                                        <button onClick={() => setView('dashboard')} className="text-xs font-bold text-[#367C2B] flex-shrink-0">{monthName} →</button>
+                                    </div>
+                                );
+                            })()}
                         </div>
                     )}
                     {view === 'add' && <div><button onClick={() => { setView(null); setSelectedActivityType(null); }} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button>{!selectedActivityType && <ActivitySelector />}{selectedActivityType && <ActivityForm />}</div>}
