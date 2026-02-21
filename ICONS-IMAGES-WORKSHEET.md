@@ -144,8 +144,23 @@ Used as decorative prefix icons on section headings throughout the app.
 | 62 | 🌱 | "Lawn Profile" heading | Lawn Profile page `<h2>`, `v4-new-components.js` | `[ ]` |
 | 63 | 🌱 | "My Yard" heading | My Yard page `<h2>` | `[ ]` |
 | 64 | 🌾 | "Grass Type" sub-heading | Lawn Profile > Grass Type section, `v4-new-components.js` | `[ ]` |
-| 65 | 🌱 | Loading / splash screen icon | Full-screen loading spinner — large (text-5xl) centered icon | `[ ]` |
-| 66 | 🌱 | Empty state / no activities | Activity selector — "no previous activity" empty state (text-4xl) | `[ ]` |
+| 65 | 🕒 | "Recent Activity" heading | Dashboard — recent activity list heading, `v4-new-components.js` line 172 | `[ ]` |
+| 66 | 🌱 | Loading / splash screen icon | Full-screen loading spinner — large (text-5xl) centered icon | `[ ]` |
+| 67 | 🌱 | Empty state / no activities | Activity selector — "no previous activity" empty state (text-4xl) | `[ ]` |
+
+### 3I — About Page Icons (`about.html`)
+Used as feature box and highlight heading icons on the standalone About page.
+
+| # | Emoji | Section | Location | Replaced? |
+|---|-------|---------|----------|-----------|
+| 68 | 🌱 | Page title — "About Lawn Care Tracker" | `about.html` `<h1>` header | `[ ]` |
+| 69 | 🎯 | "Our Mission" highlight box | `about.html` — mission statement callout | `[ ]` |
+| 70 | 📅 | "Monthly Programs" feature box | `about.html` — Key Features grid | `[ ]` |
+| 71 | 🌡️ | "Transition Zone Expertise" feature box | `about.html` — Key Features grid | `[ ]` |
+| 72 | 🌱 | "Variety Recommendations" feature box | `about.html` — Key Features grid | `[ ]` |
+| 73 | 🐛 | "Problem Solving" feature box | `about.html` — Key Features grid | `[ ]` |
+| 74 | 💧 | "Water Conservation" feature box | `about.html` — Key Features grid | `[ ]` |
+| 75 | 💰 | "Cost Transparency" feature box | `about.html` — Key Features grid | `[ ]` |
 
 ---
 
@@ -163,8 +178,9 @@ Used as decorative prefix icons on section headings throughout the app.
 | Season banner emoji | 5 |
 | Dashboard/status emoji | 4 |
 | Garage/equipment emoji | 5 |
-| Page heading emoji | 5 |
-| **TOTAL** | **66** |
+| Page heading emoji (main app) | 6 |
+| About page emoji | 8 |
+| **TOTAL** | **75** |
 
 ---
 
@@ -179,3 +195,7 @@ Used as decorative prefix icons on section headings throughout the app.
 4. **Google Sign-In SVG** — The Google "G" logo (item #14) is a brand asset. Google's guidelines require it to be reproduced accurately. Do not replace it with a generic icon unless you are removing Google Sign-In entirely.
 
 5. **PWA icons** (`icon-192.png`, `icon-512.png`) are referenced in `manifest.json` but the files don't exist yet — they need to be created as part of any new icon set.
+
+6. **No third-party icon library is used** — The app has zero FontAwesome, Material Icons, or Heroicons dependencies. It runs entirely on emoji + custom inline SVG. This means a new icon set can be dropped in as inline SVGs or an icon font without any conflicts.
+
+7. **`about.html` is a separate page** — It uses its own plain HTML styling (not Tailwind/React) and links back to `index.html`. Icons there are plain emoji in `<h4>` and `<strong>` tags.
