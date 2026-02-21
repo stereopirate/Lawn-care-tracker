@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yardstick — Homepage Redesign Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+
+    @keyframes fadeSlideIn {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0.97); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .fade-in { animation: fadeSlideIn 0.35s ease-out both; }
+    .scale-in { animation: scaleIn 0.3s ease-out both; }
+
+    /* Stagger delays */
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.10s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.20s; }
+    .delay-5 { animation-delay: 0.25s; }
+    .delay-6 { animation-delay: 0.30s; }
+
+    .card-hover {
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+    .card-hover:active { transform: scale(0.985); }
+    .card-hover:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
+
+    .btn-press {
+      transition: transform 0.1s ease, opacity 0.1s ease;
+    }
+    .btn-press:active { transform: scale(0.95); opacity: 0.88; }
+
+    /* Before/After toggle */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Label badge */
+    .change-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #367C2B; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Preview toolbar -->
+  <div class="sticky top-0 z-50 bg-gray-900 text-white px-4 py-2.5 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-2.5 rounded-full bg-[#367C2B]"></div>
+      <span class="text-sm font-semibold tracking-wide">Yardstick — Homepage Redesign Preview</span>
+      <span class="text-xs text-gray-400 hidden sm:block">Visual mockup only · mock data</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="showPanel('before')" id="btn-before"
+        class="text-xs font-semibold px-3 py-1.5 rounded-lg transition bg-gray-700 text-gray-300 hover:bg-gray-600">
+        Before
+      </button>
+      <button onclick="showPanel('after')" id="btn-after"
+        class="text-xs font-semibold px-3 py-1.5 rounded-lg transition bg-[#367C2B] text-white">
+        After ✦
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       AFTER — REDESIGNED
+  ════════════════════════════════════════════════════════════ -->
+  <div id="panel-after" class="panel active">
+    <div class="max-w-md mx-auto bg-gray-50 min-h-screen shadow-2xl">
+
+      <!-- ① HEADER — polished with quick + button -->
+      <!-- Change: Added SVG ＋ shortcut button; tighter padding; logo + wordmark only -->
+      <header class="sticky top-[41px] z-40" style="background: linear-gradient(135deg, #367C2B 0%, #4a9c3a 100%);">
+        <div class="px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+              <!-- Leaf SVG standing in for logo.svg -->
+              <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 text-white" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6 2 3 8 3 12c0 4 3 8 9 8 2 0 4-1 5.5-2.5C19 16 21 13 21 10 21 5 17 2 12 2z" fill="white" opacity="0.9"/>
+                <path d="M12 2v18M7 8c2 1 4 4 5 6" stroke="#367C2B" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <span class="text-xl font-extrabold text-white tracking-tight">Yardstick</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- NEW: Quick log button in header -->
+            <button class="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-1.5 rounded-full btn-press transition border border-white/20">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+              Log
+            </button>
+            <button class="p-2 rounded-lg hover:bg-white/20 transition btn-press">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Changes badge overlay on header -->
+        <div class="absolute -bottom-3 right-3 flex gap-1">
+          <span class="change-badge">① Header</span>
+        </div>
+      </header>
+
+      <!-- ② SEASON BANNER — upgraded gradient strip -->
+      <!-- Change: Full gradient bg, two-column layout, bolder typography -->
+      <div class="relative fade-in" style="background: linear-gradient(135deg, #1a4f14 0%, #2d6b20 100%);">
+        <div class="px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="text-xl">❄️</div>
+            <div>
+              <div class="text-xs font-bold text-green-300 uppercase tracking-widest">Dormant Season</div>
+              <div class="text-xs text-green-200/80">Soil avg 38°F · cooling trend</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-semibold text-green-100 bg-white/10 border border-white/20 rounded-lg px-2.5 py-1.5 whitespace-nowrap">
+              → Plan pre-emergent
+            </div>
+          </div>
+        </div>
+        <div class="absolute -bottom-3 right-3">
+          <span class="change-badge">② Season Banner</span>
+        </div>
+      </div>
+
+      <div class="px-3 pt-6 pb-4 space-y-3">
+
+        <!-- ③ HERO GREETING SECTION — new -->
+        <!-- Change: Personalized greeting with date and quick lawn status pill -->
+        <div class="fade-in delay-1">
+          <div class="flex items-center justify-between mb-1">
+            <div>
+              <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Good morning</div>
+              <div class="text-2xl font-extrabold text-gray-800 leading-tight">Your Lawn Dashboard</div>
+              <div class="text-xs text-gray-400 mt-0.5">Saturday, Feb 21 · Columbus, OH</div>
+            </div>
+            <div class="flex flex-col items-end gap-1.5">
+              <div class="bg-[#e8f5e9] border border-[#367C2B]/30 text-[#367C2B] text-xs font-bold px-3 py-1 rounded-full">
+                3 activities this month
+              </div>
+              <div class="text-xs text-gray-400">Last log: 2 days ago</div>
+            </div>
+          </div>
+          <div class="absolute right-3">
+            <span class="change-badge">③ Greeting</span>
+          </div>
+        </div>
+
+        <!-- ④ MERGED WEATHER CARD — weather + soil + recommendation in one -->
+        <!-- Change: Combined 3 cards → 1; soil temp integrated in header row; recommendation in footer strip -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in delay-2 card-hover relative">
+          <!-- Weather header -->
+          <div style="background: linear-gradient(135deg, #367C2B 0%, #4a9c3a 100%);" class="px-4 pt-4 pb-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-xs font-semibold text-green-200 uppercase tracking-widest mb-1">Columbus, OH · Live</div>
+                <div class="flex items-end gap-2">
+                  <span class="text-5xl font-black text-white leading-none">34°</span>
+                  <div class="pb-1.5">
+                    <div class="text-sm font-semibold text-green-100">Feels like 27°</div>
+                    <div class="text-xs text-green-200">H: 41° · L: 28°</div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-4xl">🌨️</div>
+                <div class="text-xs font-semibold text-green-100 mt-1.5 bg-white/10 rounded-lg px-2 py-0.5">Light Snow</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat row — each cell has white bg -->
+          <div class="grid grid-cols-4 bg-gray-50 divide-x divide-gray-100">
+            <div class="text-center py-2.5 px-1 bg-white m-1.5 rounded-xl shadow-sm">
+              <div class="text-xs text-gray-400 mb-0.5">Humidity</div>
+              <div class="text-sm font-bold text-gray-800">72%</div>
+            </div>
+            <div class="text-center py-2.5 px-1 bg-white m-1.5 rounded-xl shadow-sm">
+              <div class="text-xs text-gray-400 mb-0.5">Wind</div>
+              <div class="text-sm font-bold text-gray-800">8 mph</div>
+            </div>
+            <div class="text-center py-2.5 px-1 bg-white m-1.5 rounded-xl shadow-sm">
+              <div class="text-xs text-gray-400 mb-0.5">7-Day Rain</div>
+              <div class="text-sm font-bold text-gray-800">0.1"</div>
+            </div>
+            <div class="text-center py-2.5 px-1 bg-white m-1.5 rounded-xl shadow-sm">
+              <div class="text-xs text-gray-400 mb-0.5">Rain %</div>
+              <div class="text-sm font-bold text-gray-800">60%</div>
+            </div>
+          </div>
+
+          <!-- Soil temp + recommendation — merged into card footer -->
+          <div class="border-t border-gray-100 flex items-center">
+            <div class="flex-1 px-4 py-3 border-r border-gray-100">
+              <div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Soil Temp</div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-xl font-extrabold text-amber-600">38°F</span>
+                <span class="text-xs text-gray-400">est. 4" depth</span>
+              </div>
+            </div>
+            <div class="flex-1 px-4 py-3">
+              <div class="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-0.5">Status</div>
+              <div class="text-xs font-bold text-blue-700">❄️ Too cold for activity</div>
+            </div>
+          </div>
+
+          <div class="absolute -bottom-3 right-3">
+            <span class="change-badge">④ Weather Card</span>
+          </div>
+        </div>
+
+        <!-- ⑤ PROMINENT LOG CTA -->
+        <!-- Change: Full-width primary action button, not buried in menu -->
+        <div class="fade-in delay-3 relative">
+          <button class="w-full bg-[#367C2B] hover:bg-[#2d6323] text-white rounded-2xl py-4 flex items-center justify-center gap-3 shadow-lg btn-press transition"
+            style="box-shadow: 0 4px 18px rgba(54, 124, 43, 0.35);">
+            <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+            <span class="text-base font-extrabold tracking-wide">Log Activity</span>
+          </button>
+          <div class="absolute -bottom-3 right-3">
+            <span class="change-badge">⑤ Primary CTA</span>
+          </div>
+        </div>
+
+        <!-- ⑥ RECENT ACTIVITY STRIP — new section -->
+        <!-- Change: Compact 3-chip strip for last activities, links to history -->
+        <div class="fade-in delay-4 relative">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">Recent Activity</div>
+            <button class="text-xs font-semibold text-[#367C2B]">View all →</button>
+          </div>
+          <div class="space-y-2">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-3 py-2.5 flex items-center gap-3 card-hover">
+              <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-base flex-shrink-0">✂️</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-800">Mowing</div>
+                <div class="text-xs text-gray-400">2 days ago · 3.5" height</div>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-[#367C2B] flex-shrink-0"></div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-3 py-2.5 flex items-center gap-3 card-hover">
+              <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-base flex-shrink-0">🌿</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-800">Fertilizer</div>
+                <div class="text-xs text-gray-400">12 days ago · Winterizer 24-0-12</div>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0"></div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-3 py-2.5 flex items-center gap-3 card-hover">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-base flex-shrink-0">💧</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-800">Watering</div>
+                <div class="text-xs text-gray-400">18 days ago · 0.5"</div>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></div>
+            </div>
+          </div>
+          <div class="absolute -top-1 right-0">
+            <span class="change-badge">⑥ Activity Strip</span>
+          </div>
+        </div>
+
+        <!-- ⑦ QUICK NAV GRID — 4-item 2×2 with SVG icons -->
+        <!-- Change: 2 buttons → 4 tiles; emoji → SVG icons; consistent style -->
+        <div class="fade-in delay-5 relative">
+          <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Quick Access</div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- My Lawn -->
+            <button class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover text-left">
+              <div class="w-10 h-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-[#367C2B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-gray-800">My Lawn</div>
+                <div class="text-xs text-gray-400">Profile & care</div>
+              </div>
+            </button>
+            <!-- My Garage -->
+            <button class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover text-left">
+              <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-gray-800">My Garage</div>
+                <div class="text-xs text-gray-400">Equipment</div>
+              </div>
+            </button>
+            <!-- History -->
+            <button class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover text-left">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-gray-800">History</div>
+                <div class="text-xs text-gray-400">Past activities</div>
+              </div>
+            </button>
+            <!-- Dashboard -->
+            <button class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3 card-hover text-left">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-gray-800">Dashboard</div>
+                <div class="text-xs text-gray-400">Stats & trends</div>
+              </div>
+            </button>
+          </div>
+          <div class="absolute -top-1 right-0">
+            <span class="change-badge">⑦ Quick Nav</span>
+          </div>
+        </div>
+
+        <!-- ⑧ WEEKLY SUMMARY STRIP — new section -->
+        <!-- Change: At-a-glance contextual summary row -->
+        <div class="fade-in delay-6">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-3 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-[#367C2B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">This Month</div>
+              <div class="text-sm font-semibold text-gray-700">3 activities · 0.1" rain · Mowed 2 days ago</div>
+            </div>
+            <div class="text-xs font-bold text-[#367C2B] flex-shrink-0">Feb →</div>
+          </div>
+          <div class="text-center mt-2">
+            <span class="change-badge">⑧ Weekly Summary</span>
+          </div>
+        </div>
+
+        <!-- Spacer -->
+        <div class="h-6"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       BEFORE — CURRENT DESIGN (approximated)
+  ════════════════════════════════════════════════════════════ -->
+  <div id="panel-before" class="panel">
+    <div class="max-w-md mx-auto bg-gray-50 min-h-screen shadow-2xl">
+
+      <!-- Current header -->
+      <header class="sticky top-[41px] z-40" style="background: linear-gradient(135deg, #367C2B 0%, #4a9c3a 100%);">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 text-white" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6 2 3 8 3 12c0 4 3 8 9 8 2 0 4-1 5.5-2.5C19 16 21 13 21 10 21 5 17 2 12 2z" fill="white" opacity="0.9"/>
+                <path d="M12 2v18M7 8c2 1 4 4 5 6" stroke="#367C2B" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <span class="text-2xl font-bold text-white">Yardstick</span>
+          </div>
+          <button class="p-2 rounded-lg hover:bg-white/20 transition">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Current season banner -->
+      <div class="bg-blue-50 border-l-4 border-blue-400 px-4 py-2.5">
+        <div class="max-w-5xl mx-auto flex items-center gap-2">
+          <span class="text-lg">❄️</span>
+          <span class="text-sm font-semibold text-gray-700">Dormant Season — soil avg 38°F · cooling trend. Plan spring pre-emergent timing.</span>
+        </div>
+      </div>
+
+      <div class="max-w-5xl mx-auto p-2">
+        <!-- Current weather card — separate cards -->
+        <div class="mb-4">
+          <!-- Main weather -->
+          <div class="bg-white rounded-xl shadow-md overflow-hidden mb-3">
+            <div class="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] px-4 pt-3 pb-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-semibold text-green-200 uppercase tracking-wide mb-0.5">Columbus, OH — Current Conditions</div>
+                  <div class="flex items-end gap-2">
+                    <span class="text-5xl font-extrabold text-white leading-none">34°</span>
+                    <div class="pb-1">
+                      <div class="text-sm text-green-100">Feels like 27°</div>
+                      <div class="text-xs text-green-200">H: 41° · L: 28°</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-4xl">🌨️</div>
+                  <div class="text-xs font-semibold text-green-100 mt-1">Light Snow</div>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-4 divide-x divide-gray-100 bg-gray-50">
+              <div class="text-center py-2 px-1"><div class="text-sm font-bold text-gray-700">72%</div><div class="text-xs text-gray-500">Humidity</div></div>
+              <div class="text-center py-2 px-1"><div class="text-sm font-bold text-gray-700">8 mph</div><div class="text-xs text-gray-500">Wind NW</div></div>
+              <div class="text-center py-2 px-1"><div class="text-sm font-bold text-gray-700">0.1"</div><div class="text-xs text-gray-500">7-day Rain</div></div>
+              <div class="text-center py-2 px-1"><div class="text-sm font-bold text-gray-700">60%</div><div class="text-xs text-gray-500">Rain Chance</div></div>
+            </div>
+          </div>
+
+          <!-- Separate soil temp card -->
+          <div class="bg-white rounded-xl shadow-md p-4 mb-2 border-l-4 border-amber-500">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-amber-600 uppercase tracking-wide mb-0.5">Soil Temperature</div>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-4xl font-extrabold text-amber-600">38°F</span>
+                  <span class="text-xs text-gray-500">est. at 4" depth</span>
+                </div>
+              </div>
+              <div class="text-3xl">🌍</div>
+            </div>
+          </div>
+
+          <!-- Separate recommendation card -->
+          <div class="rounded-xl border p-3 mb-3 bg-blue-50 border-blue-200">
+            <div class="text-xs font-bold uppercase tracking-wide mb-0.5 opacity-60">Lawn Recommendation</div>
+            <div class="text-sm font-bold text-blue-700">❄️ Too cold for most lawn activity</div>
+          </div>
+
+          <!-- Separate last activity card -->
+          <div class="bg-white rounded-xl shadow-md p-4 mb-3 border-l-4 border-[#367C2B]">
+            <h3 class="text-xs font-bold text-[#367C2B] uppercase mb-3">Last Activity</h3>
+            <div class="flex items-center gap-3">
+              <div class="text-4xl">✂️</div>
+              <div class="flex-1">
+                <div class="text-base font-bold text-[#367C2B]">Mowing</div>
+                <div class="text-xs text-gray-600 mt-1">2 days ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current 2-button nav -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <button class="bg-white rounded-xl shadow-md p-4 border-l-4 border-[#367C2B] flex items-center gap-3 text-left">
+            <span class="text-3xl">🌱</span>
+            <div>
+              <div class="text-sm font-bold text-[#367C2B]">My Lawn</div>
+              <div class="text-xs text-gray-500">Profile &amp; programs</div>
+            </div>
+          </button>
+          <button class="bg-white rounded-xl shadow-md p-4 border-l-4 border-gray-400 flex items-center gap-3 text-left">
+            <span class="text-3xl">🏠</span>
+            <div>
+              <div class="text-sm font-bold text-gray-700">My Garage</div>
+              <div class="text-xs text-gray-500">Equipment &amp; tools</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change legend -->
+  <div class="max-w-md mx-auto mt-4 mb-8 px-4" id="legend-after">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+      <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Changes highlighted above</div>
+      <div class="space-y-2 text-xs text-gray-600">
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">① Header</span><span>Added "Log" pill button; tighter logo; remove big hamburger overflow</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">② Season Banner</span><span>Dark gradient; two-column with action shortcut instead of plain left border</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">③ Greeting</span><span>New — date, location, month count, last log context</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">④ Weather Card</span><span>3 separate cards → 1; stat cells have white bg; soil + status in footer row</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">⑤ Primary CTA</span><span>New — full-width Log Activity button; not hidden in hamburger</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">⑥ Activity Strip</span><span>New — last 3 activities inline, linked to history</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">⑦ Quick Nav</span><span>2 tiles → 4 tiles; emoji icons → SVG; History + Dashboard added</span></div>
+        <div class="flex gap-2 items-start"><span class="change-badge flex-shrink-0">⑧ Weekly Summary</span><span>New — monthly activity count + last mow + rain at a glance</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-md mx-auto mt-4 mb-8 px-4 hidden" id="legend-before">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 text-center">
+      <div class="text-xs font-semibold text-gray-400">This is the current homepage — switch to <strong>After</strong> to see the redesign.</div>
+    </div>
+  </div>
+
+  <script>
+    function showPanel(which) {
+      document.getElementById('panel-after').classList.toggle('active', which === 'after');
+      document.getElementById('panel-before').classList.toggle('active', which === 'before');
+      document.getElementById('legend-after').classList.toggle('hidden', which === 'before');
+      document.getElementById('legend-before').classList.toggle('hidden', which === 'after');
+      document.getElementById('btn-after').className = which === 'after'
+        ? 'text-xs font-semibold px-3 py-1.5 rounded-lg transition bg-[#367C2B] text-white'
+        : 'text-xs font-semibold px-3 py-1.5 rounded-lg transition bg-gray-700 text-gray-300 hover:bg-gray-600';
+      document.getElementById('btn-before').className = which === 'before'
+        ? 'text-xs font-semibold px-3 py-1.5 rounded-lg transition bg-[#367C2B] text-white'
+        : 'text-xs font-semibold px-3 py-1.5 rounded-lg transition bg-gray-700 text-gray-300 hover:bg-gray-600';
+    }
+  </script>
+</body>
+</html>
