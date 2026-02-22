@@ -2051,6 +2051,8 @@ window.ResearchSourcesPage = () => (
         const [selectedActivityType, setSelectedActivityType] = useState(null);
         const [weather, setWeather] = useState(null);
         const [weatherLoading, setWeatherLoading] = useState(true);
+        const weatherFetchKeyRef = React.useRef(null);
+        const [syncError, setSyncError] = useState(null);
         const [equipment, setEquipment] = useState([]);
         const [lawnProfile, setLawnProfile] = useState(null);
         const [statsView, setStatsView] = useState('year');
@@ -2095,6 +2097,7 @@ window.ResearchSourcesPage = () => (
             if (!authReady) return;
             setDataLoading(true);
             store.loadAll().then(({ activities: acts, equipment: eq, profile: prof }) => {
+                setSyncError(null);
                 setActivities(acts || []);
                 setEquipment(eq || []);
                 if (prof) {
@@ -2108,6 +2111,7 @@ window.ResearchSourcesPage = () => (
                 setDataLoading(false);
             }).catch((e) => {
                 console.error('Failed to load data:', e);
+                setSyncError('Could not load your cloud data — showing last saved data. Check your connection.');
                 setDataLoading(false);
             });
         }, [authReady, currentUser]);
@@ -2126,6 +2130,9 @@ window.ResearchSourcesPage = () => (
                 }
             }
             if (!lat || !lon) { setWeatherLoading(false); return; }
+            const fetchKey = `${lat},${lon}`;
+            if (weatherFetchKeyRef.current === fetchKey) return;
+            weatherFetchKeyRef.current = fetchKey;
             try {
                 const response = await fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
@@ -2185,6 +2192,8 @@ window.ResearchSourcesPage = () => (
             } catch (error) {
                 console.error('Weather fetch error:', error);
                 setWeatherLoading(false);
+            } finally {
+                weatherFetchKeyRef.current = null;
             }
         };
 
@@ -2363,6 +2372,13 @@ window.ResearchSourcesPage = () => (
                     firebaseConfigured={fb.configured}
                 />
 
+                {syncError && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border-b border-red-200 text-sm text-red-700">
+                        <span>⚠️ {syncError}</span>
+                        <button onClick={() => setSyncError(null)} className="ml-auto text-red-400 hover:text-red-600 font-bold text-base leading-none" aria-label="Dismiss">×</button>
+                    </div>
+                )}
+
                 <SeasonBanner weather={weather} />
 
                 <div className="max-w-5xl mx-auto p-2 md:p-3">
@@ -2513,7 +2529,7 @@ window.ResearchSourcesPage = () => (
                             {(() => {
                                 if (!lawnProfile || !lawnProfile.zone) return null;
                                 const zd = ZONE_INFO[lawnProfile.zone] || ZONE_INFO[getParentZone(lawnProfile.zone)];
-                                if (!zd || !zd.firstFrost) return null;
+                                if (!zd || !zd.firstFrost || !zd.lastFrost) return null;
                                 const now = new Date(), yr = now.getFullYear();
                                 const firstFrost = new Date(yr, zd.firstFrost.month - 1, zd.firstFrost.day);
                                 const lastFrost  = new Date(yr, zd.lastFrost.month  - 1, zd.lastFrost.day );
