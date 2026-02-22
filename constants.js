@@ -235,6 +235,7 @@ var ACTIVITY_COLORS = {
     watering:    { bg: 'bg-blue-50',      border: 'border-[#3B82F6]', text: 'text-[#3B82F6]', hex: '#3B82F6' },
     seeding:     { bg: 'bg-amber-50',     border: 'border-[#92400E]', text: 'text-[#92400E]', hex: '#92400E' },
     aeration:    { bg: 'bg-purple-50',    border: 'border-purple-500', text: 'text-purple-600', hex: '#8B5CF6' },
+    treatment:   { bg: 'bg-teal-50',      border: 'border-teal-500',   text: 'text-teal-700',   hex: '#0D9488' },
     maintenance: { bg: 'bg-gray-50',      border: 'border-[#6B7280]', text: 'text-[#6B7280]', hex: '#6B7280' }
 };
 

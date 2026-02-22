@@ -9,7 +9,8 @@
         const [mowerType, setMowerType]     = useState('');
         const [brandFilter, setBrandFilter] = useState('');
         const [compareList, setCompareList] = useState([]);
-        const [expandedId, setExpandedId]   = useState(null);
+        const [expandedId, setExpandedId]     = useState(null);
+        const [showComparison, setShowComparison] = useState(false);
 
         const allProducts = (PRODUCT_DATABASE[category] || []).filter(p => !p.id.includes('-other'));
         const brands = [...new Set(allProducts.map(p => p.brand))].sort();
@@ -133,7 +134,7 @@
                             <div className="flex items-center gap-2 flex-shrink-0">
                                 <button onClick={() => setCompareList([])} className="px-3 py-2 text-xs font-semibold text-gray-500 border border-gray-300 rounded-lg">Clear</button>
                                 {compareList.length >= 2 && (
-                                    <button className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg" style={{animation: 'pulseGlow 2s ease-in-out infinite'}}>
+                                    <button onClick={() => setShowComparison(true)} className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg" style={{animation: 'pulseGlow 2s ease-in-out infinite'}}>
                                         Compare Now →
                                     </button>
                                 )}
@@ -149,6 +150,59 @@
                 {filtered.length === 0 && (
                     <div className="bg-white rounded-xl shadow p-8 text-center text-gray-500">
                         No products match the current filters
+                    </div>
+                )}
+
+                {/* Comparison modal */}
+                {showComparison && (
+                    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-0 sm:px-4">
+                        <div className="bg-white w-full sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+                            <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+                                <div>
+                                    <div className="font-bold text-gray-900">Side-by-Side Comparison</div>
+                                    <div className="text-xs text-gray-500">{compareList.length} products selected</div>
+                                </div>
+                                <button onClick={() => setShowComparison(false)} className="text-gray-400 hover:text-gray-700 text-2xl font-bold leading-none">×</button>
+                            </div>
+                            <div className="p-4 overflow-x-auto">
+                                <table className="w-full text-sm border-collapse">
+                                    <thead>
+                                        <tr>
+                                            <th className="text-left text-xs font-semibold text-gray-400 uppercase py-2 pr-4 w-24">Spec</th>
+                                            {compareList.map(p => (
+                                                <th key={p.id} className="text-left py-2 px-3 bg-gray-50 rounded-t-lg align-top">
+                                                    <div className="font-bold text-gray-900 text-sm leading-tight">{p.name}</div>
+                                                    <div className="text-xs text-[#367C2B] font-semibold">{p.brand}</div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {[
+                                            { label: 'Type',       key: 'type' },
+                                            { label: 'Category',   key: 'mowerCategory' },
+                                            { label: 'Deck Size',  key: 'deck' },
+                                            { label: 'Features',   key: 'features' },
+                                            { label: 'NPK',        key: 'npk' },
+                                            { label: 'Coverage',   key: 'coverage' },
+                                        ].filter(row => compareList.some(p => p[row.key])).map(row => (
+                                            <tr key={row.key} className="border-t border-gray-100">
+                                                <td className="text-xs font-semibold text-gray-400 uppercase py-2.5 pr-4 align-top whitespace-nowrap">{row.label}</td>
+                                                {compareList.map(p => (
+                                                    <td key={p.id} className="py-2.5 px-3 text-xs text-gray-700 align-top">
+                                                        {p[row.key] || <span className="text-gray-300">—</span>}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="px-4 pb-4 flex justify-end gap-2">
+                                <button onClick={() => { setCompareList([]); setShowComparison(false); }} className="px-4 py-2 text-xs font-semibold text-gray-500 border border-gray-300 rounded-lg">Clear Selection</button>
+                                <button onClick={() => setShowComparison(false)} className="px-4 py-2 text-xs font-semibold bg-[#367C2B] text-white rounded-lg">Done</button>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
