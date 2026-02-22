@@ -379,7 +379,7 @@ window.ActivityDetails = ({ activity }) => {
 // ─── MyGarage Component ───────────────────────────────────────────────────────
 (function () {
     const { useState } = React;
-    window.MyGarage = ({ equipment, activities, onAdd, onDelete, onNavigate }) => {
+    window.MyGarage = ({ equipment, activities, onAdd, onDelete, onUpdate, onNavigate }) => {
         const [garageForm, setGarageForm] = useState({ name: '', type: 'mowers', selectedProduct: '', customName: '', mowerType: '' });
         const allProducts = PRODUCT_DATABASE[garageForm.type] || [];
         const currentProducts = (garageForm.type === 'mowers' && garageForm.mowerType)
@@ -482,19 +482,56 @@ window.ActivityDetails = ({ activity }) => {
                                                 <div className="text-xs font-bold text-[#367C2B] uppercase mb-2">Maintenance Schedule</div>
                                                 {schedule.note ? (
                                                     <div className="text-xs text-gray-500 italic">{schedule.note}</div>
-                                                ) : (
-                                                    <div className="space-y-1">
-                                                        {item.type === 'mowers' && <div className="text-xs text-gray-600 mb-2">Est. hours logged: <span className="font-bold text-[#367C2B]">{Math.round(mowingHours * 10) / 10} hrs</span></div>}
-                                                        <div className="grid grid-cols-2 gap-2">
-                                                            {schedule.oilChange && <div className={`text-xs p-2 rounded ${mowingHours >= schedule.oilChange ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}><span className="font-semibold">Oil:</span> Every {schedule.oilChange} hrs{mowingHours >= schedule.oilChange && <div className="text-red-600 font-bold mt-0.5">Due now</div>}</div>}
-                                                            {schedule.airFilter && <div className={`text-xs p-2 rounded ${typeof schedule.airFilter === 'number' && mowingHours >= schedule.airFilter ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}><span className="font-semibold">Air Filter:</span> {typeof schedule.airFilter === 'number' ? `Every ${schedule.airFilter} hrs` : schedule.airFilter}</div>}
-                                                            {schedule.sparkPlug && <div className={`text-xs p-2 rounded ${typeof schedule.sparkPlug === 'number' && mowingHours >= schedule.sparkPlug ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}><span className="font-semibold">Spark Plug:</span> {typeof schedule.sparkPlug === 'number' ? `Every ${schedule.sparkPlug} hrs` : schedule.sparkPlug}</div>}
-                                                            {schedule.cleaning && <div className="text-xs p-2 rounded bg-gray-100"><span className="font-semibold">Cleaning:</span> {schedule.cleaning}</div>}
+                                                ) : (() => {
+                                                    const logs = item.maintenanceLogs || {};
+                                                    const logMaintenance = (type) => {
+                                                        onUpdate(item.id, {
+                                                            maintenanceLogs: { ...logs, [type]: { loggedAt: Date.now(), hoursAtLog: mowingHours } }
+                                                        });
+                                                    };
+                                                    const MaintenanceRow = ({ type, label, interval }) => {
+                                                        const lastLog = logs[type];
+                                                        const hrsSince = typeof interval === 'number'
+                                                            ? Math.round((mowingHours - (lastLog?.hoursAtLog || 0)) * 10) / 10
+                                                            : null;
+                                                        const isDue = typeof interval === 'number' && hrsSince >= interval;
+                                                        const lastDate = lastLog?.loggedAt
+                                                            ? new Date(lastLog.loggedAt).toLocaleDateString()
+                                                            : null;
+                                                        return (
+                                                            <div className={`text-xs p-2 rounded-lg flex flex-col gap-1 ${isDue ? 'bg-red-50 border border-red-200' : 'bg-gray-100'}`}>
+                                                                <div className="flex items-center justify-between">
+                                                                    <span className="font-semibold text-gray-800">{label}</span>
+                                                                    {isDue && (
+                                                                        <button onClick={() => logMaintenance(type)}
+                                                                            className="text-xs font-bold text-white bg-[#367C2B] rounded px-1.5 py-0.5">
+                                                                            ✓ Log Done
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                                <div className="text-gray-500">
+                                                                    {typeof interval === 'number' ? `Every ${interval} hrs` : interval}
+                                                                </div>
+                                                                {isDue && <div className="text-red-600 font-bold">Due now ({hrsSince} hrs since last)</div>}
+                                                                {!isDue && typeof interval === 'number' && hrsSince !== null && (
+                                                                    <div className="text-gray-400">{hrsSince} / {interval} hrs</div>
+                                                                )}
+                                                                {lastDate && <div className="text-gray-400">Last done: {lastDate}</div>}
+                                                            </div>
+                                                        );
+                                                    };
+                                                    return (
+                                                        <div className="space-y-1.5">
+                                                            {item.type === 'mowers' && (
+                                                                <div className="text-xs text-gray-600 mb-1.5">Est. hours logged: <span className="font-bold text-[#367C2B]">{Math.round(mowingHours * 10) / 10} hrs</span></div>
+                                                            )}
+                                                            {schedule.oilChange && <MaintenanceRow type="oilChange" label="Oil Change" interval={schedule.oilChange} />}
+                                                            {schedule.airFilter && <MaintenanceRow type="airFilter" label="Air Filter" interval={schedule.airFilter} />}
+                                                            {schedule.sparkPlug && <MaintenanceRow type="sparkPlug" label="Spark Plug" interval={schedule.sparkPlug} />}
+                                                            {schedule.cleaning && <MaintenanceRow type="cleaning" label="Cleaning" interval={schedule.cleaning} />}
                                                         </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
+                                                    );
+                                                })()}
                                     </div>
                                 );
                             })}
@@ -517,6 +554,7 @@ window.ActivityDetails = ({ activity }) => {
         const [brandFilter, setBrandFilter] = useState('');
         const [compareList, setCompareList] = useState([]);
         const [expandedId, setExpandedId] = useState(null);
+        const [showCompare, setShowCompare] = useState(false);
         const allProducts = (PRODUCT_DATABASE[category] || []).filter(p => !p.id.includes('-other'));
         const brands = [...new Set(allProducts.map(p => p.brand))].sort();
         let filtered = allProducts;
@@ -558,8 +596,50 @@ window.ActivityDetails = ({ activity }) => {
                 </div>
             );
         };
+        const SPEC_ROWS = [
+            ['Type',     p => p.type || p.mowerCategory],
+            ['Deck',     p => p.deck],
+            ['Features', p => p.features],
+            ['NPK',      p => p.npk],
+            ['Coverage', p => p.coverage],
+        ];
         return (
             <div>
+                {showCompare && compareList.length >= 2 && (
+                    <div className="fixed inset-0 z-50 bg-black/50 flex items-end sm:items-center justify-center p-4" onClick={() => setShowCompare(false)}>
+                        <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-auto shadow-2xl animate-scale-in" onClick={e => e.stopPropagation()}>
+                            <div className="flex items-center justify-between px-5 py-4 border-b">
+                                <div className="font-bold text-lg text-gray-900">Product Comparison</div>
+                                <button onClick={() => setShowCompare(false)} className="text-gray-400 hover:text-gray-700 text-2xl leading-none font-light">×</button>
+                            </div>
+                            <div className="p-4">
+                                <div className="grid gap-3 mb-5" style={{gridTemplateColumns: `repeat(${compareList.length}, 1fr)`}}>
+                                    {compareList.map(p => (
+                                        <div key={p.id} className="text-center bg-[#e8f5e9] rounded-xl p-3">
+                                            <div className="text-sm font-bold text-gray-900 leading-tight">{p.name}</div>
+                                            <div className="text-xs text-[#367C2B] font-semibold mt-0.5">{p.brand}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                {SPEC_ROWS.filter(([, getter]) => compareList.some(p => getter(p))).map(([label, getter]) => (
+                                    <div key={label} className="mb-3">
+                                        <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">{label}</div>
+                                        <div className="grid gap-2" style={{gridTemplateColumns: `repeat(${compareList.length}, 1fr)`}}>
+                                            {compareList.map(p => (
+                                                <div key={p.id} className="bg-gray-50 rounded-lg px-2 py-2 text-xs text-gray-700 text-center flex items-center justify-center min-h-[36px]">
+                                                    {getter(p) || <span className="text-gray-300">—</span>}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="px-4 pb-4">
+                                <button onClick={() => { setShowCompare(false); setCompareList([]); }} className="w-full py-2.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-semibold hover:bg-gray-200">Done — Clear Selection</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <h2 className="text-xl font-bold mb-4">📖 Product Guide</h2>
                 <div className="flex gap-1 bg-gray-100 p-1 rounded-lg mb-4 overflow-x-auto">
                     {Object.entries(typeLabels).map(([key, label]) => (
@@ -588,7 +668,7 @@ window.ActivityDetails = ({ activity }) => {
                             <div className="flex-1 min-w-0"><div className="text-xs text-gray-500 font-semibold">{compareList.length}/3 selected</div><div className="text-sm font-bold text-gray-800 truncate">{compareList.map(p => p.name).join(' vs ')}</div></div>
                             <div className="flex items-center gap-2 flex-shrink-0">
                                 <button onClick={() => setCompareList([])} className="px-3 py-2 text-xs font-semibold text-gray-500 border border-gray-300 rounded-lg">Clear</button>
-                                {compareList.length >= 2 && <button className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg" style={{animation: 'pulseGlow 2s ease-in-out infinite'}}>Compare Now →</button>}
+                                {compareList.length >= 2 && <button onClick={() => setShowCompare(true)} className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg" style={{animation: 'pulseGlow 2s ease-in-out infinite'}}>Compare Now →</button>}
                             </div>
                         </div>
                     </div>
@@ -729,6 +809,19 @@ window.ResearchSourcesPage = () => (
             await deleteDoc(doc(db, 'users', currentUser.uid, 'equipment', String(id)));
         }, [isCloud, currentUser]);
 
+        // ── UPDATE equipment (for maintenance logging) ────────────────────────
+        const updateEquipment = useCallback(async (id, updates) => {
+            if (!isCloud) {
+                const stored = JSON.parse(localStorage.getItem('lawnCareEquipment') || '[]');
+                localStorage.setItem('lawnCareEquipment', JSON.stringify(
+                    stored.map(e => e.id === id ? { ...e, ...updates } : e)
+                ));
+                return;
+            }
+            const { db, doc, setDoc } = fb;
+            await setDoc(doc(db, 'users', currentUser.uid, 'equipment', String(id)), updates, { merge: true });
+        }, [isCloud, currentUser]);
+
         // ── WRITE profile ─────────────────────────────────────────────────────
         const saveProfile = useCallback(async (profile) => {
             localStorage.setItem('lawnProfile', JSON.stringify(profile)); // always cache locally
@@ -737,7 +830,7 @@ window.ResearchSourcesPage = () => (
             await setDoc(doc(db, 'users', currentUser.uid, 'profile', 'data'), profile);
         }, [isCloud, currentUser]);
 
-        return { loadAll, saveActivity, deleteActivity, saveEquipment, deleteEquipment, saveProfile, isCloud };
+        return { loadAll, saveActivity, deleteActivity, saveEquipment, deleteEquipment, updateEquipment, saveProfile, isCloud };
     };
 
     // ─── Auth Modal ─────────────────────────────────────────────────────────────
@@ -927,6 +1020,1030 @@ window.ResearchSourcesPage = () => (
 
     const getParentZone = (zone) => zone ? zone.replace(/[ab]$/i, '') : zone;
 
+    // ─── Shared pure helpers (no React state) ──────────────────────────────────
+    const WMO_CODES = {
+        0: { label: 'Clear Sky', icon: '☀️' }, 1: { label: 'Mainly Clear', icon: '🌤️' },
+        2: { label: 'Partly Cloudy', icon: '⛅' }, 3: { label: 'Overcast', icon: '☁️' },
+        45: { label: 'Foggy', icon: '🌫️' }, 48: { label: 'Icy Fog', icon: '🌫️' },
+        51: { label: 'Light Drizzle', icon: '🌦️' }, 53: { label: 'Drizzle', icon: '🌦️' },
+        55: { label: 'Heavy Drizzle', icon: '🌧️' }, 61: { label: 'Light Rain', icon: '🌧️' },
+        63: { label: 'Rain', icon: '🌧️' }, 65: { label: 'Heavy Rain', icon: '🌧️' },
+        71: { label: 'Light Snow', icon: '🌨️' }, 73: { label: 'Snow', icon: '❄️' },
+        75: { label: 'Heavy Snow', icon: '❄️' }, 80: { label: 'Light Showers', icon: '🌦️' },
+        81: { label: 'Showers', icon: '🌧️' }, 82: { label: 'Heavy Showers', icon: '⛈️' },
+        95: { label: 'Thunderstorm', icon: '⛈️' }, 99: { label: 'Thunderstorm w/ Hail', icon: '⛈️' }
+    };
+
+    const getWindDirection = (deg) => {
+        const dirs = ['N','NE','E','SE','S','SW','W','NW'];
+        return dirs[Math.round(deg / 45) % 8];
+    };
+
+    const getTaskWeatherStatus = (taskText, w) => {
+        if (!w) return null;
+        const t = taskText.toLowerCase();
+        const isSeed = /seed|overseed|\bsod\b|plug/.test(t);
+        const isPreEmergent = /pre-emergent|pre emergent|crabgrass prev|prodiamine|dithiopyr/.test(t);
+        const isFertilizer = !isPreEmergent && /fertil|\bfeed\b|nitrogen|weed[- ]and[- ]feed|milorganite|scotts/.test(t);
+        const isTreatment = !isPreEmergent && !isFertilizer && !isSeed && /herbicide|fungicide|insecticide|pesticide|post-emergent|treatment|\bspray\b|\bapply\b/.test(t);
+        const isMowing = /\bmow\b|cut height|blade height|mowing/.test(t);
+        const isWatering = /\bwater\b|irrigat|drought/.test(t);
+        const isAeration = /aerat|core plug|plug pull/.test(t);
+        const frost = w.frostRiskDays;
+        const rainNext24 = w.rainNext24h || 0;
+        const rainNext48 = w.rainNext48h || 0;
+        const rainNext72 = w.rainNext72h || 0;
+        const avgSoil = w.pastAvgSoilTemp ?? w.soilTemp;
+        const soilTrend = w.soilTempTrend;
+        if (isSeed) {
+            if (frost !== null && frost <= 21) return { status: 'hold', reason: `Frost risk in ${frost === 0 ? 'next 24h' : frost + ' days'} — seedlings won't survive`, window: 'Wait until 21+ frost-free days in forecast' };
+            if (rainNext24 > 0.5) return { status: 'hold', reason: `Heavy rain (${rainNext24}") in next 24h — seeds wash away`, window: 'Apply after rain passes' };
+            if (avgSoil < 50) return { status: 'hold', reason: `Soil avg ${avgSoil}°F is below germination threshold (50°F min)`, window: 'Wait for sustained soil temps above 50°F' };
+            return { status: 'go', reason: 'Soil temps and forecast look favorable for seeding', window: null };
+        }
+        if (isPreEmergent) {
+            if (avgSoil >= 55) return { status: 'hold', reason: `Soil avg ${avgSoil}°F — pre-emergent window has passed`, window: 'Switch to post-emergent control' };
+            if (rainNext48 > 0.75) return { status: 'hold', reason: `Heavy rain (${rainNext48}") in 48h may wash product before it binds`, window: 'Apply after heavy rain event' };
+            return { status: 'go', reason: `Soil avg ${avgSoil}°F is in the pre-emergent window`, window: null };
+        }
+        if (isFertilizer) {
+            if (rainNext48 > 0.3) return { status: 'hold', reason: `Rain (${rainNext48}") in next 48h — fertilizer leaches before absorption`, window: rainNext72 <= 0.1 ? 'Apply in ~72h' : 'Apply in next dry window' };
+            if (avgSoil < 50) return { status: 'hold', reason: `Soil avg ${avgSoil}°F — grass not actively growing, can't uptake nutrients`, window: 'Wait for soil temps above 50°F' };
+            if (w.highTemp > 90) return { status: 'caution', reason: `High of ${w.highTemp}°F — fertilizer can burn heat-stressed turf`, window: null };
+            return { status: 'go', reason: 'Dry window ahead and soil temps support active growth', window: null };
+        }
+        if (isTreatment) {
+            if (rainNext24 > 0.1) return { status: 'hold', reason: `Rain expected in next 24h — product washes off`, window: 'Apply after rain clears' };
+            if (w.windSpeed > 10) return { status: 'hold', reason: `Wind at ${w.windSpeed} mph — spray drift risk`, window: 'Apply when wind drops below 10 mph' };
+            return { status: 'go', reason: 'Clear, calm conditions — good window for treatment', window: null };
+        }
+        if (isMowing) {
+            if (w.precipitation > 0.05 || (w.conditionLabel || '').toLowerCase().includes('rain')) return { status: 'caution', reason: 'Grass is wet — mowing wet spreads disease', window: 'Wait until grass dries' };
+            return { status: 'go', reason: 'Good conditions for mowing', window: null };
+        }
+        if (isWatering) {
+            const deficit = 1.25 - (w.rainfall || 0) - rainNext48;
+            if (deficit <= 0) return { status: 'hold', reason: `Rain covers weekly need — skip irrigation`, window: null };
+            return { status: 'go', reason: `Deficit ~${Math.round(Math.max(0,deficit)*100)/100}" — supplemental irrigation recommended`, window: null };
+        }
+        return null;
+    };
+
+
+    // ─── SeasonBanner ────────────────────────────────────────────────────────────
+    // ── Season Banner ────────────────────────────────────────────────────────
+    const SeasonBanner = ({ weather }) => {
+        const month = new Date().getMonth();
+        let seasonLabel, seasonDetail, bannerIcon, actionText, gradFrom, gradTo;
+        if (weather) {
+            const avgSoil = weather.pastAvgSoilTemp ?? weather.soilTemp;
+            const trend = weather.soilTempTrend;
+            const trendStr = trend === 'warming' ? ' · warming' : trend === 'cooling' ? ' · cooling' : '';
+            const soilStr = `Soil avg ${avgSoil}°F${trendStr}`;
+            if (weather.frostRiskDays !== null && weather.frostRiskDays <= 7) {
+                const when = weather.frostRiskDays === 0 ? 'next 24h' : `${weather.frostRiskDays} days`;
+                seasonLabel = 'Frost Alert'; bannerIcon = '🌡️';
+                seasonDetail = `Freezing temps in ${when}`;
+                actionText = '→ Hold seeding & treatments';
+                gradFrom = '#1e3a5f'; gradTo = '#1e4875';
+            } else if (avgSoil < 45) {
+                seasonLabel = 'Dormant Season'; bannerIcon = '❄️';
+                seasonDetail = soilStr;
+                actionText = '→ Plan pre-emergent timing';
+                gradFrom = '#1e3a5f'; gradTo = '#1e4875';
+            } else if (avgSoil < 55) {
+                seasonLabel = 'Early Spring'; bannerIcon = '🌤️';
+                seasonDetail = soilStr;
+                actionText = trend === 'warming' ? '→ Pre-emergent window opening' : '→ Check pre-emergent timing';
+                gradFrom = '#6d3309'; gradTo = '#8a3f0a';
+            } else if (avgSoil <= 70) {
+                seasonLabel = 'Growing Season'; bannerIcon = '🌱';
+                seasonDetail = soilStr;
+                actionText = '→ Prime time for lawn care';
+                gradFrom = '#1a4f14'; gradTo = '#2d6b20';
+            } else if (avgSoil <= 85) {
+                seasonLabel = 'Peak Summer'; bannerIcon = '☀️';
+                seasonDetail = soilStr;
+                actionText = '→ Raise mow height';
+                gradFrom = '#7c2d12'; gradTo = '#9a3412';
+            } else {
+                seasonLabel = 'Heat Stress'; bannerIcon = '🔥';
+                seasonDetail = soilStr;
+                actionText = '→ Water deeply';
+                gradFrom = '#7f1d1d'; gradTo = '#991b1b';
+            }
+        } else if (month >= 10 || month <= 1) {
+            seasonLabel = 'Dormant Season'; bannerIcon = '❄️';
+            seasonDetail = 'Plan your spring pre-emergent timing';
+            actionText = '→ Plan pre-emergent timing';
+            gradFrom = '#1e3a5f'; gradTo = '#1e4875';
+        } else if (month >= 2 && month <= 4) {
+            seasonLabel = 'Spring Season'; bannerIcon = '🌱';
+            seasonDetail = 'Time for pre-emergent and first feeds';
+            actionText = '→ Apply first feeds';
+            gradFrom = '#1a4f14'; gradTo = '#2d6b20';
+        } else if (month >= 5 && month <= 7) {
+            seasonLabel = 'Summer Season'; bannerIcon = '☀️';
+            seasonDetail = 'Focus on watering and mow height';
+            actionText = '→ Raise mow height';
+            gradFrom = '#7c2d12'; gradTo = '#9a3412';
+        } else {
+            seasonLabel = 'Fall Season'; bannerIcon = '🍂';
+            seasonDetail = 'Best time to overseed and fertilize';
+            actionText = '→ Overseed now';
+            gradFrom = '#6d3309'; gradTo = '#8a3f0a';
+        }
+        return (
+            <div className="animate-fade-in" style={{background: `linear-gradient(135deg, ${gradFrom} 0%, ${gradTo} 100%)`}}>
+                <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                        <span className="text-xl">{bannerIcon}</span>
+                        <div>
+                            <div className="text-xs font-bold text-white/60 uppercase tracking-widest">{seasonLabel}</div>
+                            <div className="text-xs text-white/80">{seasonDetail}</div>
+                        </div>
+                    </div>
+                    <div className="text-xs font-semibold text-white/90 bg-white/10 border border-white/20 rounded-lg px-2.5 py-1.5 whitespace-nowrap flex-shrink-0 ml-3">
+                        {actionText}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // ─── ForecastImpactCard ──────────────────────────────────────────────────────
+    const ForecastImpactCard = ({ tasks, weather }) => {
+        if (!weather || !tasks || tasks.length === 0) return null;
+        const evaluated = tasks.map(task => ({ task, result: getTaskWeatherStatus(task, weather) })).filter(r => r.result !== null);
+        const holds = evaluated.filter(e => e.result.status === 'hold');
+        const cautions = evaluated.filter(e => e.result.status === 'caution');
+        if (holds.length === 0 && cautions.length === 0) {
+            return (
+                <div className="bg-[#e8f5e9] border border-[#367C2B] rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className="text-base">✅</span>
+                        <span className="text-sm font-bold text-[#367C2B]">Good Week for Lawn Work</span>
+                    </div>
+                    <div className="text-xs text-gray-600">Forecast conditions are favorable for all recommended tasks this month.</div>
+                </div>
+            );
+        }
+        return (
+            <div className="bg-amber-50 border border-amber-300 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                    <span className="text-base">⚠️</span>
+                    <span className="text-sm font-bold text-gray-800">Weather Timing Alert</span>
+                </div>
+                <div className="space-y-3">
+                    {holds.map((h, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                            <span className="text-xs font-bold text-white bg-red-500 rounded px-1.5 py-0.5 shrink-0 mt-0.5">HOLD</span>
+                            <div>
+                                <div className="text-xs font-semibold text-gray-800">{h.task}</div>
+                                <div className="text-xs text-gray-600 mt-0.5">{h.result.reason}</div>
+                                {h.result.window && <div className="text-xs text-[#367C2B] font-medium mt-0.5">→ {h.result.window}</div>}
+                            </div>
+                        </div>
+                    ))}
+                    {cautions.map((c, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                            <span className="text-xs font-bold text-white bg-amber-500 rounded px-1.5 py-0.5 shrink-0 mt-0.5">NOTE</span>
+                            <div>
+                                <div className="text-xs font-semibold text-gray-800">{c.task}</div>
+                                <div className="text-xs text-gray-600 mt-0.5">{c.result.reason}</div>
+                                {c.result.window && <div className="text-xs text-[#367C2B] font-medium mt-0.5">→ {c.result.window}</div>}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    // ─── WaterDeficitCard ────────────────────────────────────────────────────────
+    const WaterDeficitCard = ({ grassInfo, weather }) => {
+        if (!weather) return null;
+        let weeklyNeed = 1.25;
+        if (grassInfo && grassInfo.waterPerWeek) {
+            const nums = grassInfo.waterPerWeek.match(/[\d.]+/g);
+            if (nums && nums.length === 1) weeklyNeed = parseFloat(nums[0]);
+            else if (nums && nums.length >= 2) weeklyNeed = (parseFloat(nums[0]) + parseFloat(nums[1])) / 2;
+        }
+        const pastRain = weather.rainfall || 0;
+        const forecastRain = weather.rainNext48h || 0;
+        const deficit = Math.max(0, Math.round((weeklyNeed - pastRain - forecastRain) * 100) / 100);
+        const surplus = pastRain + forecastRain >= weeklyNeed;
+        const statusIcon = surplus ? '✅' : deficit < 0.5 ? '⚠️' : '💧';
+        const statusColor = surplus ? 'text-[#367C2B]' : deficit < 0.5 ? 'text-amber-600' : 'text-blue-700';
+        const statusMsg = surplus ? 'Weekly water need covered — skip supplemental irrigation'
+            : deficit < 0.25 ? `Minor deficit (~${deficit}") — monitor and supplement if grass shows stress`
+            : `Supplement with ~${deficit}" — water early morning for best absorption`;
+        return (
+            <div className="bg-blue-50 rounded-xl p-4">
+                <div className="text-xs font-bold text-blue-700 uppercase mb-3">💧 Weekly Water Budget</div>
+                <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                    <div className="bg-white rounded-lg p-2 shadow-sm"><div className="text-xs text-gray-500 mb-0.5">Weekly need</div><div className="text-sm font-bold text-gray-800">{weeklyNeed}"</div></div>
+                    <div className="bg-white rounded-lg p-2 shadow-sm"><div className="text-xs text-gray-500 mb-0.5">Past 7d rain</div><div className="text-sm font-bold text-gray-800">{pastRain}"</div></div>
+                    <div className="bg-white rounded-lg p-2 shadow-sm"><div className="text-xs text-gray-500 mb-0.5">Forecast 48h</div><div className="text-sm font-bold text-gray-800">{forecastRain}"</div></div>
+                </div>
+                <div className={`text-xs font-semibold ${statusColor} flex items-center gap-1.5`}>
+                    <span>{statusIcon}</span><span>{statusMsg}</span>
+                </div>
+            </div>
+        );
+    };
+
+    // ─── WeatherSnapshot ─────────────────────────────────────────────────────────
+    const WeatherSnapshot = ({ weather, weatherLoading, lawnProfile, zipLookupLoading, zipLookupError, onZipLookup }) => {
+        const [zipInput, setZipInput] = useState('');
+        if (weatherLoading) {
+            return (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-3 animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
+                    <div className="h-10 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div className="h-3 bg-gray-100 rounded w-1/4"></div>
+                </div>
+            );
+        }
+        if (!weather) return (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-3">
+                <div className="flex items-center gap-2 mb-3">
+                    <div className="text-2xl">📍</div>
+                    <div className="font-semibold text-gray-700 text-sm">Enter your zip code for local weather</div>
+                </div>
+                <div className="flex gap-2">
+                    <input type="text" inputMode="numeric" maxLength={5} value={zipInput} onChange={(e) => setZipInput(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') onZipLookup(zipInput); }}
+                        placeholder="e.g. 43201" className="flex-1 px-3 py-2 border-2 rounded-lg text-sm" />
+                    <button type="button" onClick={() => onZipLookup(zipInput)} disabled={zipLookupLoading}
+                        className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap">
+                        {zipLookupLoading ? 'Looking up...' : 'Get Weather'}
+                    </button>
+                </div>
+                {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
+            </div>
+        );
+
+        let soilRec = '', soilRecColor = 'text-gray-700', soilAlert = null;
+        const _curMon = new Date().getMonth();
+        const _grassInfo = lawnProfile && GRASS_INFO[lawnProfile.specificGrass] ? GRASS_INFO[lawnProfile.specificGrass] : null;
+        const _isCool = _grassInfo && _grassInfo.season === 'Cool Season';
+        const _isWarm = _grassInfo && _grassInfo.season === 'Warm Season';
+        const _isSpring = _curMon >= 1 && _curMon <= 5;
+        const _isFall   = _curMon >= 7 && _curMon <= 10;
+        const _st = weather.soilTemp;
+        if (_isCool && _isSpring && _st >= 44 && _st < 50) {
+            soilRec = '⚠️ Pre-emergent window approaching'; soilRecColor = 'text-amber-600';
+            soilAlert = { level: 'warning', text: `Soil ${_st}°F — pre-emergent triggers at 50°F. Apply within the next 1–2 weeks.` };
+        } else if (_isCool && _isSpring && _st >= 50 && _st <= 54) {
+            soilRec = '🚨 Pre-emergent window open now'; soilRecColor = 'text-orange-600';
+            soilAlert = { level: 'urgent', text: `Soil ${_st}°F — apply pre-emergent before it hits 55°F or crabgrass germinates!` };
+        } else if (_isCool && _isSpring && _st >= 55 && _st <= 62) {
+            soilRec = '🔴 Pre-emergent window has closed'; soilRecColor = 'text-red-600';
+            soilAlert = { level: 'note', text: `Soil passed 55°F. Switch to post-emergent herbicide for crabgrass control this season.` };
+        } else if (_isCool && _isFall && _st >= 50 && _st <= 65) {
+            soilRec = '✅ Prime overseeding window'; soilRecColor = 'text-green-700';
+            soilAlert = { level: 'go', text: `Soil ${_st}°F — ideal for cool-season seed germination. Overseed now for best results.` };
+        } else if (_isCool && _isFall && _st > 0 && _st < 50) {
+            soilRec = '⚠️ Seeding window is closing'; soilRecColor = 'text-amber-600';
+            soilAlert = { level: 'warning', text: `Soil ${_st}°F — below 50°F germination threshold. Last call for overseeding this fall.` };
+        } else if (_isWarm && _isSpring && _st >= 60 && _st < 65) {
+            soilRec = '🌱 Warm-season grass emerging soon'; soilRecColor = 'text-green-700';
+            soilAlert = { level: 'go', text: `Soil ${_st}°F — green-up is near. Hold fertilizer until soil consistently hits 65°F.` };
+        } else if (_isWarm && _isSpring && _st >= 65 && _st <= 75) {
+            soilRec = '✅ Green-up zone — fertilizer ready'; soilRecColor = 'text-[#367C2B]';
+            soilAlert = { level: 'go', text: `Soil ${_st}°F — warm-season grass actively growing. Time for first fertilizer application.` };
+        } else if (_st < 50) {
+            soilRec = '❄️ Too cold for most lawn activity'; soilRecColor = 'text-blue-700';
+        } else if (_st <= 65) {
+            soilRec = '🌱 Good for cool-season grass care'; soilRecColor = 'text-green-700';
+        } else if (_st <= 85) {
+            soilRec = '☀️ Ideal growing conditions'; soilRecColor = 'text-[#367C2B]';
+        } else {
+            soilRec = '🔥 Very warm — focus on watering'; soilRecColor = 'text-orange-700';
+        }
+
+        const uvLabel = weather.uvIndex !== null
+            ? weather.uvIndex <= 2 ? 'Low' : weather.uvIndex <= 5 ? 'Moderate' : weather.uvIndex <= 7 ? 'High' : 'Very High' : null;
+
+        return (
+            <div className="animate-fade-in">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] px-4 pt-4 pb-3">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <div className="text-xs font-semibold text-green-200 uppercase tracking-widest mb-1">{weather.location} · Live</div>
+                                <div className="flex items-end gap-2">
+                                    <span className="text-5xl font-black text-white leading-none">{weather.temperature}°</span>
+                                    <div className="pb-1.5">
+                                        <div className="text-sm font-semibold text-green-100">Feels like {weather.feelsLike}°</div>
+                                        <div className="text-xs text-green-200">H: {weather.highTemp}° · L: {weather.lowTemp}°</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-4xl">{weather.conditionIcon}</div>
+                                <div className="text-xs font-semibold text-green-100 mt-1.5 bg-white/10 rounded-lg px-2 py-0.5">{weather.conditionLabel}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-gray-50">
+                        <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                            <div className="text-xs text-gray-400 mb-0.5">Humidity</div>
+                            <div className="text-sm font-bold text-gray-800">{weather.humidity}%</div>
+                        </div>
+                        <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                            <div className="text-xs text-gray-400 mb-0.5">Wind</div>
+                            <div className="text-sm font-bold text-gray-800">{weather.windSpeed} mph</div>
+                        </div>
+                        <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                            <div className="text-xs text-gray-400 mb-0.5">7-Day Rain</div>
+                            <div className="text-sm font-bold text-gray-800">{weather.rainfall}"</div>
+                        </div>
+                        <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
+                            {weather.precipProbability !== null
+                                ? <><div className="text-xs text-gray-400 mb-0.5">Rain %</div><div className="text-sm font-bold text-gray-800">{weather.precipProbability}%</div></>
+                                : uvLabel ? <><div className="text-xs text-gray-400 mb-0.5">UV</div><div className="text-sm font-bold text-gray-800">{weather.uvIndex} {uvLabel}</div></>
+                                : <><div className="text-xs text-gray-400 mb-0.5">UV</div><div className="text-sm font-bold text-gray-800">—</div></>}
+                        </div>
+                    </div>
+                    <div className="border-t border-gray-100 flex items-center divide-x divide-gray-100">
+                        <div className="flex-1 px-4 py-3">
+                            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Soil Temp</div>
+                            <div className="flex items-baseline gap-1.5">
+                                <span className="text-xl font-extrabold text-amber-600">{weather.soilTemp}°F</span>
+                                <span className="text-xs text-gray-400">est. 4" depth</span>
+                            </div>
+                        </div>
+                        <div className="flex-1 px-4 py-3">
+                            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Status</div>
+                            <div className={`text-xs font-bold ${soilRecColor}`}>{soilRec}</div>
+                        </div>
+                    </div>
+                    {soilAlert && (
+                        <div className={`px-4 py-2.5 border-t flex items-start gap-2 ${
+                            soilAlert.level === 'urgent'  ? 'bg-orange-50 border-orange-100' :
+                            soilAlert.level === 'warning' ? 'bg-amber-50 border-amber-100'   :
+                            soilAlert.level === 'go'      ? 'bg-green-50 border-green-100'   :
+                            'bg-gray-50 border-gray-100'
+                        }`}>
+                            <div className={`text-xs font-semibold leading-snug ${
+                                soilAlert.level === 'urgent'  ? 'text-orange-700' :
+                                soilAlert.level === 'warning' ? 'text-amber-700'  :
+                                soilAlert.level === 'go'      ? 'text-green-700'  :
+                                'text-gray-600'
+                            }`}>{soilAlert.text}</div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    // ─── ActivitySelector ────────────────────────────────────────────────────────
+    const ActivitySelector = ({ onSelectType, onCancel }) => (
+        <div className="animate-fade-in">
+            <h2 className="text-xl font-bold mb-4">Select Activity Type</h2>
+            <div className="grid grid-cols-2 gap-3">
+                {Object.entries(ACTIVITY_TYPES).map(([key, type]) => {
+                    const colors = ACTIVITY_COLORS[key] || ACTIVITY_COLORS.mowing;
+                    return (
+                        <button key={key} onClick={() => onSelectType(key)}
+                            className={`${colors.bg} border-2 p-4 rounded-xl shadow-md card-hover btn-press`}
+                            style={{borderColor: colors.hex + '4D'}}
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = colors.hex}
+                            onMouseLeave={(e) => e.currentTarget.style.borderColor = colors.hex + '4D'}>
+                            <div className="text-4xl mb-2">{type.icon}</div>
+                            <div className={`text-sm font-bold ${colors.text}`}>{type.name}</div>
+                        </button>
+                    );
+                })}
+            </div>
+            <button onClick={onCancel} className="mt-4 px-4 py-2 bg-gray-200 rounded-lg btn-press">Cancel</button>
+        </div>
+    );
+
+    // ─── ActivityForm ────────────────────────────────────────────────────────────
+    const ActivityForm = ({ selectedActivityType, onSubmit, onCancel }) => {
+        const activityType = ACTIVITY_TYPES[selectedActivityType];
+        const [localFormData, setLocalFormData] = useState({ date: new Date().toISOString().split('T')[0], notes: '', data: {} });
+        return (
+            <div>
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span className="text-4xl">{activityType.icon}</span>{activityType.name}
+                </h2>
+                <form onSubmit={(e) => { e.preventDefault(); onSubmit(localFormData); }} className="bg-white rounded-lg shadow-lg p-6">
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold mb-2">Date</label>
+                        <input type="date" required value={localFormData.date}
+                            onChange={(e) => setLocalFormData({...localFormData, date: e.target.value})}
+                            className="w-full px-4 py-2 border rounded-lg" />
+                    </div>
+                    {activityType.fields.map(field => (
+                        <div key={field.name} className="mb-4">
+                            <label className="block text-sm font-semibold mb-2">{field.label}{field.required && <span className="text-red-600 ml-1">*</span>}</label>
+                            {field.type === 'treatment-category' ? (
+                                <div className="grid grid-cols-2 gap-3">
+                                    {Object.entries(TREATMENT_CATEGORIES).map(([key, cat]) => (
+                                        <button key={key} type="button"
+                                            onClick={() => setLocalFormData({...localFormData, data: {...localFormData.data, category: key, product: ''}})}
+                                            className={`p-3 rounded-lg border-2 ${localFormData.data.category === key ? 'bg-[#367C2B] text-white' : 'bg-white'}`}>
+                                            <div className="text-xl">{cat.icon}</div>
+                                            <div className="text-sm">{cat.label}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : field.type === 'treatment-product' ? (
+                                localFormData.data.category ? (
+                                    <div>
+                                        <select onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, product: e.target.value}})}
+                                            className="w-full px-4 py-2 border rounded-lg" required={field.required}>
+                                            <option value="">Select...</option>
+                                            {(TREATMENT_PRODUCTS[localFormData.data.category] || []).map(p => (
+                                                <option key={p.id} value={p.name}>{p.name}</option>
+                                            ))}
+                                        </select>
+                                        {(() => {
+                                            const sp = (TREATMENT_PRODUCTS[localFormData.data.category] || []).find(p => p.name === localFormData.data.product);
+                                            if (!sp || sp.id.endsWith('5')) return null;
+                                            return (
+                                                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                    <div className="text-xs font-bold text-blue-800 uppercase mb-2">Product Details</div>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        {sp.activeIngredient && <div><div className="text-xs text-gray-500">Active Ingredient</div><div className="text-xs font-semibold text-gray-800">{sp.activeIngredient}</div></div>}
+                                                        {sp.rate && <div><div className="text-xs text-gray-500">Application Rate</div><div className="text-xs font-semibold text-gray-800">{sp.rate}</div></div>}
+                                                        {sp.timing && <div><div className="text-xs text-gray-500">Timing</div><div className="text-xs font-semibold text-gray-800">{sp.timing}</div></div>}
+                                                        {sp.target && <div><div className="text-xs text-gray-500">Target</div><div className="text-xs font-semibold text-gray-800">{sp.target}</div></div>}
+                                                    </div>
+                                                    {sp.notes && <div className="mt-2 text-xs text-gray-600 italic">{sp.notes}</div>}
+                                                </div>
+                                            );
+                                        })()}
+                                    </div>
+                                ) : <div className="p-4 bg-yellow-50 border rounded">Select category first</div>
+                            ) : field.type === 'product-select' ? (() => {
+                                let products = PRODUCT_DATABASE[field.productType] || [];
+                                if (field.filterBy && localFormData.data[field.filterBy]) {
+                                    const filterVal = localFormData.data[field.filterBy];
+                                    products = products.filter(p => p[field.filterProp] === filterVal || p.id.includes('-other'));
+                                }
+                                return (
+                                    <select onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, [field.name]: e.target.value}})}
+                                        className="w-full px-4 py-2 border rounded-lg">
+                                        <option value="">Select...</option>
+                                        {products.map(p => <option key={p.id} value={p.name}>{p.brand} - {p.name} {p.deck ? `(${p.deck})` : ''}</option>)}
+                                    </select>
+                                );
+                            })()
+                            : field.type === 'select' ? (
+                                <select onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, [field.name]: e.target.value}})}
+                                    className="w-full px-4 py-2 border rounded-lg">
+                                    <option value="">Select...</option>
+                                    {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            ) : (
+                                <input type={field.type} placeholder={field.placeholder}
+                                    value={localFormData.data[field.name] || ''}
+                                    onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, [field.name]: e.target.value}})}
+                                    className="w-full px-4 py-2 border rounded-lg" />
+                            )}
+                        </div>
+                    ))}
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold mb-2">Notes (Optional)</label>
+                        <textarea value={localFormData.notes} onChange={(e) => setLocalFormData({...localFormData, notes: e.target.value})} rows="3" className="w-full px-4 py-2 border rounded-lg" />
+                    </div>
+                    {/* PREMIUM_FEATURE: cost tracking — available to all users now; gated to premium subscribers in a future release */}
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold mb-2">Cost <span className="text-xs font-normal text-gray-400">(Optional — track product &amp; service spend)</span></label>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">$</span>
+                            <input type="number" min="0" step="0.01" placeholder="0.00"
+                                value={localFormData.cost || ''}
+                                onChange={(e) => setLocalFormData({...localFormData, cost: e.target.value})}
+                                className="w-full pl-7 pr-4 py-2 border rounded-lg" />
+                        </div>
+                    </div>
+                    <div className="flex gap-4">
+                        <button type="submit" className="flex-1 px-6 py-3 bg-[#367C2B] text-white rounded-lg font-semibold">Save Activity</button>
+                        <button type="button" onClick={onCancel} className="px-6 py-3 bg-gray-200 rounded-lg">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        );
+    };
+
+    // ─── LawnProfile ─────────────────────────────────────────────────────────────
+    const LawnProfile = ({ profileFormData, profileEditing, lawnProfile, weather, zipLookupLoading, zipLookupError, onZipLookup, onSave, onEditToggle, onNavigate }) => {
+        const [localForm, setLocalForm] = useState({...profileFormData});
+        const [showFullProgram, setShowFullProgram] = useState(true);
+        useEffect(() => {
+            setLocalForm(prev => ({...prev, zone: profileFormData.zone, lat: profileFormData.lat, lon: profileFormData.lon, zipCode: profileFormData.zipCode}));
+        }, [profileFormData.zone]);
+        const save = async () => {
+            const toSave = {...localForm};
+            await onSave(toSave);
+        };
+        const grassInfo = GRASS_INFO[localForm.specificGrass];
+        const zoneInfo = ZONE_INFO[localForm.zone];
+
+        const getCurrentMonthTasks = () => {
+            if (!localForm.specificGrass || !localForm.zone) return null;
+            const programKey = GRASS_KEY_MAP[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
+            const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
+            if (!program || !program.schedule) return null;
+            const currentMonth = MONTH_NAMES[new Date().getMonth()];
+            return program.schedule.find(s => {
+                if (s.month === currentMonth) return true;
+                if (s.month && s.month.includes('-')) {
+                    const parts = s.month.split('-');
+                    const startIdx = MONTH_NAMES.indexOf(parts[0].trim()), endIdx = MONTH_NAMES.indexOf(parts[1].trim()), curIdx = MONTH_NAMES.indexOf(currentMonth);
+                    if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
+                }
+                return false;
+            });
+        };
+        const currentTasks = getCurrentMonthTasks();
+
+        if (profileEditing) {
+            return (
+                <div>
+                    <h2 className="text-2xl font-bold mb-6">🌱 Lawn Profile</h2>
+                    <div className="bg-white rounded-lg shadow p-4 space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Lawn Size (sq ft)</label>
+                            <input type="number" value={localForm.lawnSize} onChange={(e) => setLocalForm({...localForm, lawnSize: e.target.value})} placeholder="5000" className="w-full px-4 py-3 border-2 rounded-lg" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Find Zone by Zip Code</label>
+                            <div className="flex gap-2">
+                                <input type="text" inputMode="numeric" maxLength={5} value={localForm.zipCode || ''} onChange={(e) => setLocalForm({...localForm, zipCode: e.target.value})}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') onZipLookup(localForm.zipCode); }} placeholder="e.g. 43201" className="flex-1 px-4 py-3 border-2 rounded-lg" />
+                                <button type="button" onClick={() => onZipLookup(localForm.zipCode)} disabled={zipLookupLoading}
+                                    className="px-4 py-3 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap">
+                                    {zipLookupLoading ? 'Looking up...' : 'Look Up'}
+                                </button>
+                            </div>
+                            {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
+                            {localForm.zone && ZONE_INFO[localForm.zone] && !zipLookupError && <div className="mt-1 text-xs text-[#367C2B] font-medium">Zone {localForm.zone.toUpperCase()} detected — {ZONE_INFO[localForm.zone].temp}</div>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">USDA Climate Zone <span className="font-normal text-gray-500">(or select manually)</span></label>
+                            <select value={localForm.zone} onChange={(e) => setLocalForm({...localForm, zone: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg">
+                                <option value="">Select...</option>
+                                <optgroup label="Zone 4 — Northern Cold (-30 to -20°F)"><option value="4a">Zone 4a (-30 to -25°F)</option><option value="4b">Zone 4b (-25 to -20°F)</option></optgroup>
+                                <optgroup label="Zone 5 — Northern (-20 to -10°F)"><option value="5a">Zone 5a (-20 to -15°F)</option><option value="5b">Zone 5b (-15 to -10°F)</option></optgroup>
+                                <optgroup label="Zone 6 — Moderate (-10 to 0°F)"><option value="6a">Zone 6a (-10 to -5°F)</option><option value="6b">Zone 6b (-5 to 0°F)</option></optgroup>
+                                <optgroup label="Zone 7 — Transition Zone (0 to 10°F)"><option value="7a">Zone 7a (0 to 5°F)</option><option value="7b">Zone 7b (5 to 10°F)</option></optgroup>
+                                <optgroup label="Zone 8 — Southern (10 to 20°F)"><option value="8a">Zone 8a (10 to 15°F)</option><option value="8b">Zone 8b (15 to 20°F)</option></optgroup>
+                                <optgroup label="Zone 9 — Deep South / Gulf (20 to 30°F)"><option value="9a">Zone 9a (20 to 25°F)</option><option value="9b">Zone 9b (25 to 30°F)</option></optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Grass Type</label>
+                            <select value={localForm.specificGrass} onChange={(e) => setLocalForm({...localForm, specificGrass: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg">
+                                <option value="">Select...</option>
+                                <optgroup label="Cool Season"><option value="tall-fescue">Tall Fescue</option><option value="kentucky-bluegrass">Kentucky Bluegrass</option><option value="perennial-ryegrass">Perennial Ryegrass</option></optgroup>
+                                <optgroup label="Warm Season"><option value="bermuda">Bermudagrass</option><option value="zoysia">Zoysia</option><option value="st-augustine">St. Augustine</option></optgroup>
+                            </select>
+                        </div>
+                        <button onClick={save} className="w-full py-4 bg-[#367C2B] text-white rounded-xl font-bold text-lg">💾 Save Profile</button>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-4">
+                <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-2xl font-bold">🌱 My Yard</h2>
+                    <button onClick={() => onEditToggle(true)} className="px-4 py-2 text-sm font-semibold text-[#367C2B] border-2 border-[#367C2B] rounded-lg hover:bg-[#367C2B]/10">Edit Profile</button>
+                </div>
+                <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] rounded-xl p-5 text-white shadow-lg">
+                    <div className="text-lg font-bold">{grassInfo ? grassInfo.name : localForm.specificGrass}</div>
+                    <div className="text-sm opacity-90 mt-1">
+                        {grassInfo && <span>{grassInfo.season}</span>}
+                        {zoneInfo && <span> · Zone {localForm.zone} ({zoneInfo.climate}) <CitationBadge sources={[{ name: 'USDA Plant Hardiness Zone Map', url: 'https://planthardiness.ars.usda.gov/', topic: 'Official zone classifications' }]} label="USDA Zone" /></span>}
+                        {localForm.lawnSize && <span> · {Number(localForm.lawnSize).toLocaleString()} sq ft</span>}
+                    </div>
+                    {grassInfo && <div className="mt-3 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>}
+                </div>
+                {(() => {
+                    const zoneNote = grassInfo && grassInfo.zoneNotes && (grassInfo.zoneNotes[localForm.zone] || grassInfo.zoneNotes[getParentZone(localForm.zone)]);
+                    if (!zoneNote) return null;
+                    const noteLower = zoneNote.toLowerCase();
+                    const colorClass = noteLower.includes('not recommended') || noteLower.includes('not viable') ? 'bg-red-50 border-red-500' : noteLower.includes('challenging') || noteLower.includes('difficult') || noteLower.includes('marginal') ? 'bg-yellow-50 border-yellow-500' : 'bg-[#e8f5e9] border-[#367C2B]';
+                    return (
+                        <div className={`rounded-xl p-4 border-l-4 ${colorClass}`}>
+                            <div className="font-bold text-sm mb-1">Zone {localForm.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
+                            <div className="text-sm text-gray-700">{zoneNote}</div>
+                        </div>
+                    );
+                })()}
+                {grassInfo && (
+                    <div className="bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Quick Reference <CitationBadge sources={grassInfo.sources} label="Grass care specs" /></h3>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Mow Height</div><div className="text-sm font-bold text-gray-800">{grassInfo.mowHeight}</div><div className="text-xs text-gray-400 mt-1">Summer: {grassInfo.mowHeightSummer}</div></div>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Water / Week</div><div className="text-sm font-bold text-gray-800">{grassInfo.waterPerWeek}</div></div>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Sun Needs</div><div className="text-sm font-bold text-gray-800">{grassInfo.sunNeeds}</div></div>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Fertilizer / Year</div><div className="text-sm font-bold text-gray-800">{grassInfo.fertPerYear}</div></div>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Ideal Soil pH</div><div className="text-sm font-bold text-gray-800">{grassInfo.idealSoilPH}</div></div>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Peak Growth</div><div className="text-sm font-bold text-gray-800">{grassInfo.peakGrowth}</div></div>
+                            {grassInfo.idealSoilTemp && <div className="bg-gray-50 rounded-lg p-3 text-center col-span-2"><div className="text-xs text-gray-500 mb-1">Ideal Soil Temp</div><div className="text-sm font-bold text-gray-800">{grassInfo.idealSoilTemp}</div></div>}
+                        </div>
+                        <div className="mt-3 p-3 bg-blue-50 rounded-lg"><div className="text-xs text-blue-600 font-semibold mb-1">Dormancy</div><div className="text-sm text-gray-700">{grassInfo.dormancy}</div></div>
+                    </div>
+                )}
+                {currentTasks && weather && <ForecastImpactCard tasks={currentTasks.tasks} weather={weather} />}
+                {currentTasks && (
+                    <div className="bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-1">This Month's Tasks <CitationBadge sources={grassInfo ? grassInfo.sources : null} label="Monthly program" /></h3>
+                        <div className="text-xs text-gray-500 mb-3">{currentTasks.month}{currentTasks.importance ? ` — ${currentTasks.importance}` : ''}</div>
+                        <ul className="space-y-3">
+                            {currentTasks.tasks.map((task, i) => {
+                                const ws = getTaskWeatherStatus(task, weather);
+                                const badgeStyle = ws ? ws.status === 'go' ? 'bg-[#e8f5e9] text-[#367C2B]' : ws.status === 'caution' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700' : null;
+                                const badgeLabel = ws ? ws.status === 'go' ? '✓ Good timing' : ws.status === 'caution' ? '⚠ Note' : '✕ Hold' : null;
+                                return (
+                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                        <span className="text-[#367C2B] mt-0.5 font-bold shrink-0">·</span>
+                                        <div className="flex-1"><span>{task}</span>{ws && <span className={`ml-2 text-xs font-semibold px-1.5 py-0.5 rounded ${badgeStyle}`}>{badgeLabel}</span>}</div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                )}
+                {grassInfo && weather && <WaterDeficitCard grassInfo={grassInfo} weather={weather} />}
+                {(() => {
+                    if (!localForm.specificGrass || !localForm.zone) return null;
+                    const programKey = GRASS_KEY_MAP[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
+                    const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
+                    if (!program || !program.schedule) return null;
+                    const currentMonth = MONTH_NAMES[new Date().getMonth()];
+                    const isCurrentMonth = (monthStr) => {
+                        if (monthStr === currentMonth) return true;
+                        if (monthStr && monthStr.includes('-')) {
+                            const parts = monthStr.split('-');
+                            const startIdx = MONTH_NAMES.indexOf(parts[0].trim()), endIdx = MONTH_NAMES.indexOf(parts[1].trim()), curIdx = MONTH_NAMES.indexOf(currentMonth);
+                            if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
+                        }
+                        return false;
+                    };
+                    return (
+                        <div className="bg-white rounded-xl shadow-lg p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <h3 className="text-sm font-bold text-[#367C2B] uppercase">Full Year Program <CitationBadge sources={program.sources} label="Annual program" /></h3>
+                                <button onClick={() => setShowFullProgram(!showFullProgram)} className="text-xs font-semibold text-[#367C2B] border border-[#367C2B] rounded-lg px-3 py-1 hover:bg-[#367C2B]/10">{showFullProgram ? 'Collapse' : 'View All Months'}</button>
+                            </div>
+                            <div className="text-xs text-gray-500 mb-3">{program.description}</div>
+                            {program.warning && <div className="mb-3 p-2 bg-yellow-50 border border-yellow-300 rounded-lg text-xs text-yellow-800">{program.warning}</div>}
+                            {showFullProgram && (
+                                <div className="space-y-3">
+                                    {program.schedule.map((entry, i) => (
+                                        <div key={i} className={`p-3 rounded-lg border-2 ${isCurrentMonth(entry.month) ? 'border-[#367C2B] bg-[#e8f5e9]' : 'border-gray-100 bg-gray-50'}`}>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="text-sm font-bold text-gray-800">{isCurrentMonth(entry.month) && <span className="text-[#367C2B] mr-1">▶</span>}{entry.month}</div>
+                                                {entry.importance && <span className="text-xs font-bold text-white bg-orange-500 px-2 py-0.5 rounded-full">{entry.importance}</span>}
+                                            </div>
+                                            <ul className="space-y-1">{entry.tasks.map((task, j) => <li key={j} className="text-xs text-gray-700 flex items-start gap-1"><span className="text-[#367C2B] mt-0.5">·</span><span>{task}</span></li>)}</ul>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })()}
+                {grassInfo && grassInfo.keyTips && (
+                    <div className="bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Key Tips <CitationBadge sources={grassInfo.sources} label="Care tips" /></h3>
+                        <ul className="space-y-2">{grassInfo.keyTips.map((tip, i) => <li key={i} className="flex items-start gap-2 text-sm text-gray-700"><span className="text-[#367C2B] mt-0.5">💡</span><span>{tip}</span></li>)}</ul>
+                    </div>
+                )}
+                {grassInfo && grassInfo.commonIssues && (
+                    <div className="bg-white rounded-xl shadow-lg p-4">
+                        <h3 className="text-sm font-bold text-orange-600 uppercase mb-3">Watch Out For <CitationBadge sources={grassInfo.sources} label="Common issues" /></h3>
+                        <ul className="space-y-2">{grassInfo.commonIssues.map((issue, i) => <li key={i} className="flex items-start gap-2 text-sm text-gray-700"><span className="text-orange-500 mt-0.5">⚠️</span><span>{issue}</span></li>)}</ul>
+                    </div>
+                )}
+                {grassInfo && grassInfo.sources && grassInfo.sources.length > 0 && (
+                    <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+                        <div className="text-xs font-bold text-gray-500 uppercase mb-2">📚 Research Sources</div>
+                        <div className="space-y-1">
+                            {grassInfo.sources.map((s, i) => (
+                                <div key={i} className="flex items-start gap-2 text-xs">
+                                    <span className="text-[#367C2B] mt-0.5">·</span>
+                                    {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">{s.name}</a> : <span className="text-gray-600 font-semibold">{s.name}</span>}
+                                    {s.topic && <span className="text-gray-400">— {s.topic}</span>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // ─── YearlyGameplan ──────────────────────────────────────────────────────────
+    // ─── Yearly Gameplan ─────────────────────────────────────────────────────
+    const YearlyGameplan = ({ lawnProfile, weather, onNavigate }) => {
+        const [activeTab, setActiveTab] = useState('upcoming');
+        const currentMonthIdx = new Date().getMonth();
+        const currentMonth = MONTH_NAMES[currentMonthIdx];
+
+        if (!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone) {
+            return (
+                <div className="space-y-4 animate-fade-in">
+                    <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center">
+                        <div className="text-3xl mb-2">🌱</div>
+                        <div className="font-bold text-gray-800 mb-1">Set Up Your Lawn Profile First</div>
+                        <div className="text-sm text-gray-500 mb-4">We need your grass type and zone to build a personalized yearly plan.</div>
+                        <button onClick={() => onNavigate('profile')} className="px-6 py-3 bg-[#367C2B] text-white rounded-xl font-bold">
+                            Set Up My Lawn →
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const programKey = GRASS_KEY_MAP[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone);
+        const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
+        const grassInfo = GRASS_INFO[lawnProfile.specificGrass];
+
+        // Filter out mowing and watering tasks — gameplan focuses on scheduled treatments
+        const isGameplanTask = (task) => {
+            const lower = task.toLowerCase();
+            return !/\bmow(ing)?\b|\bcut (height|grass)\b|mow (weekly|at|every)|watering|irrigat|water (as needed|deeply|1|0\.|per week)|\bdrip\b/.test(lower);
+        };
+
+        // Assign a type and color to each task for visual grouping
+        const getTaskMeta = (task) => {
+            const lower = task.toLowerCase();
+            if (/pre-emergent|pre emergent|crabgrass prev|prodiamine|dithiopyr/.test(lower))
+                return { icon: '🛡️', label: 'Pre-Emergent', color: 'bg-amber-100 text-amber-800 border-amber-300' };
+            if (/overseed|reseed|sow/.test(lower))
+                return { icon: '🌱', label: 'Seeding', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' };
+            if (/fertili|feeding|\blb n\b|nitrogen|winterizer/.test(lower))
+                return { icon: '🌾', label: 'Fertilizer', color: 'bg-green-100 text-green-800 border-green-300' };
+            if (/aerat/.test(lower))
+                return { icon: '🔧', label: 'Aeration', color: 'bg-purple-100 text-purple-800 border-purple-300' };
+            if (/dethatch|scalp|thatch/.test(lower))
+                return { icon: '✂️', label: 'Dethatch/Scalp', color: 'bg-stone-100 text-stone-700 border-stone-300' };
+            if (/soil test|lime|ph|potassium|\biron\b/.test(lower))
+                return { icon: '🧪', label: 'Soil Care', color: 'bg-orange-100 text-orange-800 border-orange-300' };
+            if (/herbicide|weed|post-emergent|broadleaf/.test(lower))
+                return { icon: '🌿', label: 'Weed Control', color: 'bg-red-100 text-red-800 border-red-300' };
+            if (/fungicide|disease|patch|rust|blight|chinch/.test(lower))
+                return { icon: '💊', label: 'Disease/Pest', color: 'bg-pink-100 text-pink-800 border-pink-300' };
+            if (/ryegrass|overseed.*rye|winter color/.test(lower))
+                return { icon: '🌾', label: 'Winter Overseed', color: 'bg-teal-100 text-teal-800 border-teal-300' };
+            return { icon: '📋', label: 'General', color: 'bg-gray-100 text-gray-700 border-gray-300' };
+        };
+
+        const isCurrentMonthEntry = (monthStr) => {
+            if (monthStr === currentMonth) return true;
+            if (monthStr && monthStr.includes('-')) {
+                const parts = monthStr.split('-');
+                const s = MONTH_NAMES.indexOf(parts[0].trim()), e = MONTH_NAMES.indexOf(parts[1].trim());
+                if (s >= 0 && e >= 0 && currentMonthIdx >= s && currentMonthIdx <= e) return true;
+            }
+            return false;
+        };
+
+        const monthIndexForEntry = (monthStr) => {
+            if (!monthStr) return -1;
+            const direct = MONTH_NAMES.indexOf(monthStr);
+            if (direct >= 0) return direct;
+            if (monthStr.includes('-')) {
+                const s = MONTH_NAMES.indexOf(monthStr.split('-')[0].trim());
+                return s >= 0 ? s : -1;
+            }
+            return -1;
+        };
+
+        if (!program) {
+            return (
+                <div className="space-y-4 animate-fade-in">
+                    <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+                        No gameplan is available for {grassInfo?.name || lawnProfile.specificGrass} in Zone {lawnProfile.zone} — this combination may not be recommended for your area.
+                    </div>
+                </div>
+            );
+        }
+
+        // Build list of entries with only gameplan-relevant tasks
+        const allEntries = program.schedule.map(entry => ({
+            ...entry,
+            gameplanTasks: (entry.tasks || []).filter(isGameplanTask)
+        })).filter(e => e.gameplanTasks.length > 0);
+
+        // "Coming Up": current month + next 2 months of entries
+        const upcomingEntries = allEntries.filter(entry => {
+            if (isCurrentMonthEntry(entry.month)) return true;
+            const entryStart = monthIndexForEntry(entry.month);
+            if (entryStart < 0) return false;
+            const next1 = (currentMonthIdx + 1) % 12;
+            const next2 = (currentMonthIdx + 2) % 12;
+            return entryStart === next1 || entryStart === next2;
+        });
+
+        const MonthCard = ({ entry, isCurrent }) => (
+            <div className={`rounded-xl border-2 p-4 ${isCurrent ? 'border-[#367C2B] bg-[#e8f5e9]' : 'border-gray-100 bg-white shadow-sm'}`}>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="font-bold text-gray-800 flex items-center gap-1.5">
+                        {isCurrent && <span className="text-[#367C2B]">▶</span>}
+                        <span>{entry.month}</span>
+                        {isCurrent && <span className="text-xs font-semibold text-[#367C2B] bg-white px-2 py-0.5 rounded-full border border-[#367C2B] ml-1">Now</span>}
+                    </div>
+                    {entry.importance && <span className="text-xs font-bold text-white bg-orange-500 px-2 py-0.5 rounded-full">{entry.importance}</span>}
+                </div>
+                {entry.soilTemp && <div className="text-xs text-gray-500 mb-2">Target soil temp: {entry.soilTemp}</div>}
+                <div className="space-y-2">
+                    {entry.gameplanTasks.map((task, j) => {
+                        const meta = getTaskMeta(task);
+                        const ws = weather ? getTaskWeatherStatus(task, weather) : null;
+                        return (
+                            <div key={j} className="flex items-start gap-2">
+                                <span className="text-base mt-0.5 shrink-0">{meta.icon}</span>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded border ${meta.color}`}>{meta.label}</span>
+                                        {ws && <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${ws.status === 'go' ? 'bg-[#e8f5e9] text-[#367C2B]' : ws.status === 'caution' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{ws.status === 'go' ? '✓ Good timing' : ws.status === 'caution' ? '⚠ Note' : '✕ Hold'}</span>}
+                                    </div>
+                                    <div className="text-sm text-gray-700 mt-0.5">{task}</div>
+                                    {ws && ws.reason && <div className={`text-xs mt-0.5 ${ws.status === 'go' ? 'text-[#367C2B]' : ws.status === 'caution' ? 'text-amber-600' : 'text-red-600'}`}>{ws.reason}</div>}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+
+        return (
+            <div className="space-y-4 animate-fade-in pb-4">
+                <div>
+                    <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
+                    <div className="text-sm text-gray-500 mt-0.5">
+                        {grassInfo?.name || lawnProfile.specificGrass} · Zone {lawnProfile.zone}
+                        {lawnProfile.lawnSize && ` · ${Number(lawnProfile.lawnSize).toLocaleString()} sq ft`}
+                    </div>
+                </div>
+
+                {program.warning && (
+                    <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-sm text-amber-800">
+                        ⚠️ {program.warning}
+                    </div>
+                )}
+
+                {/* Tabs */}
+                <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+                    {[{key:'upcoming',label:'Coming Up'},{key:'full',label:'Full Year'}].map(({key,label}) => (
+                        <button key={key} onClick={() => setActiveTab(key)}
+                            className={`flex-1 py-2 text-sm font-semibold rounded-md transition btn-press ${activeTab === key ? 'bg-[#367C2B] text-white shadow' : 'text-gray-600'}`}>
+                            {label}
+                        </button>
+                    ))}
+                </div>
+
+                {activeTab === 'upcoming' && (
+                    <div className="space-y-3">
+                        {upcomingEntries.length === 0 ? (
+                            <div className="bg-gray-50 rounded-xl p-6 text-center">
+                                <div className="text-2xl mb-2">✅</div>
+                                <div className="font-semibold text-gray-700">You're in a quiet period</div>
+                                <div className="text-sm text-gray-500 mt-1">No scheduled treatments in the next couple months. Switch to Full Year to see the whole plan.</div>
+                            </div>
+                        ) : (
+                            upcomingEntries.map((entry, i) => (
+                                <MonthCard key={i} entry={entry} isCurrent={isCurrentMonthEntry(entry.month)} />
+                            ))
+                        )}
+                    </div>
+                )}
+
+                {activeTab === 'full' && (
+                    <div className="space-y-3">
+                        <div className="text-xs text-gray-500 px-1">{program.description}</div>
+                        {allEntries.map((entry, i) => (
+                            <MonthCard key={i} entry={entry} isCurrent={isCurrentMonthEntry(entry.month)} />
+                        ))}
+                    </div>
+                )}
+
+                {program.sources && program.sources.length > 0 && (
+                    <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+                        <div className="text-xs font-bold text-gray-500 uppercase mb-2">📚 Research Sources</div>
+                        <div className="space-y-1">
+                            {program.sources.map((s, i) => (
+                                <div key={i} className="flex items-start gap-2 text-xs">
+                                    <span className="text-[#367C2B] mt-0.5">·</span>
+                                    {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">{s.institution || s.name}</a> : <span className="font-semibold text-gray-700">{s.institution || s.name}</span>}
+                                    {s.title && <span className="text-gray-400">— {s.title}</span>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // ─── Settings ────────────────────────────────────────────────────────────────
+
+    const Settings = ({ activities, equipment, lawnProfile, store, currentUser, onSignOut, onSignIn, firebaseConfigured }) => {
+        const exportData = () => {
+            const data = { activities, equipment, profile: lawnProfile };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `yardstick-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        };
+        const resetData = () => {
+            if (confirm('⚠️ Delete ALL data? This cannot be undone!')) {
+                localStorage.removeItem('lawnCareActivities');
+                localStorage.removeItem('lawnCareEquipment');
+                localStorage.removeItem('lawnProfile');
+                alert('✅ Data cleared');
+                window.location.reload();
+            }
+        };
+        return (
+            <div>
+                <h2 className="text-2xl font-bold mb-6">⚙️ Settings</h2>
+
+                {/* Account section */}
+                <div className="bg-white rounded-xl p-4 shadow mb-4">
+                    <h3 className="text-lg font-bold mb-4">👤 Account</h3>
+                    {store.isCloud && currentUser ? (
+                        <div>
+                            <div className="flex items-center gap-3 mb-4 p-3 bg-[#e8f5e9] rounded-xl">
+                                <div className="text-3xl">☁️</div>
+                                <div>
+                                    <div className="font-bold text-[#367C2B]">Cloud Sync Active</div>
+                                    <div className="text-xs text-gray-600">{currentUser.displayName || currentUser.email}</div>
+                                    <div className="text-xs text-gray-500 mt-0.5">Your data is saved securely to the cloud</div>
+                                </div>
+                            </div>
+                            <button onClick={onSignOut} className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-lg font-semibold">Sign Out</button>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="flex items-center gap-3 mb-4 p-3 bg-amber-50 rounded-xl">
+                                <div className="text-3xl">💾</div>
+                                <div>
+                                    <div className="font-bold text-amber-700">Local Storage Only</div>
+                                    <div className="text-xs text-gray-600">Data is saved to this browser only</div>
+                                    <div className="text-xs text-gray-500 mt-0.5">Sign in to sync across devices and protect your data</div>
+                                </div>
+                            </div>
+                            {firebaseConfigured ? (
+                                <button onClick={onSignIn} className="w-full py-3 px-4 bg-[#367C2B] text-white rounded-lg font-semibold">
+                                    Sign In / Create Account →
+                                </button>
+                            ) : (
+                                <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-500 text-center">
+                                    Firebase not yet configured — cloud sync coming soon
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <div className="bg-white rounded-xl p-4 shadow mb-4">
+                    <h3 className="text-lg font-bold mb-4">💾 Data Management</h3>
+                    <button onClick={exportData} className="w-full py-3 px-4 bg-[#367C2B] text-white rounded-lg font-semibold mb-3">📥 Export Data Backup</button>
+                    <button onClick={resetData} className="w-full py-3 px-4 bg-red-100 text-red-700 rounded-lg font-semibold">🗑️ Reset All Data</button>
+                </div>
+
+                <div className="bg-white rounded-xl p-4 shadow">
+                    <h3 className="text-lg font-bold mb-2">ℹ️ About</h3>
+                    <p className="text-sm text-gray-600 font-semibold">Yardstick v9.0</p>
+                    <p className="text-xs text-gray-500 mt-1">Research-backed lawn care for DIY homeowners</p>
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="border-l-3 border-[#367C2B] pl-3" style={{borderLeft: '3px solid #367C2B'}}>
+                            <div className="text-sm font-bold text-[#367C2B]">v9.0 <span className="text-xs font-normal text-gray-400">Feb 2026</span></div>
+                            <ul className="text-xs text-gray-600 mt-1 space-y-0.5">
+                                <li>+ Optional Firebase account — guest users keep localStorage</li>
+                                <li>+ Cloud sync: activities, equipment, and profile sync across devices</li>
+                                <li>+ Google Sign-In + email/password authentication</li>
+                                <li>+ Sync status banner shows cloud/local mode at a glance</li>
+                                <li>+ Account management in Settings</li>
+                                <li>+ App rebranded to Yardstick</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+
     // ─── Main App ───────────────────────────────────────────────────────────────
     function LawnCareTracker() {
         const [activities, setActivities] = useState([]);
@@ -934,6 +2051,8 @@ window.ResearchSourcesPage = () => (
         const [selectedActivityType, setSelectedActivityType] = useState(null);
         const [weather, setWeather] = useState(null);
         const [weatherLoading, setWeatherLoading] = useState(true);
+        const weatherFetchKeyRef = React.useRef(null);
+        const [syncError, setSyncError] = useState(null);
         const [equipment, setEquipment] = useState([]);
         const [lawnProfile, setLawnProfile] = useState(null);
         const [statsView, setStatsView] = useState('year');
@@ -978,6 +2097,7 @@ window.ResearchSourcesPage = () => (
             if (!authReady) return;
             setDataLoading(true);
             store.loadAll().then(({ activities: acts, equipment: eq, profile: prof }) => {
+                setSyncError(null);
                 setActivities(acts || []);
                 setEquipment(eq || []);
                 if (prof) {
@@ -991,6 +2111,7 @@ window.ResearchSourcesPage = () => (
                 setDataLoading(false);
             }).catch((e) => {
                 console.error('Failed to load data:', e);
+                setSyncError('Could not load your cloud data — showing last saved data. Check your connection.');
                 setDataLoading(false);
             });
         }, [authReady, currentUser]);
@@ -998,24 +2119,6 @@ window.ResearchSourcesPage = () => (
         const handleSignOut = async () => {
             if (fb.configured) await fb.signOut(fb.auth);
             setCurrentUser(null);
-        };
-
-        const WMO_CODES = {
-            0: { label: 'Clear Sky', icon: '☀️' }, 1: { label: 'Mainly Clear', icon: '🌤️' },
-            2: { label: 'Partly Cloudy', icon: '⛅' }, 3: { label: 'Overcast', icon: '☁️' },
-            45: { label: 'Foggy', icon: '🌫️' }, 48: { label: 'Icy Fog', icon: '🌫️' },
-            51: { label: 'Light Drizzle', icon: '🌦️' }, 53: { label: 'Drizzle', icon: '🌦️' },
-            55: { label: 'Heavy Drizzle', icon: '🌧️' }, 61: { label: 'Light Rain', icon: '🌧️' },
-            63: { label: 'Rain', icon: '🌧️' }, 65: { label: 'Heavy Rain', icon: '🌧️' },
-            71: { label: 'Light Snow', icon: '🌨️' }, 73: { label: 'Snow', icon: '❄️' },
-            75: { label: 'Heavy Snow', icon: '❄️' }, 80: { label: 'Light Showers', icon: '🌦️' },
-            81: { label: 'Showers', icon: '🌧️' }, 82: { label: 'Heavy Showers', icon: '⛈️' },
-            95: { label: 'Thunderstorm', icon: '⛈️' }, 99: { label: 'Thunderstorm w/ Hail', icon: '⛈️' }
-        };
-
-        const getWindDirection = (deg) => {
-            const dirs = ['N','NE','E','SE','S','SW','W','NW'];
-            return dirs[Math.round(deg / 45) % 8];
         };
 
         const fetchWeatherData = async (lat, lon, label) => {
@@ -1027,6 +2130,9 @@ window.ResearchSourcesPage = () => (
                 }
             }
             if (!lat || !lon) { setWeatherLoading(false); return; }
+            const fetchKey = `${lat},${lon}`;
+            if (weatherFetchKeyRef.current === fetchKey) return;
+            weatherFetchKeyRef.current = fetchKey;
             try {
                 const response = await fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
@@ -1086,58 +2192,11 @@ window.ResearchSourcesPage = () => (
             } catch (error) {
                 console.error('Weather fetch error:', error);
                 setWeatherLoading(false);
+            } finally {
+                weatherFetchKeyRef.current = null;
             }
         };
 
-        const getTaskWeatherStatus = (taskText, w) => {
-            if (!w) return null;
-            const t = taskText.toLowerCase();
-            const isSeed = /seed|overseed|\bsod\b|plug/.test(t);
-            const isPreEmergent = /pre-emergent|pre emergent|crabgrass prev|prodiamine|dithiopyr/.test(t);
-            const isFertilizer = !isPreEmergent && /fertil|\bfeed\b|nitrogen|weed[- ]and[- ]feed|milorganite|scotts/.test(t);
-            const isTreatment = !isPreEmergent && !isFertilizer && !isSeed && /herbicide|fungicide|insecticide|pesticide|post-emergent|treatment|\bspray\b|\bapply\b/.test(t);
-            const isMowing = /\bmow\b|cut height|blade height|mowing/.test(t);
-            const isWatering = /\bwater\b|irrigat|drought/.test(t);
-            const isAeration = /aerat|core plug|plug pull/.test(t);
-            const frost = w.frostRiskDays;
-            const rainNext24 = w.rainNext24h || 0;
-            const rainNext48 = w.rainNext48h || 0;
-            const rainNext72 = w.rainNext72h || 0;
-            const avgSoil = w.pastAvgSoilTemp ?? w.soilTemp;
-            const soilTrend = w.soilTempTrend;
-            if (isSeed) {
-                if (frost !== null && frost <= 21) return { status: 'hold', reason: `Frost risk in ${frost === 0 ? 'next 24h' : frost + ' days'} — seedlings won't survive`, window: 'Wait until 21+ frost-free days in forecast' };
-                if (rainNext24 > 0.5) return { status: 'hold', reason: `Heavy rain (${rainNext24}") in next 24h — seeds wash away`, window: 'Apply after rain passes' };
-                if (avgSoil < 50) return { status: 'hold', reason: `Soil avg ${avgSoil}°F is below germination threshold (50°F min)`, window: 'Wait for sustained soil temps above 50°F' };
-                return { status: 'go', reason: 'Soil temps and forecast look favorable for seeding', window: null };
-            }
-            if (isPreEmergent) {
-                if (avgSoil >= 55) return { status: 'hold', reason: `Soil avg ${avgSoil}°F — pre-emergent window has passed`, window: 'Switch to post-emergent control' };
-                if (rainNext48 > 0.75) return { status: 'hold', reason: `Heavy rain (${rainNext48}") in 48h may wash product before it binds`, window: 'Apply after heavy rain event' };
-                return { status: 'go', reason: `Soil avg ${avgSoil}°F is in the pre-emergent window`, window: null };
-            }
-            if (isFertilizer) {
-                if (rainNext48 > 0.3) return { status: 'hold', reason: `Rain (${rainNext48}") in next 48h — fertilizer leaches before absorption`, window: rainNext72 <= 0.1 ? 'Apply in ~72h' : 'Apply in next dry window' };
-                if (avgSoil < 50) return { status: 'hold', reason: `Soil avg ${avgSoil}°F — grass not actively growing, can't uptake nutrients`, window: 'Wait for soil temps above 50°F' };
-                if (w.highTemp > 90) return { status: 'caution', reason: `High of ${w.highTemp}°F — fertilizer can burn heat-stressed turf`, window: null };
-                return { status: 'go', reason: 'Dry window ahead and soil temps support active growth', window: null };
-            }
-            if (isTreatment) {
-                if (rainNext24 > 0.1) return { status: 'hold', reason: `Rain expected in next 24h — product washes off`, window: 'Apply after rain clears' };
-                if (w.windSpeed > 10) return { status: 'hold', reason: `Wind at ${w.windSpeed} mph — spray drift risk`, window: 'Apply when wind drops below 10 mph' };
-                return { status: 'go', reason: 'Clear, calm conditions — good window for treatment', window: null };
-            }
-            if (isMowing) {
-                if (w.precipitation > 0.05 || (w.conditionLabel || '').toLowerCase().includes('rain')) return { status: 'caution', reason: 'Grass is wet — mowing wet spreads disease', window: 'Wait until grass dries' };
-                return { status: 'go', reason: 'Good conditions for mowing', window: null };
-            }
-            if (isWatering) {
-                const deficit = 1.25 - (w.rainfall || 0) - rainNext48;
-                if (deficit <= 0) return { status: 'hold', reason: `Rain covers weekly need — skip irrigation`, window: null };
-                return { status: 'go', reason: `Deficit ~${Math.round(Math.max(0,deficit)*100)/100}" — supplemental irrigation recommended`, window: null };
-            }
-            return null;
-        };
 
         const lookupZoneByZip = async (zipOverride) => {
             const zip = (zipOverride || profileFormData.zipCode || '').trim();
@@ -1203,947 +2262,16 @@ window.ResearchSourcesPage = () => (
             }
         };
 
-        // ── Season Banner ────────────────────────────────────────────────────────
-        const SeasonBanner = () => {
-            const month = new Date().getMonth();
-            let seasonLabel, seasonDetail, bannerIcon, actionText, gradFrom, gradTo;
-            if (weather) {
-                const avgSoil = weather.pastAvgSoilTemp ?? weather.soilTemp;
-                const trend = weather.soilTempTrend;
-                const trendStr = trend === 'warming' ? ' · warming' : trend === 'cooling' ? ' · cooling' : '';
-                const soilStr = `Soil avg ${avgSoil}°F${trendStr}`;
-                if (weather.frostRiskDays !== null && weather.frostRiskDays <= 7) {
-                    const when = weather.frostRiskDays === 0 ? 'next 24h' : `${weather.frostRiskDays} days`;
-                    seasonLabel = 'Frost Alert'; bannerIcon = '🌡️';
-                    seasonDetail = `Freezing temps in ${when}`;
-                    actionText = '→ Hold seeding & treatments';
-                    gradFrom = '#1e3a5f'; gradTo = '#1e4875';
-                } else if (avgSoil < 45) {
-                    seasonLabel = 'Dormant Season'; bannerIcon = '❄️';
-                    seasonDetail = soilStr;
-                    actionText = '→ Plan pre-emergent timing';
-                    gradFrom = '#1e3a5f'; gradTo = '#1e4875';
-                } else if (avgSoil < 55) {
-                    seasonLabel = 'Early Spring'; bannerIcon = '🌤️';
-                    seasonDetail = soilStr;
-                    actionText = trend === 'warming' ? '→ Pre-emergent window opening' : '→ Check pre-emergent timing';
-                    gradFrom = '#6d3309'; gradTo = '#8a3f0a';
-                } else if (avgSoil <= 70) {
-                    seasonLabel = 'Growing Season'; bannerIcon = '🌱';
-                    seasonDetail = soilStr;
-                    actionText = '→ Prime time for lawn care';
-                    gradFrom = '#1a4f14'; gradTo = '#2d6b20';
-                } else if (avgSoil <= 85) {
-                    seasonLabel = 'Peak Summer'; bannerIcon = '☀️';
-                    seasonDetail = soilStr;
-                    actionText = '→ Raise mow height';
-                    gradFrom = '#7c2d12'; gradTo = '#9a3412';
-                } else {
-                    seasonLabel = 'Heat Stress'; bannerIcon = '🔥';
-                    seasonDetail = soilStr;
-                    actionText = '→ Water deeply';
-                    gradFrom = '#7f1d1d'; gradTo = '#991b1b';
-                }
-            } else if (month >= 10 || month <= 1) {
-                seasonLabel = 'Dormant Season'; bannerIcon = '❄️';
-                seasonDetail = 'Plan your spring pre-emergent timing';
-                actionText = '→ Plan pre-emergent timing';
-                gradFrom = '#1e3a5f'; gradTo = '#1e4875';
-            } else if (month >= 2 && month <= 4) {
-                seasonLabel = 'Spring Season'; bannerIcon = '🌱';
-                seasonDetail = 'Time for pre-emergent and first feeds';
-                actionText = '→ Apply first feeds';
-                gradFrom = '#1a4f14'; gradTo = '#2d6b20';
-            } else if (month >= 5 && month <= 7) {
-                seasonLabel = 'Summer Season'; bannerIcon = '☀️';
-                seasonDetail = 'Focus on watering and mow height';
-                actionText = '→ Raise mow height';
-                gradFrom = '#7c2d12'; gradTo = '#9a3412';
-            } else {
-                seasonLabel = 'Fall Season'; bannerIcon = '🍂';
-                seasonDetail = 'Best time to overseed and fertilize';
-                actionText = '→ Overseed now';
-                gradFrom = '#6d3309'; gradTo = '#8a3f0a';
-            }
-            return (
-                <div className="animate-fade-in" style={{background: `linear-gradient(135deg, ${gradFrom} 0%, ${gradTo} 100%)`}}>
-                    <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-xl">{bannerIcon}</span>
-                            <div>
-                                <div className="text-xs font-bold text-white/60 uppercase tracking-widest">{seasonLabel}</div>
-                                <div className="text-xs text-white/80">{seasonDetail}</div>
-                            </div>
-                        </div>
-                        <div className="text-xs font-semibold text-white/90 bg-white/10 border border-white/20 rounded-lg px-2.5 py-1.5 whitespace-nowrap flex-shrink-0 ml-3">
-                            {actionText}
-                        </div>
-                    </div>
-                </div>
-            );
+        const updateEquipment = async (id, updates) => {
+            await store.updateEquipment(id, updates);
+            setEquipment(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
         };
 
-        const ForecastImpactCard = ({ tasks }) => {
-            if (!weather || !tasks || tasks.length === 0) return null;
-            const evaluated = tasks.map(task => ({ task, result: getTaskWeatherStatus(task, weather) })).filter(r => r.result !== null);
-            const holds = evaluated.filter(e => e.result.status === 'hold');
-            const cautions = evaluated.filter(e => e.result.status === 'caution');
-            if (holds.length === 0 && cautions.length === 0) {
-                return (
-                    <div className="bg-[#e8f5e9] border border-[#367C2B] rounded-xl p-4">
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="text-base">✅</span>
-                            <span className="text-sm font-bold text-[#367C2B]">Good Week for Lawn Work</span>
-                        </div>
-                        <div className="text-xs text-gray-600">Forecast conditions are favorable for all recommended tasks this month.</div>
-                    </div>
-                );
-            }
-            return (
-                <div className="bg-amber-50 border border-amber-300 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                        <span className="text-base">⚠️</span>
-                        <span className="text-sm font-bold text-gray-800">Weather Timing Alert</span>
-                    </div>
-                    <div className="space-y-3">
-                        {holds.map((h, i) => (
-                            <div key={i} className="flex items-start gap-2">
-                                <span className="text-xs font-bold text-white bg-red-500 rounded px-1.5 py-0.5 shrink-0 mt-0.5">HOLD</span>
-                                <div>
-                                    <div className="text-xs font-semibold text-gray-800">{h.task}</div>
-                                    <div className="text-xs text-gray-600 mt-0.5">{h.result.reason}</div>
-                                    {h.result.window && <div className="text-xs text-[#367C2B] font-medium mt-0.5">→ {h.result.window}</div>}
-                                </div>
-                            </div>
-                        ))}
-                        {cautions.map((c, i) => (
-                            <div key={i} className="flex items-start gap-2">
-                                <span className="text-xs font-bold text-white bg-amber-500 rounded px-1.5 py-0.5 shrink-0 mt-0.5">NOTE</span>
-                                <div>
-                                    <div className="text-xs font-semibold text-gray-800">{c.task}</div>
-                                    <div className="text-xs text-gray-600 mt-0.5">{c.result.reason}</div>
-                                    {c.result.window && <div className="text-xs text-[#367C2B] font-medium mt-0.5">→ {c.result.window}</div>}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        };
-
-        const WaterDeficitCard = ({ grassInfo }) => {
-            if (!weather) return null;
-            let weeklyNeed = 1.25;
-            if (grassInfo && grassInfo.waterPerWeek) {
-                const nums = grassInfo.waterPerWeek.match(/[\d.]+/g);
-                if (nums && nums.length === 1) weeklyNeed = parseFloat(nums[0]);
-                else if (nums && nums.length >= 2) weeklyNeed = (parseFloat(nums[0]) + parseFloat(nums[1])) / 2;
-            }
-            const pastRain = weather.rainfall || 0;
-            const forecastRain = weather.rainNext48h || 0;
-            const deficit = Math.max(0, Math.round((weeklyNeed - pastRain - forecastRain) * 100) / 100);
-            const surplus = pastRain + forecastRain >= weeklyNeed;
-            const statusIcon = surplus ? '✅' : deficit < 0.5 ? '⚠️' : '💧';
-            const statusColor = surplus ? 'text-[#367C2B]' : deficit < 0.5 ? 'text-amber-600' : 'text-blue-700';
-            const statusMsg = surplus ? 'Weekly water need covered — skip supplemental irrigation'
-                : deficit < 0.25 ? `Minor deficit (~${deficit}") — monitor and supplement if grass shows stress`
-                : `Supplement with ~${deficit}" — water early morning for best absorption`;
-            return (
-                <div className="bg-blue-50 rounded-xl p-4">
-                    <div className="text-xs font-bold text-blue-700 uppercase mb-3">💧 Weekly Water Budget</div>
-                    <div className="grid grid-cols-3 gap-2 text-center mb-3">
-                        <div className="bg-white rounded-lg p-2 shadow-sm"><div className="text-xs text-gray-500 mb-0.5">Weekly need</div><div className="text-sm font-bold text-gray-800">{weeklyNeed}"</div></div>
-                        <div className="bg-white rounded-lg p-2 shadow-sm"><div className="text-xs text-gray-500 mb-0.5">Past 7d rain</div><div className="text-sm font-bold text-gray-800">{pastRain}"</div></div>
-                        <div className="bg-white rounded-lg p-2 shadow-sm"><div className="text-xs text-gray-500 mb-0.5">Forecast 48h</div><div className="text-sm font-bold text-gray-800">{forecastRain}"</div></div>
-                    </div>
-                    <div className={`text-xs font-semibold ${statusColor} flex items-center gap-1.5`}>
-                        <span>{statusIcon}</span><span>{statusMsg}</span>
-                    </div>
-                </div>
-            );
-        };
-
-        const WeatherSnapshot = () => {
-            const [zipInput, setZipInput] = useState('');
-            if (weatherLoading) {
-                return (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-3 animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
-                        <div className="h-10 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-3 bg-gray-100 rounded w-1/4"></div>
-                    </div>
-                );
-            }
-            if (!weather) return (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-3">
-                    <div className="flex items-center gap-2 mb-3">
-                        <div className="text-2xl">📍</div>
-                        <div className="font-semibold text-gray-700 text-sm">Enter your zip code for local weather</div>
-                    </div>
-                    <div className="flex gap-2">
-                        <input type="text" inputMode="numeric" maxLength={5} value={zipInput} onChange={(e) => setZipInput(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(zipInput); }}
-                            placeholder="e.g. 43201" className="flex-1 px-3 py-2 border-2 rounded-lg text-sm" />
-                        <button type="button" onClick={() => lookupZoneByZip(zipInput)} disabled={zipLookupLoading}
-                            className="px-4 py-2 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap">
-                            {zipLookupLoading ? 'Looking up...' : 'Get Weather'}
-                        </button>
-                    </div>
-                    {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
-                </div>
-            );
-
-            let soilRec = '', soilRecColor = 'text-gray-700', soilAlert = null;
-            const _curMon = new Date().getMonth();
-            const _grassInfo = lawnProfile && GRASS_INFO[lawnProfile.specificGrass] ? GRASS_INFO[lawnProfile.specificGrass] : null;
-            const _isCool = _grassInfo && _grassInfo.season === 'Cool Season';
-            const _isWarm = _grassInfo && _grassInfo.season === 'Warm Season';
-            const _isSpring = _curMon >= 1 && _curMon <= 5;
-            const _isFall   = _curMon >= 7 && _curMon <= 10;
-            const _st = weather.soilTemp;
-            if (_isCool && _isSpring && _st >= 44 && _st < 50) {
-                soilRec = '⚠️ Pre-emergent window approaching'; soilRecColor = 'text-amber-600';
-                soilAlert = { level: 'warning', text: `Soil ${_st}°F — pre-emergent triggers at 50°F. Apply within the next 1–2 weeks.` };
-            } else if (_isCool && _isSpring && _st >= 50 && _st <= 54) {
-                soilRec = '🚨 Pre-emergent window open now'; soilRecColor = 'text-orange-600';
-                soilAlert = { level: 'urgent', text: `Soil ${_st}°F — apply pre-emergent before it hits 55°F or crabgrass germinates!` };
-            } else if (_isCool && _isSpring && _st >= 55 && _st <= 62) {
-                soilRec = '🔴 Pre-emergent window has closed'; soilRecColor = 'text-red-600';
-                soilAlert = { level: 'note', text: `Soil passed 55°F. Switch to post-emergent herbicide for crabgrass control this season.` };
-            } else if (_isCool && _isFall && _st >= 50 && _st <= 65) {
-                soilRec = '✅ Prime overseeding window'; soilRecColor = 'text-green-700';
-                soilAlert = { level: 'go', text: `Soil ${_st}°F — ideal for cool-season seed germination. Overseed now for best results.` };
-            } else if (_isCool && _isFall && _st > 0 && _st < 50) {
-                soilRec = '⚠️ Seeding window is closing'; soilRecColor = 'text-amber-600';
-                soilAlert = { level: 'warning', text: `Soil ${_st}°F — below 50°F germination threshold. Last call for overseeding this fall.` };
-            } else if (_isWarm && _isSpring && _st >= 60 && _st < 65) {
-                soilRec = '🌱 Warm-season grass emerging soon'; soilRecColor = 'text-green-700';
-                soilAlert = { level: 'go', text: `Soil ${_st}°F — green-up is near. Hold fertilizer until soil consistently hits 65°F.` };
-            } else if (_isWarm && _isSpring && _st >= 65 && _st <= 75) {
-                soilRec = '✅ Green-up zone — fertilizer ready'; soilRecColor = 'text-[#367C2B]';
-                soilAlert = { level: 'go', text: `Soil ${_st}°F — warm-season grass actively growing. Time for first fertilizer application.` };
-            } else if (_st < 50) {
-                soilRec = '❄️ Too cold for most lawn activity'; soilRecColor = 'text-blue-700';
-            } else if (_st <= 65) {
-                soilRec = '🌱 Good for cool-season grass care'; soilRecColor = 'text-green-700';
-            } else if (_st <= 85) {
-                soilRec = '☀️ Ideal growing conditions'; soilRecColor = 'text-[#367C2B]';
-            } else {
-                soilRec = '🔥 Very warm — focus on watering'; soilRecColor = 'text-orange-700';
-            }
-
-            const uvLabel = weather.uvIndex !== null
-                ? weather.uvIndex <= 2 ? 'Low' : weather.uvIndex <= 5 ? 'Moderate' : weather.uvIndex <= 7 ? 'High' : 'Very High' : null;
-
-            return (
-                <div className="animate-fade-in">
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] px-4 pt-4 pb-3">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <div className="text-xs font-semibold text-green-200 uppercase tracking-widest mb-1">{weather.location} · Live</div>
-                                    <div className="flex items-end gap-2">
-                                        <span className="text-5xl font-black text-white leading-none">{weather.temperature}°</span>
-                                        <div className="pb-1.5">
-                                            <div className="text-sm font-semibold text-green-100">Feels like {weather.feelsLike}°</div>
-                                            <div className="text-xs text-green-200">H: {weather.highTemp}° · L: {weather.lowTemp}°</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-4xl">{weather.conditionIcon}</div>
-                                    <div className="text-xs font-semibold text-green-100 mt-1.5 bg-white/10 rounded-lg px-2 py-0.5">{weather.conditionLabel}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-gray-50">
-                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
-                                <div className="text-xs text-gray-400 mb-0.5">Humidity</div>
-                                <div className="text-sm font-bold text-gray-800">{weather.humidity}%</div>
-                            </div>
-                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
-                                <div className="text-xs text-gray-400 mb-0.5">Wind</div>
-                                <div className="text-sm font-bold text-gray-800">{weather.windSpeed} mph</div>
-                            </div>
-                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
-                                <div className="text-xs text-gray-400 mb-0.5">7-Day Rain</div>
-                                <div className="text-sm font-bold text-gray-800">{weather.rainfall}"</div>
-                            </div>
-                            <div className="text-center py-2 px-1 bg-white rounded-xl shadow-sm">
-                                {weather.precipProbability !== null
-                                    ? <><div className="text-xs text-gray-400 mb-0.5">Rain %</div><div className="text-sm font-bold text-gray-800">{weather.precipProbability}%</div></>
-                                    : uvLabel ? <><div className="text-xs text-gray-400 mb-0.5">UV</div><div className="text-sm font-bold text-gray-800">{weather.uvIndex} {uvLabel}</div></>
-                                    : <><div className="text-xs text-gray-400 mb-0.5">UV</div><div className="text-sm font-bold text-gray-800">—</div></>}
-                            </div>
-                        </div>
-                        <div className="border-t border-gray-100 flex items-center divide-x divide-gray-100">
-                            <div className="flex-1 px-4 py-3">
-                                <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Soil Temp</div>
-                                <div className="flex items-baseline gap-1.5">
-                                    <span className="text-xl font-extrabold text-amber-600">{weather.soilTemp}°F</span>
-                                    <span className="text-xs text-gray-400">est. 4" depth</span>
-                                </div>
-                            </div>
-                            <div className="flex-1 px-4 py-3">
-                                <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Status</div>
-                                <div className={`text-xs font-bold ${soilRecColor}`}>{soilRec}</div>
-                            </div>
-                        </div>
-                        {soilAlert && (
-                            <div className={`px-4 py-2.5 border-t flex items-start gap-2 ${
-                                soilAlert.level === 'urgent'  ? 'bg-orange-50 border-orange-100' :
-                                soilAlert.level === 'warning' ? 'bg-amber-50 border-amber-100'   :
-                                soilAlert.level === 'go'      ? 'bg-green-50 border-green-100'   :
-                                'bg-gray-50 border-gray-100'
-                            }`}>
-                                <div className={`text-xs font-semibold leading-snug ${
-                                    soilAlert.level === 'urgent'  ? 'text-orange-700' :
-                                    soilAlert.level === 'warning' ? 'text-amber-700'  :
-                                    soilAlert.level === 'go'      ? 'text-green-700'  :
-                                    'text-gray-600'
-                                }`}>{soilAlert.text}</div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        const ActivitySelector = () => (
-            <div className="animate-fade-in">
-                <h2 className="text-xl font-bold mb-4">Select Activity Type</h2>
-                <div className="grid grid-cols-2 gap-3">
-                    {Object.entries(ACTIVITY_TYPES).map(([key, type]) => {
-                        const colors = ACTIVITY_COLORS[key] || ACTIVITY_COLORS.mowing;
-                        return (
-                            <button key={key} onClick={() => setSelectedActivityType(key)}
-                                className={`${colors.bg} border-2 p-4 rounded-xl shadow-md card-hover btn-press`}
-                                style={{borderColor: colors.hex + '4D'}}
-                                onMouseEnter={(e) => e.currentTarget.style.borderColor = colors.hex}
-                                onMouseLeave={(e) => e.currentTarget.style.borderColor = colors.hex + '4D'}>
-                                <div className="text-4xl mb-2">{type.icon}</div>
-                                <div className={`text-sm font-bold ${colors.text}`}>{type.name}</div>
-                            </button>
-                        );
-                    })}
-                </div>
-                <button onClick={() => setView(null)} className="mt-4 px-4 py-2 bg-gray-200 rounded-lg btn-press">Cancel</button>
-            </div>
-        );
-
-        const ActivityForm = () => {
-            const activityType = ACTIVITY_TYPES[selectedActivityType];
-            const [localFormData, setLocalFormData] = useState({ date: new Date().toISOString().split('T')[0], notes: '', data: {} });
-            return (
-                <div>
-                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                        <span className="text-4xl">{activityType.icon}</span>{activityType.name}
-                    </h2>
-                    <form onSubmit={(e) => { e.preventDefault(); addActivity(localFormData); }} className="bg-white rounded-lg shadow-lg p-6">
-                        <div className="mb-4">
-                            <label className="block text-sm font-semibold mb-2">Date</label>
-                            <input type="date" required value={localFormData.date}
-                                onChange={(e) => setLocalFormData({...localFormData, date: e.target.value})}
-                                className="w-full px-4 py-2 border rounded-lg" />
-                        </div>
-                        {activityType.fields.map(field => (
-                            <div key={field.name} className="mb-4">
-                                <label className="block text-sm font-semibold mb-2">{field.label}{field.required && <span className="text-red-600 ml-1">*</span>}</label>
-                                {field.type === 'treatment-category' ? (
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {Object.entries(TREATMENT_CATEGORIES).map(([key, cat]) => (
-                                            <button key={key} type="button"
-                                                onClick={() => setLocalFormData({...localFormData, data: {...localFormData.data, category: key, product: ''}})}
-                                                className={`p-3 rounded-lg border-2 ${localFormData.data.category === key ? 'bg-[#367C2B] text-white' : 'bg-white'}`}>
-                                                <div className="text-xl">{cat.icon}</div>
-                                                <div className="text-sm">{cat.label}</div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                ) : field.type === 'treatment-product' ? (
-                                    localFormData.data.category ? (
-                                        <div>
-                                            <select onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, product: e.target.value}})}
-                                                className="w-full px-4 py-2 border rounded-lg" required={field.required}>
-                                                <option value="">Select...</option>
-                                                {(TREATMENT_PRODUCTS[localFormData.data.category] || []).map(p => (
-                                                    <option key={p.id} value={p.name}>{p.name}</option>
-                                                ))}
-                                            </select>
-                                            {(() => {
-                                                const sp = (TREATMENT_PRODUCTS[localFormData.data.category] || []).find(p => p.name === localFormData.data.product);
-                                                if (!sp || sp.id.endsWith('5')) return null;
-                                                return (
-                                                    <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                                        <div className="text-xs font-bold text-blue-800 uppercase mb-2">Product Details</div>
-                                                        <div className="grid grid-cols-2 gap-2">
-                                                            {sp.activeIngredient && <div><div className="text-xs text-gray-500">Active Ingredient</div><div className="text-xs font-semibold text-gray-800">{sp.activeIngredient}</div></div>}
-                                                            {sp.rate && <div><div className="text-xs text-gray-500">Application Rate</div><div className="text-xs font-semibold text-gray-800">{sp.rate}</div></div>}
-                                                            {sp.timing && <div><div className="text-xs text-gray-500">Timing</div><div className="text-xs font-semibold text-gray-800">{sp.timing}</div></div>}
-                                                            {sp.target && <div><div className="text-xs text-gray-500">Target</div><div className="text-xs font-semibold text-gray-800">{sp.target}</div></div>}
-                                                        </div>
-                                                        {sp.notes && <div className="mt-2 text-xs text-gray-600 italic">{sp.notes}</div>}
-                                                    </div>
-                                                );
-                                            })()}
-                                        </div>
-                                    ) : <div className="p-4 bg-yellow-50 border rounded">Select category first</div>
-                                ) : field.type === 'product-select' ? (() => {
-                                    let products = PRODUCT_DATABASE[field.productType] || [];
-                                    if (field.filterBy && localFormData.data[field.filterBy]) {
-                                        const filterVal = localFormData.data[field.filterBy];
-                                        products = products.filter(p => p[field.filterProp] === filterVal || p.id.includes('-other'));
-                                    }
-                                    return (
-                                        <select onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, [field.name]: e.target.value}})}
-                                            className="w-full px-4 py-2 border rounded-lg">
-                                            <option value="">Select...</option>
-                                            {products.map(p => <option key={p.id} value={p.name}>{p.brand} - {p.name} {p.deck ? `(${p.deck})` : ''}</option>)}
-                                        </select>
-                                    );
-                                })()
-                                : field.type === 'select' ? (
-                                    <select onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, [field.name]: e.target.value}})}
-                                        className="w-full px-4 py-2 border rounded-lg">
-                                        <option value="">Select...</option>
-                                        {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                    </select>
-                                ) : (
-                                    <input type={field.type} placeholder={field.placeholder}
-                                        value={localFormData.data[field.name] || ''}
-                                        onChange={(e) => setLocalFormData({...localFormData, data: {...localFormData.data, [field.name]: e.target.value}})}
-                                        className="w-full px-4 py-2 border rounded-lg" />
-                                )}
-                            </div>
-                        ))}
-                        <div className="mb-4">
-                            <label className="block text-sm font-semibold mb-2">Notes (Optional)</label>
-                            <textarea value={localFormData.notes} onChange={(e) => setLocalFormData({...localFormData, notes: e.target.value})} rows="3" className="w-full px-4 py-2 border rounded-lg" />
-                        </div>
-                        {/* PREMIUM_FEATURE: cost tracking — available to all users now; gated to premium subscribers in a future release */}
-                        <div className="mb-4">
-                            <label className="block text-sm font-semibold mb-2">Cost <span className="text-xs font-normal text-gray-400">(Optional — track product &amp; service spend)</span></label>
-                            <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">$</span>
-                                <input type="number" min="0" step="0.01" placeholder="0.00"
-                                    value={localFormData.cost || ''}
-                                    onChange={(e) => setLocalFormData({...localFormData, cost: e.target.value})}
-                                    className="w-full pl-7 pr-4 py-2 border rounded-lg" />
-                            </div>
-                        </div>
-                        <div className="flex gap-4">
-                            <button type="submit" className="flex-1 px-6 py-3 bg-[#367C2B] text-white rounded-lg font-semibold">Save Activity</button>
-                            <button type="button" onClick={() => { setSelectedActivityType(null); setView(null); }} className="px-6 py-3 bg-gray-200 rounded-lg">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            );
-        };
-
-        const LawnProfile = () => {
-            const [localForm, setLocalForm] = useState({...profileFormData});
-            const [showFullProgram, setShowFullProgram] = useState(true);
-            const save = async () => {
-                const toSave = {...localForm};
-                await store.saveProfile(toSave);
-                setLawnProfile(toSave);
-                setProfileFormData(toSave);
-                setProfileEditing(false);
-            };
-            const grassInfo = GRASS_INFO[localForm.specificGrass];
-            const zoneInfo = ZONE_INFO[localForm.zone];
-
-            const getCurrentMonthTasks = () => {
-                if (!localForm.specificGrass || !localForm.zone) return null;
-                const programKey = GRASS_KEY_MAP[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
-                const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
-                if (!program || !program.schedule) return null;
-                const currentMonth = MONTH_NAMES[new Date().getMonth()];
-                return program.schedule.find(s => {
-                    if (s.month === currentMonth) return true;
-                    if (s.month && s.month.includes('-')) {
-                        const parts = s.month.split('-');
-                        const startIdx = MONTH_NAMES.indexOf(parts[0].trim()), endIdx = MONTH_NAMES.indexOf(parts[1].trim()), curIdx = MONTH_NAMES.indexOf(currentMonth);
-                        if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
-                    }
-                    return false;
-                });
-            };
-            const currentTasks = getCurrentMonthTasks();
-
-            if (profileEditing) {
-                return (
-                    <div>
-                        <h2 className="text-2xl font-bold mb-6">🌱 Lawn Profile</h2>
-                        <div className="bg-white rounded-lg shadow p-4 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Lawn Size (sq ft)</label>
-                                <input type="number" value={localForm.lawnSize} onChange={(e) => setLocalForm({...localForm, lawnSize: e.target.value})} placeholder="5000" className="w-full px-4 py-3 border-2 rounded-lg" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Find Zone by Zip Code</label>
-                                <div className="flex gap-2">
-                                    <input type="text" inputMode="numeric" maxLength={5} value={localForm.zipCode || ''} onChange={(e) => setLocalForm({...localForm, zipCode: e.target.value})}
-                                        onKeyDown={(e) => { if (e.key === 'Enter') lookupZoneByZip(localForm.zipCode); }} placeholder="e.g. 43201" className="flex-1 px-4 py-3 border-2 rounded-lg" />
-                                    <button type="button" onClick={() => lookupZoneByZip(localForm.zipCode)} disabled={zipLookupLoading}
-                                        className="px-4 py-3 bg-[#367C2B] text-white rounded-lg font-semibold text-sm disabled:opacity-60 whitespace-nowrap">
-                                        {zipLookupLoading ? 'Looking up...' : 'Look Up'}
-                                    </button>
-                                </div>
-                                {zipLookupError && <div className="mt-1 text-xs text-red-600">{zipLookupError}</div>}
-                                {localForm.zone && ZONE_INFO[localForm.zone] && !zipLookupError && <div className="mt-1 text-xs text-[#367C2B] font-medium">Zone {localForm.zone.toUpperCase()} detected — {ZONE_INFO[localForm.zone].temp}</div>}
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">USDA Climate Zone <span className="font-normal text-gray-500">(or select manually)</span></label>
-                                <select value={localForm.zone} onChange={(e) => setLocalForm({...localForm, zone: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg">
-                                    <option value="">Select...</option>
-                                    <optgroup label="Zone 4 — Northern Cold (-30 to -20°F)"><option value="4a">Zone 4a (-30 to -25°F)</option><option value="4b">Zone 4b (-25 to -20°F)</option></optgroup>
-                                    <optgroup label="Zone 5 — Northern (-20 to -10°F)"><option value="5a">Zone 5a (-20 to -15°F)</option><option value="5b">Zone 5b (-15 to -10°F)</option></optgroup>
-                                    <optgroup label="Zone 6 — Moderate (-10 to 0°F)"><option value="6a">Zone 6a (-10 to -5°F)</option><option value="6b">Zone 6b (-5 to 0°F)</option></optgroup>
-                                    <optgroup label="Zone 7 — Transition Zone (0 to 10°F)"><option value="7a">Zone 7a (0 to 5°F)</option><option value="7b">Zone 7b (5 to 10°F)</option></optgroup>
-                                    <optgroup label="Zone 8 — Southern (10 to 20°F)"><option value="8a">Zone 8a (10 to 15°F)</option><option value="8b">Zone 8b (15 to 20°F)</option></optgroup>
-                                    <optgroup label="Zone 9 — Deep South / Gulf (20 to 30°F)"><option value="9a">Zone 9a (20 to 25°F)</option><option value="9b">Zone 9b (25 to 30°F)</option></optgroup>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Grass Type</label>
-                                <select value={localForm.specificGrass} onChange={(e) => setLocalForm({...localForm, specificGrass: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg">
-                                    <option value="">Select...</option>
-                                    <optgroup label="Cool Season"><option value="tall-fescue">Tall Fescue</option><option value="kentucky-bluegrass">Kentucky Bluegrass</option><option value="perennial-ryegrass">Perennial Ryegrass</option></optgroup>
-                                    <optgroup label="Warm Season"><option value="bermuda">Bermudagrass</option><option value="zoysia">Zoysia</option><option value="st-augustine">St. Augustine</option></optgroup>
-                                </select>
-                            </div>
-                            <button onClick={save} className="w-full py-4 bg-[#367C2B] text-white rounded-xl font-bold text-lg">💾 Save Profile</button>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between mb-2">
-                        <h2 className="text-2xl font-bold">🌱 My Yard</h2>
-                        <button onClick={() => setProfileEditing(true)} className="px-4 py-2 text-sm font-semibold text-[#367C2B] border-2 border-[#367C2B] rounded-lg hover:bg-[#367C2B]/10">Edit Profile</button>
-                    </div>
-                    <div className="bg-gradient-to-r from-[#367C2B] to-[#4a9c3a] rounded-xl p-5 text-white shadow-lg">
-                        <div className="text-lg font-bold">{grassInfo ? grassInfo.name : localForm.specificGrass}</div>
-                        <div className="text-sm opacity-90 mt-1">
-                            {grassInfo && <span>{grassInfo.season}</span>}
-                            {zoneInfo && <span> · Zone {localForm.zone} ({zoneInfo.climate}) <CitationBadge sources={[{ name: 'USDA Plant Hardiness Zone Map', url: 'https://planthardiness.ars.usda.gov/', topic: 'Official zone classifications' }]} label="USDA Zone" /></span>}
-                            {localForm.lawnSize && <span> · {Number(localForm.lawnSize).toLocaleString()} sq ft</span>}
-                        </div>
-                        {grassInfo && <div className="mt-3 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>}
-                    </div>
-                    {(() => {
-                        const zoneNote = grassInfo && grassInfo.zoneNotes && (grassInfo.zoneNotes[localForm.zone] || grassInfo.zoneNotes[getParentZone(localForm.zone)]);
-                        if (!zoneNote) return null;
-                        const noteLower = zoneNote.toLowerCase();
-                        const colorClass = noteLower.includes('not recommended') || noteLower.includes('not viable') ? 'bg-red-50 border-red-500' : noteLower.includes('challenging') || noteLower.includes('difficult') || noteLower.includes('marginal') ? 'bg-yellow-50 border-yellow-500' : 'bg-[#e8f5e9] border-[#367C2B]';
-                        return (
-                            <div className={`rounded-xl p-4 border-l-4 ${colorClass}`}>
-                                <div className="font-bold text-sm mb-1">Zone {localForm.zone} Compatibility <CitationBadge sources={grassInfo.sources} label="Zone adaptation" /></div>
-                                <div className="text-sm text-gray-700">{zoneNote}</div>
-                            </div>
-                        );
-                    })()}
-                    {grassInfo && (
-                        <div className="bg-white rounded-xl shadow-lg p-4">
-                            <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Quick Reference <CitationBadge sources={grassInfo.sources} label="Grass care specs" /></h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Mow Height</div><div className="text-sm font-bold text-gray-800">{grassInfo.mowHeight}</div><div className="text-xs text-gray-400 mt-1">Summer: {grassInfo.mowHeightSummer}</div></div>
-                                <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Water / Week</div><div className="text-sm font-bold text-gray-800">{grassInfo.waterPerWeek}</div></div>
-                                <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Sun Needs</div><div className="text-sm font-bold text-gray-800">{grassInfo.sunNeeds}</div></div>
-                                <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Fertilizer / Year</div><div className="text-sm font-bold text-gray-800">{grassInfo.fertPerYear}</div></div>
-                                <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Ideal Soil pH</div><div className="text-sm font-bold text-gray-800">{grassInfo.idealSoilPH}</div></div>
-                                <div className="bg-gray-50 rounded-lg p-3 text-center"><div className="text-xs text-gray-500 mb-1">Peak Growth</div><div className="text-sm font-bold text-gray-800">{grassInfo.peakGrowth}</div></div>
-                                {grassInfo.idealSoilTemp && <div className="bg-gray-50 rounded-lg p-3 text-center col-span-2"><div className="text-xs text-gray-500 mb-1">Ideal Soil Temp</div><div className="text-sm font-bold text-gray-800">{grassInfo.idealSoilTemp}</div></div>}
-                            </div>
-                            <div className="mt-3 p-3 bg-blue-50 rounded-lg"><div className="text-xs text-blue-600 font-semibold mb-1">Dormancy</div><div className="text-sm text-gray-700">{grassInfo.dormancy}</div></div>
-                        </div>
-                    )}
-                    {currentTasks && weather && <ForecastImpactCard tasks={currentTasks.tasks} />}
-                    {currentTasks && (
-                        <div className="bg-white rounded-xl shadow-lg p-4">
-                            <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-1">This Month's Tasks <CitationBadge sources={grassInfo ? grassInfo.sources : null} label="Monthly program" /></h3>
-                            <div className="text-xs text-gray-500 mb-3">{currentTasks.month}{currentTasks.importance ? ` — ${currentTasks.importance}` : ''}</div>
-                            <ul className="space-y-3">
-                                {currentTasks.tasks.map((task, i) => {
-                                    const ws = getTaskWeatherStatus(task, weather);
-                                    const badgeStyle = ws ? ws.status === 'go' ? 'bg-[#e8f5e9] text-[#367C2B]' : ws.status === 'caution' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700' : null;
-                                    const badgeLabel = ws ? ws.status === 'go' ? '✓ Good timing' : ws.status === 'caution' ? '⚠ Note' : '✕ Hold' : null;
-                                    return (
-                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                            <span className="text-[#367C2B] mt-0.5 font-bold shrink-0">·</span>
-                                            <div className="flex-1"><span>{task}</span>{ws && <span className={`ml-2 text-xs font-semibold px-1.5 py-0.5 rounded ${badgeStyle}`}>{badgeLabel}</span>}</div>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </div>
-                    )}
-                    {grassInfo && weather && <WaterDeficitCard grassInfo={grassInfo} />}
-                    {(() => {
-                        if (!localForm.specificGrass || !localForm.zone) return null;
-                        const programKey = GRASS_KEY_MAP[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
-                        const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
-                        if (!program || !program.schedule) return null;
-                        const currentMonth = MONTH_NAMES[new Date().getMonth()];
-                        const isCurrentMonth = (monthStr) => {
-                            if (monthStr === currentMonth) return true;
-                            if (monthStr && monthStr.includes('-')) {
-                                const parts = monthStr.split('-');
-                                const startIdx = MONTH_NAMES.indexOf(parts[0].trim()), endIdx = MONTH_NAMES.indexOf(parts[1].trim()), curIdx = MONTH_NAMES.indexOf(currentMonth);
-                                if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
-                            }
-                            return false;
-                        };
-                        return (
-                            <div className="bg-white rounded-xl shadow-lg p-4">
-                                <div className="flex items-center justify-between mb-3">
-                                    <h3 className="text-sm font-bold text-[#367C2B] uppercase">Full Year Program <CitationBadge sources={program.sources} label="Annual program" /></h3>
-                                    <button onClick={() => setShowFullProgram(!showFullProgram)} className="text-xs font-semibold text-[#367C2B] border border-[#367C2B] rounded-lg px-3 py-1 hover:bg-[#367C2B]/10">{showFullProgram ? 'Collapse' : 'View All Months'}</button>
-                                </div>
-                                <div className="text-xs text-gray-500 mb-3">{program.description}</div>
-                                {program.warning && <div className="mb-3 p-2 bg-yellow-50 border border-yellow-300 rounded-lg text-xs text-yellow-800">{program.warning}</div>}
-                                {showFullProgram && (
-                                    <div className="space-y-3">
-                                        {program.schedule.map((entry, i) => (
-                                            <div key={i} className={`p-3 rounded-lg border-2 ${isCurrentMonth(entry.month) ? 'border-[#367C2B] bg-[#e8f5e9]' : 'border-gray-100 bg-gray-50'}`}>
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <div className="text-sm font-bold text-gray-800">{isCurrentMonth(entry.month) && <span className="text-[#367C2B] mr-1">▶</span>}{entry.month}</div>
-                                                    {entry.importance && <span className="text-xs font-bold text-white bg-orange-500 px-2 py-0.5 rounded-full">{entry.importance}</span>}
-                                                </div>
-                                                <ul className="space-y-1">{entry.tasks.map((task, j) => <li key={j} className="text-xs text-gray-700 flex items-start gap-1"><span className="text-[#367C2B] mt-0.5">·</span><span>{task}</span></li>)}</ul>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })()}
-                    {grassInfo && grassInfo.keyTips && (
-                        <div className="bg-white rounded-xl shadow-lg p-4">
-                            <h3 className="text-sm font-bold text-[#367C2B] uppercase mb-3">Key Tips <CitationBadge sources={grassInfo.sources} label="Care tips" /></h3>
-                            <ul className="space-y-2">{grassInfo.keyTips.map((tip, i) => <li key={i} className="flex items-start gap-2 text-sm text-gray-700"><span className="text-[#367C2B] mt-0.5">💡</span><span>{tip}</span></li>)}</ul>
-                        </div>
-                    )}
-                    {grassInfo && grassInfo.commonIssues && (
-                        <div className="bg-white rounded-xl shadow-lg p-4">
-                            <h3 className="text-sm font-bold text-orange-600 uppercase mb-3">Watch Out For <CitationBadge sources={grassInfo.sources} label="Common issues" /></h3>
-                            <ul className="space-y-2">{grassInfo.commonIssues.map((issue, i) => <li key={i} className="flex items-start gap-2 text-sm text-gray-700"><span className="text-orange-500 mt-0.5">⚠️</span><span>{issue}</span></li>)}</ul>
-                        </div>
-                    )}
-                    {grassInfo && grassInfo.sources && grassInfo.sources.length > 0 && (
-                        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-                            <div className="text-xs font-bold text-gray-500 uppercase mb-2">📚 Research Sources</div>
-                            <div className="space-y-1">
-                                {grassInfo.sources.map((s, i) => (
-                                    <div key={i} className="flex items-start gap-2 text-xs">
-                                        <span className="text-[#367C2B] mt-0.5">·</span>
-                                        {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">{s.name}</a> : <span className="text-gray-600 font-semibold">{s.name}</span>}
-                                        {s.topic && <span className="text-gray-400">— {s.topic}</span>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-        // ─── Yearly Gameplan ─────────────────────────────────────────────────────
-        const YearlyGameplan = () => {
-            const [activeTab, setActiveTab] = useState('upcoming');
-            const currentMonthIdx = new Date().getMonth();
-            const currentMonth = MONTH_NAMES[currentMonthIdx];
-
-            if (!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone) {
-                return (
-                    <div className="space-y-4 animate-fade-in">
-                        <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
-                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center">
-                            <div className="text-3xl mb-2">🌱</div>
-                            <div className="font-bold text-gray-800 mb-1">Set Up Your Lawn Profile First</div>
-                            <div className="text-sm text-gray-500 mb-4">We need your grass type and zone to build a personalized yearly plan.</div>
-                            <button onClick={() => setView('profile')} className="px-6 py-3 bg-[#367C2B] text-white rounded-xl font-bold">
-                                Set Up My Lawn →
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            const programKey = GRASS_KEY_MAP[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone);
-            const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
-            const grassInfo = GRASS_INFO[lawnProfile.specificGrass];
-
-            // Filter out mowing and watering tasks — gameplan focuses on scheduled treatments
-            const isGameplanTask = (task) => {
-                const lower = task.toLowerCase();
-                return !/\bmow(ing)?\b|\bcut (height|grass)\b|mow (weekly|at|every)|watering|irrigat|water (as needed|deeply|1|0\.|per week)|\bdrip\b/.test(lower);
-            };
-
-            // Assign a type and color to each task for visual grouping
-            const getTaskMeta = (task) => {
-                const lower = task.toLowerCase();
-                if (/pre-emergent|pre emergent|crabgrass prev|prodiamine|dithiopyr/.test(lower))
-                    return { icon: '🛡️', label: 'Pre-Emergent', color: 'bg-amber-100 text-amber-800 border-amber-300' };
-                if (/overseed|reseed|sow/.test(lower))
-                    return { icon: '🌱', label: 'Seeding', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' };
-                if (/fertili|feeding|\blb n\b|nitrogen|winterizer/.test(lower))
-                    return { icon: '🌾', label: 'Fertilizer', color: 'bg-green-100 text-green-800 border-green-300' };
-                if (/aerat/.test(lower))
-                    return { icon: '🔧', label: 'Aeration', color: 'bg-purple-100 text-purple-800 border-purple-300' };
-                if (/dethatch|scalp|thatch/.test(lower))
-                    return { icon: '✂️', label: 'Dethatch/Scalp', color: 'bg-stone-100 text-stone-700 border-stone-300' };
-                if (/soil test|lime|ph|potassium|\biron\b/.test(lower))
-                    return { icon: '🧪', label: 'Soil Care', color: 'bg-orange-100 text-orange-800 border-orange-300' };
-                if (/herbicide|weed|post-emergent|broadleaf/.test(lower))
-                    return { icon: '🌿', label: 'Weed Control', color: 'bg-red-100 text-red-800 border-red-300' };
-                if (/fungicide|disease|patch|rust|blight|chinch/.test(lower))
-                    return { icon: '💊', label: 'Disease/Pest', color: 'bg-pink-100 text-pink-800 border-pink-300' };
-                if (/ryegrass|overseed.*rye|winter color/.test(lower))
-                    return { icon: '🌾', label: 'Winter Overseed', color: 'bg-teal-100 text-teal-800 border-teal-300' };
-                return { icon: '📋', label: 'General', color: 'bg-gray-100 text-gray-700 border-gray-300' };
-            };
-
-            const isCurrentMonthEntry = (monthStr) => {
-                if (monthStr === currentMonth) return true;
-                if (monthStr && monthStr.includes('-')) {
-                    const parts = monthStr.split('-');
-                    const s = MONTH_NAMES.indexOf(parts[0].trim()), e = MONTH_NAMES.indexOf(parts[1].trim());
-                    if (s >= 0 && e >= 0 && currentMonthIdx >= s && currentMonthIdx <= e) return true;
-                }
-                return false;
-            };
-
-            const monthIndexForEntry = (monthStr) => {
-                if (!monthStr) return -1;
-                const direct = MONTH_NAMES.indexOf(monthStr);
-                if (direct >= 0) return direct;
-                if (monthStr.includes('-')) {
-                    const s = MONTH_NAMES.indexOf(monthStr.split('-')[0].trim());
-                    return s >= 0 ? s : -1;
-                }
-                return -1;
-            };
-
-            if (!program) {
-                return (
-                    <div className="space-y-4 animate-fade-in">
-                        <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
-                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-                            No gameplan is available for {grassInfo?.name || lawnProfile.specificGrass} in Zone {lawnProfile.zone} — this combination may not be recommended for your area.
-                        </div>
-                    </div>
-                );
-            }
-
-            // Build list of entries with only gameplan-relevant tasks
-            const allEntries = program.schedule.map(entry => ({
-                ...entry,
-                gameplanTasks: (entry.tasks || []).filter(isGameplanTask)
-            })).filter(e => e.gameplanTasks.length > 0);
-
-            // "Coming Up": current month + next 2 months of entries
-            const upcomingEntries = allEntries.filter(entry => {
-                if (isCurrentMonthEntry(entry.month)) return true;
-                const entryStart = monthIndexForEntry(entry.month);
-                if (entryStart < 0) return false;
-                const next1 = (currentMonthIdx + 1) % 12;
-                const next2 = (currentMonthIdx + 2) % 12;
-                return entryStart === next1 || entryStart === next2;
-            });
-
-            const MonthCard = ({ entry, isCurrent }) => (
-                <div className={`rounded-xl border-2 p-4 ${isCurrent ? 'border-[#367C2B] bg-[#e8f5e9]' : 'border-gray-100 bg-white shadow-sm'}`}>
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="font-bold text-gray-800 flex items-center gap-1.5">
-                            {isCurrent && <span className="text-[#367C2B]">▶</span>}
-                            <span>{entry.month}</span>
-                            {isCurrent && <span className="text-xs font-semibold text-[#367C2B] bg-white px-2 py-0.5 rounded-full border border-[#367C2B] ml-1">Now</span>}
-                        </div>
-                        {entry.importance && <span className="text-xs font-bold text-white bg-orange-500 px-2 py-0.5 rounded-full">{entry.importance}</span>}
-                    </div>
-                    {entry.soilTemp && <div className="text-xs text-gray-500 mb-2">Target soil temp: {entry.soilTemp}</div>}
-                    <div className="space-y-2">
-                        {entry.gameplanTasks.map((task, j) => {
-                            const meta = getTaskMeta(task);
-                            const ws = weather ? getTaskWeatherStatus(task, weather) : null;
-                            return (
-                                <div key={j} className="flex items-start gap-2">
-                                    <span className="text-base mt-0.5 shrink-0">{meta.icon}</span>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                            <span className={`text-xs font-bold px-1.5 py-0.5 rounded border ${meta.color}`}>{meta.label}</span>
-                                            {ws && <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${ws.status === 'go' ? 'bg-[#e8f5e9] text-[#367C2B]' : ws.status === 'caution' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{ws.status === 'go' ? '✓ Good timing' : ws.status === 'caution' ? '⚠ Note' : '✕ Hold'}</span>}
-                                        </div>
-                                        <div className="text-sm text-gray-700 mt-0.5">{task}</div>
-                                        {ws && ws.reason && <div className={`text-xs mt-0.5 ${ws.status === 'go' ? 'text-[#367C2B]' : ws.status === 'caution' ? 'text-amber-600' : 'text-red-600'}`}>{ws.reason}</div>}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
-
-            return (
-                <div className="space-y-4 animate-fade-in pb-4">
-                    <div>
-                        <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
-                        <div className="text-sm text-gray-500 mt-0.5">
-                            {grassInfo?.name || lawnProfile.specificGrass} · Zone {lawnProfile.zone}
-                            {lawnProfile.lawnSize && ` · ${Number(lawnProfile.lawnSize).toLocaleString()} sq ft`}
-                        </div>
-                    </div>
-
-                    {program.warning && (
-                        <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-sm text-amber-800">
-                            ⚠️ {program.warning}
-                        </div>
-                    )}
-
-                    {/* Tabs */}
-                    <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
-                        {[{key:'upcoming',label:'Coming Up'},{key:'full',label:'Full Year'}].map(({key,label}) => (
-                            <button key={key} onClick={() => setActiveTab(key)}
-                                className={`flex-1 py-2 text-sm font-semibold rounded-md transition btn-press ${activeTab === key ? 'bg-[#367C2B] text-white shadow' : 'text-gray-600'}`}>
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-
-                    {activeTab === 'upcoming' && (
-                        <div className="space-y-3">
-                            {upcomingEntries.length === 0 ? (
-                                <div className="bg-gray-50 rounded-xl p-6 text-center">
-                                    <div className="text-2xl mb-2">✅</div>
-                                    <div className="font-semibold text-gray-700">You're in a quiet period</div>
-                                    <div className="text-sm text-gray-500 mt-1">No scheduled treatments in the next couple months. Switch to Full Year to see the whole plan.</div>
-                                </div>
-                            ) : (
-                                upcomingEntries.map((entry, i) => (
-                                    <MonthCard key={i} entry={entry} isCurrent={isCurrentMonthEntry(entry.month)} />
-                                ))
-                            )}
-                        </div>
-                    )}
-
-                    {activeTab === 'full' && (
-                        <div className="space-y-3">
-                            <div className="text-xs text-gray-500 px-1">{program.description}</div>
-                            {allEntries.map((entry, i) => (
-                                <MonthCard key={i} entry={entry} isCurrent={isCurrentMonthEntry(entry.month)} />
-                            ))}
-                        </div>
-                    )}
-
-                    {program.sources && program.sources.length > 0 && (
-                        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-                            <div className="text-xs font-bold text-gray-500 uppercase mb-2">📚 Research Sources</div>
-                            <div className="space-y-1">
-                                {program.sources.map((s, i) => (
-                                    <div key={i} className="flex items-start gap-2 text-xs">
-                                        <span className="text-[#367C2B] mt-0.5">·</span>
-                                        {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">{s.institution || s.name}</a> : <span className="font-semibold text-gray-700">{s.institution || s.name}</span>}
-                                        {s.title && <span className="text-gray-400">— {s.title}</span>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-        const Settings = () => {
-            const exportData = () => {
-                const data = { activities, equipment, profile: lawnProfile };
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `yardstick-backup-${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-            };
-            const resetData = () => {
-                if (confirm('⚠️ Delete ALL data? This cannot be undone!')) {
-                    localStorage.removeItem('lawnCareActivities');
-                    localStorage.removeItem('lawnCareEquipment');
-                    localStorage.removeItem('lawnProfile');
-                    alert('✅ Data cleared');
-                    window.location.reload();
-                }
-            };
-            return (
-                <div>
-                    <h2 className="text-2xl font-bold mb-6">⚙️ Settings</h2>
-
-                    {/* Account section */}
-                    <div className="bg-white rounded-xl p-4 shadow mb-4">
-                        <h3 className="text-lg font-bold mb-4">👤 Account</h3>
-                        {store.isCloud && currentUser ? (
-                            <div>
-                                <div className="flex items-center gap-3 mb-4 p-3 bg-[#e8f5e9] rounded-xl">
-                                    <div className="text-3xl">☁️</div>
-                                    <div>
-                                        <div className="font-bold text-[#367C2B]">Cloud Sync Active</div>
-                                        <div className="text-xs text-gray-600">{currentUser.displayName || currentUser.email}</div>
-                                        <div className="text-xs text-gray-500 mt-0.5">Your data is saved securely to the cloud</div>
-                                    </div>
-                                </div>
-                                <button onClick={handleSignOut} className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-lg font-semibold">Sign Out</button>
-                            </div>
-                        ) : (
-                            <div>
-                                <div className="flex items-center gap-3 mb-4 p-3 bg-amber-50 rounded-xl">
-                                    <div className="text-3xl">💾</div>
-                                    <div>
-                                        <div className="font-bold text-amber-700">Local Storage Only</div>
-                                        <div className="text-xs text-gray-600">Data is saved to this browser only</div>
-                                        <div className="text-xs text-gray-500 mt-0.5">Sign in to sync across devices and protect your data</div>
-                                    </div>
-                                </div>
-                                {fb.configured ? (
-                                    <button onClick={() => setShowAuthModal(true)} className="w-full py-3 px-4 bg-[#367C2B] text-white rounded-lg font-semibold">
-                                        Sign In / Create Account →
-                                    </button>
-                                ) : (
-                                    <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-500 text-center">
-                                        Firebase not yet configured — cloud sync coming soon
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="bg-white rounded-xl p-4 shadow mb-4">
-                        <h3 className="text-lg font-bold mb-4">💾 Data Management</h3>
-                        <button onClick={exportData} className="w-full py-3 px-4 bg-[#367C2B] text-white rounded-lg font-semibold mb-3">📥 Export Data Backup</button>
-                        <button onClick={resetData} className="w-full py-3 px-4 bg-red-100 text-red-700 rounded-lg font-semibold">🗑️ Reset All Data</button>
-                    </div>
-
-                    <div className="bg-white rounded-xl p-4 shadow">
-                        <h3 className="text-lg font-bold mb-2">ℹ️ About</h3>
-                        <p className="text-sm text-gray-600 font-semibold">Yardstick v9.0</p>
-                        <p className="text-xs text-gray-500 mt-1">Research-backed lawn care for DIY homeowners</p>
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                            <div className="border-l-3 border-[#367C2B] pl-3" style={{borderLeft: '3px solid #367C2B'}}>
-                                <div className="text-sm font-bold text-[#367C2B]">v9.0 <span className="text-xs font-normal text-gray-400">Feb 2026</span></div>
-                                <ul className="text-xs text-gray-600 mt-1 space-y-0.5">
-                                    <li>+ Optional Firebase account — guest users keep localStorage</li>
-                                    <li>+ Cloud sync: activities, equipment, and profile sync across devices</li>
-                                    <li>+ Google Sign-In + email/password authentication</li>
-                                    <li>+ Sync status banner shows cloud/local mode at a glance</li>
-                                    <li>+ Account management in Settings</li>
-                                    <li>+ App rebranded to Yardstick</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
+        const handleProfileSave = async (profile) => {
+            await store.saveProfile(profile);
+            setLawnProfile(profile);
+            setProfileFormData(profile);
+            setProfileEditing(false);
         };
 
         // Loading screen
@@ -2244,7 +2372,14 @@ window.ResearchSourcesPage = () => (
                     firebaseConfigured={fb.configured}
                 />
 
-                <SeasonBanner />
+                {syncError && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border-b border-red-200 text-sm text-red-700">
+                        <span>⚠️ {syncError}</span>
+                        <button onClick={() => setSyncError(null)} className="ml-auto text-red-400 hover:text-red-600 font-bold text-base leading-none" aria-label="Dismiss">×</button>
+                    </div>
+                )}
+
+                <SeasonBanner weather={weather} />
 
                 <div className="max-w-5xl mx-auto p-2 md:p-3">
                     {!view && (
@@ -2389,12 +2524,12 @@ window.ResearchSourcesPage = () => (
                                 );
                             })()}
                             {/* Weather card */}
-                            <WeatherSnapshot />
+                            <WeatherSnapshot weather={weather} weatherLoading={weatherLoading} lawnProfile={lawnProfile} zipLookupLoading={zipLookupLoading} zipLookupError={zipLookupError} onZipLookup={lookupZoneByZip} />
                             {/* Frost countdown banner */}
                             {(() => {
                                 if (!lawnProfile || !lawnProfile.zone) return null;
                                 const zd = ZONE_INFO[lawnProfile.zone] || ZONE_INFO[getParentZone(lawnProfile.zone)];
-                                if (!zd || !zd.firstFrost) return null;
+                                if (!zd || !zd.firstFrost || !zd.lastFrost) return null;
                                 const now = new Date(), yr = now.getFullYear();
                                 const firstFrost = new Date(yr, zd.firstFrost.month - 1, zd.firstFrost.day);
                                 const lastFrost  = new Date(yr, zd.lastFrost.month  - 1, zd.lastFrost.day );
@@ -2538,15 +2673,15 @@ window.ResearchSourcesPage = () => (
                             })()}
                         </div>
                     )}
-                    {view === 'add' && <div><button onClick={() => { setView(null); setSelectedActivityType(null); }} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button>{!selectedActivityType && <ActivitySelector />}{selectedActivityType && <ActivityForm />}</div>}
+                    {view === 'add' && <div><button onClick={() => { setView(null); setSelectedActivityType(null); }} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button>{!selectedActivityType && <ActivitySelector onSelectType={setSelectedActivityType} onCancel={() => setView(null)} />}{selectedActivityType && <ActivityForm selectedActivityType={selectedActivityType} onSubmit={addActivity} onCancel={() => { setSelectedActivityType(null); setView(null); }} />}</div>}
                     {view === 'history' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><HistoryView activities={activities} onDelete={deleteActivity} /></div>}
-                    {view === 'garage' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><MyGarage equipment={equipment} activities={activities} onAdd={addEquipment} onDelete={deleteEquipment} onNavigate={setView} /></div>}
-                    {view === 'profile' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><LawnProfile /></div>}
-                    {view === 'gameplan' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><YearlyGameplan /></div>}
+                    {view === 'garage' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><MyGarage equipment={equipment} activities={activities} onAdd={addEquipment} onDelete={deleteEquipment} onUpdate={updateEquipment} onNavigate={setView} /></div>}
+                    {view === 'profile' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><LawnProfile profileFormData={profileFormData} profileEditing={profileEditing} lawnProfile={lawnProfile} weather={weather} zipLookupLoading={zipLookupLoading} zipLookupError={zipLookupError} onZipLookup={lookupZoneByZip} onSave={handleProfileSave} onEditToggle={setProfileEditing} onNavigate={setView} /></div>}
+                    {view === 'gameplan' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><YearlyGameplan lawnProfile={lawnProfile} weather={weather} onNavigate={setView} /></div>}
                     {view === 'dashboard' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><Dashboard activities={activities} statsView={statsView} onStatsViewChange={setStatsView} /></div>}
                     {view === 'products' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><ProductGuide /></div>}
                     {view === 'sources' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><ResearchSourcesPage /></div>}
-                    {view === 'settings' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><Settings /></div>}
+                    {view === 'settings' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><Settings activities={activities} equipment={equipment} lawnProfile={lawnProfile} store={store} currentUser={currentUser} onSignOut={handleSignOut} onSignIn={() => setShowAuthModal(true)} firebaseConfigured={!!fb.configured} /></div>}
                 </div>
             </div>
         );
