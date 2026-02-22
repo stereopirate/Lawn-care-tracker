@@ -9,7 +9,6 @@
     <meta name="description" content="Your lawn care made simple - track, plan, and achieve the perfect green lawn">
     <title>Yardstick - Research-Backed Lawn Care</title>
 
-```
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -69,7 +68,6 @@
     // Signal React app that Firebase init is complete
     window.dispatchEvent(new Event('firebase-ready'));
 </script>
-```
 
 </head>
 <body class="bg-white" style="background-color: #ffffff !important;">
@@ -156,7 +154,6 @@
     </style>
     <div id="root"></div>
 
-```
 <script src="grass-programs.js"></script>
 <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
@@ -207,7 +204,7 @@
             }
             const { db, collection, addDoc, serverTimestamp } = fb;
             const ref = await addDoc(
-                collection(fb.db, 'users', currentUser.uid, 'activities'),
+                collection(db, 'users', currentUser.uid, 'activities'),
                 { ...activity, createdAt: serverTimestamp() }
             );
             return { ...activity, id: ref.id };
@@ -375,9 +372,7 @@
     };
 
     // ─── Sync Status Banner ─────────────────────────────────────────────────────
-    const SyncBanner = ({ isCloud, currentUser, onSignIn, onSignOut, firebaseConfigured }) => {
-        const [expanded, setExpanded] = useState(false);
-
+    const SyncBanner = ({ isCloud, currentUser, onSignOut, firebaseConfigured }) => {
         if (!firebaseConfigured) return null; // Hide if Firebase not set up yet
 
         if (isCloud && currentUser) {
@@ -682,6 +677,10 @@
         { id: 'okstate', name: 'Oklahoma State Extension', count: 4, url: 'https://extension.okstate.edu/', topics: 'Bermudagrass, Transition Zone, Drought Management' },
         { id: 'umass', name: 'UMass Extension', count: 3, url: 'https://ag.umass.edu/turf', topics: 'Cool-Season Grasses, Sports Turf, Northern Management' }
     ];
+
+    // ─── Shared lookup constants ────────────────────────────────────────────────
+    const GRASS_KEY_MAP = { 'tall-fescue': 'tallFescue', 'kentucky-bluegrass': 'kentuckyBluegrass', 'perennial-ryegrass': 'perennialRyegrass', 'bermuda': 'bermuda', 'zoysia': 'zoysia', 'st-augustine': 'stAugustine' };
+    const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     const GRASS_INFO = {
         'tall-fescue': {
@@ -1432,7 +1431,7 @@
                                             </select>
                                             {(() => {
                                                 const sp = (TREATMENT_PRODUCTS[localFormData.data.category] || []).find(p => p.name === localFormData.data.product);
-                                                if (!sp || sp.id.includes('5')) return null;
+                                                if (!sp || sp.id.endsWith('5')) return null;
                                                 return (
                                                     <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                                                         <div className="text-xs font-bold text-blue-800 uppercase mb-2">Product Details</div>
@@ -1525,7 +1524,7 @@
                     {activity.cost > 0 && (
                         <div className="mt-2 flex items-center gap-1.5">
                             <div className="text-xs text-gray-500 uppercase tracking-wide">Cost</div>
-                            <div className="text-sm font-semibold text-gray-800">${activity.cost.toFixed(2)}</div>
+                            <div className="text-sm font-semibold text-gray-800">${parseFloat(activity.cost).toFixed(2)}</div>
                         </div>
                     )}
                     {activity.notes && (
@@ -1554,9 +1553,9 @@
                                     <div key={activity.id} className={`bg-white rounded-xl shadow-md p-4 cursor-pointer card-hover border-l-4 ${colors.border}`} onClick={() => setExpandedId(expandedId === activity.id ? null : activity.id)}>
                                         <div className="flex justify-between items-center">
                                             <div className="flex gap-3 items-center">
-                                                <div className="text-3xl">{ACTIVITY_TYPES[activity.type].icon}</div>
+                                                <div className="text-3xl">{ACTIVITY_TYPES[activity.type]?.icon || '📋'}</div>
                                                 <div>
-                                                    <h3 className={`text-lg font-bold ${colors.text}`}>{ACTIVITY_TYPES[activity.type].name}</h3>
+                                                    <h3 className={`text-lg font-bold ${colors.text}`}>{ACTIVITY_TYPES[activity.type]?.name || activity.type}</h3>
                                                     <p className="text-sm text-gray-500">{new Date(activity.date).toLocaleDateString()}</p>
                                                 </div>
                                             </div>
@@ -1594,7 +1593,7 @@
                 if (finalName) {
                     const productInfo = selectedProductData || {};
                     addEquipment({ name: finalName, type: garageForm.type, brand: productInfo.brand || 'Custom', details: productInfo.features || productInfo.type || '', deck: productInfo.deck || '', maintenanceSchedule: productInfo.maintenanceSchedule || null });
-                    setGarageForm({ name: '', type: garageForm.type, selectedProduct: '', customName: '' });
+                    setGarageForm({ name: '', type: garageForm.type, selectedProduct: '', customName: '', mowerType: '' });
                 }
             };
             const typeLabels = { mowers: 'Mower', spreaders: 'Spreader', trimmers: 'Trimmer' };
@@ -1710,6 +1709,7 @@
 
         const LawnProfile = () => {
             const [localForm, setLocalForm] = useState({...profileFormData});
+            const [showFullProgram, setShowFullProgram] = useState(true);
             const save = async () => {
                 const toSave = {...localForm};
                 await store.saveProfile(toSave);
@@ -1722,17 +1722,15 @@
 
             const getCurrentMonthTasks = () => {
                 if (!localForm.specificGrass || !localForm.zone) return null;
-                const keyMap = { 'tall-fescue': 'tallFescue', 'kentucky-bluegrass': 'kentuckyBluegrass', 'perennial-ryegrass': 'perennialRyegrass', 'bermuda': 'bermuda', 'zoysia': 'zoysia', 'st-augustine': 'stAugustine' };
-                const programKey = keyMap[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
+                const programKey = GRASS_KEY_MAP[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
                 const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                 if (!program || !program.schedule) return null;
-                const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                const currentMonth = months[new Date().getMonth()];
+                const currentMonth = MONTH_NAMES[new Date().getMonth()];
                 return program.schedule.find(s => {
                     if (s.month === currentMonth) return true;
                     if (s.month && s.month.includes('-')) {
                         const parts = s.month.split('-');
-                        const startIdx = months.indexOf(parts[0]), endIdx = months.indexOf(parts[1]), curIdx = months.indexOf(currentMonth);
+                        const startIdx = MONTH_NAMES.indexOf(parts[0].trim()), endIdx = MONTH_NAMES.indexOf(parts[1].trim()), curIdx = MONTH_NAMES.indexOf(currentMonth);
                         if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
                     }
                     return false;
@@ -1853,18 +1851,15 @@
                     {grassInfo && weather && <WaterDeficitCard grassInfo={grassInfo} />}
                     {(() => {
                         if (!localForm.specificGrass || !localForm.zone) return null;
-                        const keyMap = { 'tall-fescue': 'tallFescue', 'kentucky-bluegrass': 'kentuckyBluegrass', 'perennial-ryegrass': 'perennialRyegrass', 'bermuda': 'bermuda', 'zoysia': 'zoysia', 'st-augustine': 'stAugustine' };
-                        const programKey = keyMap[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
+                        const programKey = GRASS_KEY_MAP[localForm.specificGrass] + '_zone' + getParentZone(localForm.zone);
                         const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                         if (!program || !program.schedule) return null;
-                        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                        const currentMonth = months[new Date().getMonth()];
-                        const [showFullProgram, setShowFullProgram] = React.useState(true);
+                        const currentMonth = MONTH_NAMES[new Date().getMonth()];
                         const isCurrentMonth = (monthStr) => {
                             if (monthStr === currentMonth) return true;
                             if (monthStr && monthStr.includes('-')) {
                                 const parts = monthStr.split('-');
-                                const startIdx = months.indexOf(parts[0]), endIdx = months.indexOf(parts[1]), curIdx = months.indexOf(currentMonth);
+                                const startIdx = MONTH_NAMES.indexOf(parts[0].trim()), endIdx = MONTH_NAMES.indexOf(parts[1].trim()), curIdx = MONTH_NAMES.indexOf(currentMonth);
                                 if (startIdx >= 0 && endIdx >= 0 && curIdx >= startIdx && curIdx <= endIdx) return true;
                             }
                             return false;
@@ -1925,10 +1920,9 @@
 
         // ─── Yearly Gameplan ─────────────────────────────────────────────────────
         const YearlyGameplan = () => {
-            const [activeTab, setActiveTab] = React.useState('upcoming');
-            const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            const [activeTab, setActiveTab] = useState('upcoming');
             const currentMonthIdx = new Date().getMonth();
-            const currentMonth = months[currentMonthIdx];
+            const currentMonth = MONTH_NAMES[currentMonthIdx];
 
             if (!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone) {
                 return (
@@ -1946,8 +1940,7 @@
                 );
             }
 
-            const keyMap = { 'tall-fescue': 'tallFescue', 'kentucky-bluegrass': 'kentuckyBluegrass', 'perennial-ryegrass': 'perennialRyegrass', 'bermuda': 'bermuda', 'zoysia': 'zoysia', 'st-augustine': 'stAugustine' };
-            const programKey = keyMap[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone);
+            const programKey = GRASS_KEY_MAP[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone);
             const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
             const grassInfo = GRASS_INFO[lawnProfile.specificGrass];
 
@@ -1985,7 +1978,7 @@
                 if (monthStr === currentMonth) return true;
                 if (monthStr && monthStr.includes('-')) {
                     const parts = monthStr.split('-');
-                    const s = months.indexOf(parts[0].trim()), e = months.indexOf(parts[1].trim());
+                    const s = MONTH_NAMES.indexOf(parts[0].trim()), e = MONTH_NAMES.indexOf(parts[1].trim());
                     if (s >= 0 && e >= 0 && currentMonthIdx >= s && currentMonthIdx <= e) return true;
                 }
                 return false;
@@ -1993,10 +1986,10 @@
 
             const monthIndexForEntry = (monthStr) => {
                 if (!monthStr) return -1;
-                const direct = months.indexOf(monthStr);
+                const direct = MONTH_NAMES.indexOf(monthStr);
                 if (direct >= 0) return direct;
                 if (monthStr.includes('-')) {
-                    const s = months.indexOf(monthStr.split('-')[0].trim());
+                    const s = MONTH_NAMES.indexOf(monthStr.split('-')[0].trim());
                     return s >= 0 ? s : -1;
                 }
                 return -1;
@@ -2120,7 +2113,7 @@
                                 {program.sources.map((s, i) => (
                                     <div key={i} className="flex items-start gap-2 text-xs">
                                         <span className="text-[#367C2B] mt-0.5">·</span>
-                                        <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">{s.institution || s.name}</a>
+                                        {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#367C2B] hover:text-[#2d6323] underline font-semibold">{s.institution || s.name}</a> : <span className="font-semibold text-gray-700">{s.institution || s.name}</span>}
                                         {s.title && <span className="text-gray-400">— {s.title}</span>}
                                     </div>
                                 ))}
@@ -2356,7 +2349,6 @@
             const [mowerType, setMowerType] = useState('');
             const [brandFilter, setBrandFilter] = useState('');
             const [compareList, setCompareList] = useState([]);
-            const [showCompare, setShowCompare] = useState(false);
             const [expandedId, setExpandedId] = useState(null);
             const allProducts = (PRODUCT_DATABASE[category] || []).filter(p => !p.id.includes('-other'));
             const brands = [...new Set(allProducts.map(p => p.brand))].sort();
@@ -2444,7 +2436,7 @@
                                 <div className="flex-1 min-w-0"><div className="text-xs text-gray-500 font-semibold">{compareList.length}/3 selected</div><div className="text-sm font-bold text-gray-800 truncate">{compareList.map(p => p.name).join(' vs ')}</div></div>
                                 <div className="flex items-center gap-2 flex-shrink-0">
                                     <button onClick={() => setCompareList([])} className="px-3 py-2 text-xs font-semibold text-gray-500 border border-gray-300 rounded-lg">Clear</button>
-                                    {compareList.length >= 2 && <button onClick={() => setShowCompare(true)} className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg" style={{animation: 'pulseGlow 2s ease-in-out infinite'}}>Compare Now →</button>}
+                                    {compareList.length >= 2 && <button className="px-5 py-2.5 bg-[#FFDE00] text-[#367C2B] rounded-lg text-sm font-extrabold shadow-lg" style={{animation: 'pulseGlow 2s ease-in-out infinite'}}>Compare Now →</button>}
                                 </div>
                             </div>
                         </div>
@@ -2625,17 +2617,15 @@
                                     {/* Critical windows badge */}
                                     {(() => {
                                         if (!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone) return null;
-                                        const keyMap = { 'tall-fescue': 'tallFescue', 'kentucky-bluegrass': 'kentuckyBluegrass', 'perennial-ryegrass': 'perennialRyegrass', 'bermuda': 'bermuda', 'zoysia': 'zoysia', 'st-augustine': 'stAugustine' };
-                                        const program = typeof grassPrograms !== 'undefined' ? grassPrograms[keyMap[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone)] : null;
+                                        const program = typeof grassPrograms !== 'undefined' ? grassPrograms[GRASS_KEY_MAP[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone)] : null;
                                         if (!program) return null;
                                         const year = new Date().getFullYear(), curMon = new Date().getMonth();
-                                        const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
                                         let hit = 0, total = 0;
                                         (program.schedule || []).filter(e => e.importance).forEach(entry => {
-                                            const startIdx = mNames.indexOf((entry.month || '').split('-')[0].trim());
+                                            const startIdx = MONTH_NAMES.indexOf((entry.month || '').split('-')[0].trim());
                                             if (startIdx < 0 || startIdx > curMon) return;
                                             total++;
-                                            const endIdx = Math.min(entry.month.includes('-') ? mNames.indexOf(entry.month.split('-')[1].trim()) : startIdx, curMon);
+                                            const endIdx = Math.min(entry.month.includes('-') ? MONTH_NAMES.indexOf(entry.month.split('-')[1].trim()) : startIdx, curMon);
                                             for (let m = startIdx; m <= endIdx; m++) {
                                                 if (activities.some(a => { const d = new Date(a.date); return d.getFullYear() === year && d.getMonth() === m; })) { hit++; break; }
                                             }
@@ -2657,18 +2647,16 @@
                             {/* This Week's Priority */}
                             {(() => {
                                 if (!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone) return null;
-                                const keyMap = { 'tall-fescue': 'tallFescue', 'kentucky-bluegrass': 'kentuckyBluegrass', 'perennial-ryegrass': 'perennialRyegrass', 'bermuda': 'bermuda', 'zoysia': 'zoysia', 'st-augustine': 'stAugustine' };
-                                const programKey = keyMap[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone);
+                                const programKey = GRASS_KEY_MAP[lawnProfile.specificGrass] + '_zone' + getParentZone(lawnProfile.zone);
                                 const program = typeof grassPrograms !== 'undefined' ? grassPrograms[programKey] : null;
                                 if (!program) return null;
-                                const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
                                 const curIdx = new Date().getMonth();
-                                const curMonth = monthNames[curIdx];
+                                const curMonth = MONTH_NAMES[curIdx];
                                 const isMatch = (mStr) => {
                                     if (mStr === curMonth) return true;
                                     if (mStr && mStr.includes('-')) {
                                         const parts = mStr.split('-');
-                                        const s = monthNames.indexOf(parts[0].trim()), e = monthNames.indexOf(parts[1].trim());
+                                        const s = MONTH_NAMES.indexOf(parts[0].trim()), e = MONTH_NAMES.indexOf(parts[1].trim());
                                         return s >= 0 && e >= 0 && curIdx >= s && curIdx <= e;
                                     }
                                     return false;
@@ -2677,7 +2665,7 @@
                                 const currentEntry = program.schedule.find(e => isMatch(e.month));
                                 const gameplanTasks = currentEntry ? (currentEntry.tasks || []).filter(isGameplanTask) : [];
                                 const nextEntry = program.schedule.find(e => {
-                                    const s = monthNames.indexOf((e.month || '').split('-')[0].trim());
+                                    const s = MONTH_NAMES.indexOf((e.month || '').split('-')[0].trim());
                                     return s === (curIdx + 1) % 12 || s === (curIdx + 2) % 12;
                                 });
                                 const upNext = nextEntry ? nextEntry.month : null;
@@ -2792,7 +2780,7 @@
                                         <div className="space-y-2">
                                             {recent.map(activity => {
                                                 const colors = ACTIVITY_COLORS[activity.type] || ACTIVITY_COLORS.mowing;
-                                                const type = ACTIVITY_TYPES[activity.type];
+                                                const type = ACTIVITY_TYPES[activity.type] || { icon: '📋', name: activity.type };
                                                 const days = Math.floor((new Date() - new Date(activity.date)) / (1000*60*60*24));
                                                 const when = days === 0 ? 'Today' : days === 1 ? 'Yesterday' : `${days} days ago`;
                                                 return (
@@ -2895,7 +2883,6 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<LawnCareTracker />);
 </script>
-```
 
 </body>
 </html>
