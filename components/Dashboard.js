@@ -31,6 +31,7 @@
             seeding:     filtered.filter(a => a.type === 'seeding').length,
             trimming:    filtered.filter(a => a.type === 'trimming').length,
             aeration:    filtered.filter(a => a.type === 'aeration').length,
+            treatment:   filtered.filter(a => a.type === 'treatment').length,
             maintenance: filtered.filter(a => a.type === 'maintenance').length,
             totalHours:  filtered.reduce((sum, a) => sum + (parseFloat(a.data?.duration) || 0), 0) / 60,
             totalSpend:  filtered.reduce((sum, a) => sum + (a.cost > 0 ? a.cost : 0), 0)
@@ -54,6 +55,7 @@
             { type: 'watering',    label: 'Watering',    count: stats.watering },
             { type: 'seeding',     label: 'Seeding',     count: stats.seeding },
             { type: 'aeration',    label: 'Aeration',    count: stats.aeration },
+            { type: 'treatment',   label: 'Treatments',  count: stats.treatment },
             { type: 'maintenance', label: 'Maintenance', count: stats.maintenance }
         ];
         const maxBreakdown = Math.max(...breakdownItems.map(b => b.count)) || 1;
