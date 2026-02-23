@@ -2256,6 +2256,56 @@ window.ResearchSourcesPage = () => (
     };
 
 
+    // ─── ContactPage Component ────────────────────────────────────────────────
+    const ContactPage = () => {
+        const EMAIL = 'yardsticklawncareapp@gmail.com';
+        const mailtoLink = (subject) => `mailto:${EMAIL}?subject=${encodeURIComponent('Yardstick: ' + subject)}`;
+        const topics = [
+            { icon: '🐛', title: 'Report a Bug',     subject: 'Bug Report',       desc: 'Something not working as expected?' },
+            { icon: '💡', title: 'Feature Request',  subject: 'Feature Request',  desc: 'Have an idea to make Yardstick better?' },
+            { icon: '❓', title: 'General Question', subject: 'General Question', desc: 'Need help or have a question?' },
+            { icon: '💬', title: 'Share Feedback',   subject: 'Beta Feedback',    desc: 'Anything else on your mind?' },
+        ];
+        return (
+            <div className="space-y-4 animate-fade-in">
+                <h2 className="text-2xl font-bold text-gray-800">Help &amp; Feedback</h2>
+
+                <div className="bg-[#367C2B]/5 border border-[#367C2B]/20 rounded-xl p-4 text-sm text-gray-700 leading-relaxed">
+                    Yardstick is currently in <strong>beta</strong> — your feedback directly shapes what we build next.
+                    Found a bug, have a feature idea, or just want to share your experience? We read every message.
+                </div>
+
+                <div className="space-y-3">
+                    {topics.map(item => (
+                        <a
+                            key={item.title}
+                            href={mailtoLink(item.subject)}
+                            className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-sm border border-gray-100 card-hover"
+                            style={{display:'flex', textDecoration:'none'}}
+                        >
+                            <span className="text-3xl flex-shrink-0">{item.icon}</span>
+                            <div className="flex-1 min-w-0">
+                                <div className="font-semibold text-gray-800">{item.title}</div>
+                                <div className="text-sm text-gray-500">{item.desc}</div>
+                            </div>
+                            <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    ))}
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                    <div className="text-xs text-gray-400 uppercase tracking-widest mb-2">Or email us directly</div>
+                    <a href={mailtoLink('Hello')} className="font-mono text-sm font-bold text-[#367C2B] hover:underline">
+                        {EMAIL}
+                    </a>
+                </div>
+            </div>
+        );
+    };
+
+
     // ─── Main App ───────────────────────────────────────────────────────────────
     function LawnCareTracker() {
         const [activities, setActivities] = useState([]);
@@ -2586,6 +2636,7 @@ window.ResearchSourcesPage = () => (
                                     { key: 'schedules', icon: '🗓️', label: 'Schedules' },
                                     { key: 'products', icon: '📖', label: 'Product Guide' },
                                     { key: 'sources', icon: '📚', label: 'Research Sources' },
+                                    { key: 'contact', icon: '💬', label: 'Help & Feedback' },
                                     { key: 'settings', icon: '⚙️', label: 'Settings' },
                                 ].map(item => (
                                     <button key={item.key} onClick={() => { setView(item.key); setSelectedActivityType(null); }} className="w-full text-left px-4 py-3 rounded-lg nav-item hover:bg-[#367C2B]/10 flex items-center gap-3">
@@ -2980,6 +3031,23 @@ window.ResearchSourcesPage = () => (
                     {view === 'products' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><ProductGuide /></div>}
                     {view === 'sources' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><ResearchSourcesPage /></div>}
                     {view === 'settings' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><Settings activities={activities} equipment={equipment} lawnProfile={lawnProfile} store={store} currentUser={currentUser} onSignOut={handleSignOut} onSignIn={() => setShowAuthModal(true)} firebaseConfigured={!!fb.configured} /></div>}
+                    {view === 'contact' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><ContactPage /></div>}
+
+                    {/* ─── Feedback Footer ─────────────────────────────────── */}
+                    <div className="mt-8 mb-4 rounded-xl border border-[#367C2B]/20 bg-[#367C2B]/5 px-4 py-3 flex items-center gap-3">
+                        <span className="text-xl flex-shrink-0">💬</span>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-gray-700">Found a bug or have feedback?</div>
+                            <div className="text-xs text-gray-400">Help us improve Yardstick during beta</div>
+                        </div>
+                        <a
+                            href="mailto:yardsticklawncareapp@gmail.com?subject=Yardstick%3A%20Feedback"
+                            className="flex-shrink-0 bg-[#367C2B] text-white text-xs font-bold px-3 py-2 rounded-lg btn-press transition"
+                            style={{textDecoration:'none'}}
+                        >
+                            Email Us
+                        </a>
+                    </div>
                 </div>
             </div>
         );
