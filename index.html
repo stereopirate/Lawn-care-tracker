@@ -946,7 +946,7 @@ window.ResearchSourcesPage = () => (
         return (
             <div className="animate-fade-in">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-bold">&#128467; Schedules</h2>
+                    <h2 className="text-2xl font-bold">&#128467; My Tasks</h2>
                     <button onClick={() => setShowForm(v => !v)} className="px-4 py-2 bg-[#367C2B] text-white rounded-lg text-sm font-bold btn-press">
                         {showForm ? 'Cancel' : '+ Add'}
                     </button>
@@ -2076,7 +2076,7 @@ window.ResearchSourcesPage = () => (
         if (!lawnProfile || !lawnProfile.specificGrass || !lawnProfile.zone) {
             return (
                 <div className="space-y-4 animate-fade-in">
-                    <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
+                    <h2 className="text-2xl font-bold">📅 Care Calendar</h2>
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center">
                         <div className="text-3xl mb-2">🌱</div>
                         <div className="font-bold text-gray-800 mb-1">Set Up Your Lawn Profile First</div>
@@ -2147,7 +2147,7 @@ window.ResearchSourcesPage = () => (
         if (!program) {
             return (
                 <div className="space-y-4 animate-fade-in">
-                    <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
+                    <h2 className="text-2xl font-bold">📅 Care Calendar</h2>
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
                         No gameplan is available for {grassInfo?.name || lawnProfile.specificGrass} in Zone {lawnProfile.zone} — this combination may not be recommended for your area.
                     </div>
@@ -2207,7 +2207,7 @@ window.ResearchSourcesPage = () => (
         return (
             <div className="space-y-4 animate-fade-in pb-4">
                 <div>
-                    <h2 className="text-2xl font-bold">📅 Yearly Gameplan</h2>
+                    <h2 className="text-2xl font-bold">📅 Care Calendar</h2>
                     <div className="text-sm text-gray-500 mt-0.5">
                         {grassInfo?.name || lawnProfile.specificGrass} · Zone {lawnProfile.zone}
                         {lawnProfile.lawnSize && ` · ${Number(lawnProfile.lawnSize).toLocaleString()} sq ft`}
@@ -2887,19 +2887,23 @@ window.ResearchSourcesPage = () => (
                                 </div>
                             </div>
                         </button>
-                        <div className="flex items-center gap-2">
-                            <button onClick={() => { setView('add'); setSelectedActivityType(null); }} className="flex items-center gap-1.5 bg-white/12 text-white text-xs font-bold px-3.5 py-2 rounded-xl btn-press transition" style={{border:'1px solid rgba(255,255,255,0.22)', backdropFilter:'blur(4px)'}}>
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Log
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => { setView('profile'); setSelectedActivityType(null); }}
+                            className="flex items-center gap-1.5 bg-white/12 text-white text-xs font-bold px-3 py-2 rounded-xl btn-press transition"
+                            style={{border:'1px solid rgba(255,255,255,0.22)', backdropFilter:'blur(4px)', maxWidth:'164px'}}
+                        >
+                            {lawnProfile && lawnProfile.specificGrass && lawnProfile.zone ? (
+                                <span className="truncate">{lawnProfile.specificGrass} · Zone {lawnProfile.zone}</span>
+                            ) : (
+                                <span className="whitespace-nowrap">Set up your yard →</span>
+                            )}
+                        </button>
                     </div>
                     {view === 'menu' && (
                         <div className="border-t border-white/20 bg-white shadow-lg menu-slide">
                             <div className="max-w-5xl mx-auto px-4 py-2">
                                 {/* Activity group */}
+                                <div className="px-4 pt-2 pb-0.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Activity</div>
                                 {[
                                     { key: 'add', icon: '➕', label: 'Log Activity' },
                                     { key: 'history', icon: '📋', label: 'History' },
@@ -2912,11 +2916,12 @@ window.ResearchSourcesPage = () => (
                                 ))}
                                 <div className="border-t border-gray-100 my-1" />
                                 {/* Your lawn group */}
+                                <div className="px-4 pt-2 pb-0.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Your Lawn</div>
                                 {[
                                     { key: 'profile', icon: '🌱', label: 'My Yard' },
                                     { key: 'garage', icon: '🏠', label: 'My Garage' },
-                                    { key: 'gameplan', icon: '📅', label: 'Yearly Gameplan' },
-                                    { key: 'schedules', icon: '🗓️', label: 'Schedules' },
+                                    { key: 'gameplan', icon: '📅', label: 'Care Calendar' },
+                                    { key: 'schedules', icon: '🗓️', label: 'My Tasks' },
                                 ].map(item => (
                                     <button key={item.key} onClick={() => { setView(item.key); setSelectedActivityType(null); }} className="w-full text-left px-4 py-3 rounded-lg nav-item hover:bg-[#367C2B]/10 flex items-center gap-3">
                                         <span className="text-2xl">{item.icon}</span>
@@ -2925,6 +2930,7 @@ window.ResearchSourcesPage = () => (
                                 ))}
                                 <div className="border-t border-gray-100 my-1" />
                                 {/* Resources & utility group */}
+                                <div className="px-4 pt-2 pb-0.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Resources</div>
                                 {[
                                     { key: 'products', icon: '📖', label: 'Product Guide' },
                                     { key: 'sources', icon: '📚', label: 'Research Sources' },
