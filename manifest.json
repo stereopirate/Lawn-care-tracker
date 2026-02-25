@@ -1,33 +1,42 @@
 {
-“name”: “Yardstick - Research-Backed Lawn Care”,
-“short_name”: “Yardstick”,
-“description”: “Research-backed lawn care coaching for DIY homeowners. Track activities, get zone-specific guidance, and achieve a healthier lawn year-round.”,
-“start_url”: “/”,
-“display”: “standalone”,
-“background_color”: “#ffffff”,
-“theme_color”: “#367C2B”,
-“orientation”: “portrait-primary”,
-“icons”: [
-{
-“src”: “/icon-192.png”,
-“sizes”: “192x192”,
-“type”: “image/png”,
-“purpose”: “any maskable”
-},
-{
-“src”: “/icon-512.png”,
-“sizes”: “512x512”,
-“type”: “image/png”,
-“purpose”: “any maskable”
-}
-],
-“categories”: [“productivity”, “lifestyle”],
-“screenshots”: [
-{
-“src”: “/screenshot-mobile.png”,
-“sizes”: “390x844”,
-“type”: “image/png”,
-“form_factor”: “narrow”
-}
-]
+  "name": "Yardstick - Research-Backed Lawn Care",
+  "short_name": "Yardstick",
+  "description": "Research-backed lawn care coaching for DIY homeowners. Track activities, get zone-specific guidance, and achieve a healthier lawn year-round.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#367C2B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "productivity",
+    "lifestyle"
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
