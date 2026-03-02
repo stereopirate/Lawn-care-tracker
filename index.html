@@ -478,7 +478,7 @@ window.ActivityDetails = ({ activity }) => {
                                         {photo.userName || 'User'}
                                     </div>
                                     <div className="text-white/70 text-xs">
-                                        {new Date(photo.date).toLocaleDateString()}
+                                        {photo.grassName ? photo.grassName + ' · ' : ''}{new Date(photo.date).toLocaleDateString()}
                                     </div>
                                 </div>
                                 {photo.userId === currentUser.uid && (
@@ -508,6 +508,25 @@ window.ActivityDetails = ({ activity }) => {
                                         <div className="text-sm text-gray-500">
                                             {selectedPhoto.userName} · {new Date(selectedPhoto.date).toLocaleDateString()}
                                         </div>
+                                        {(selectedPhoto.grassName || selectedPhoto.zone || selectedPhoto.lawnSize) && (
+                                            <div className="flex flex-wrap gap-1.5 mt-1.5">
+                                                {selectedPhoto.grassName && (
+                                                    <span className="text-xs bg-[#EBF5E6] text-[#367C2B] font-semibold px-2 py-0.5 rounded-full">
+                                                        🌿 {selectedPhoto.grassName}
+                                                    </span>
+                                                )}
+                                                {selectedPhoto.zone && (
+                                                    <span className="text-xs bg-[#EBF5E6] text-[#367C2B] font-semibold px-2 py-0.5 rounded-full">
+                                                        Zone {selectedPhoto.zone}
+                                                    </span>
+                                                )}
+                                                {selectedPhoto.lawnSize && (
+                                                    <span className="text-xs bg-gray-100 text-gray-600 font-semibold px-2 py-0.5 rounded-full">
+                                                        {Number(selectedPhoto.lawnSize).toLocaleString()} sq ft
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                     {selectedPhoto.userId === currentUser.uid && (
                                         <button onClick={() => handleDelete(selectedPhoto)} disabled={deleting}
@@ -3567,6 +3586,13 @@ window.ResearchSourcesPage = () => (
                         activityType: selectedActivityType,
                         caption: activityData.notes || '',
                         date: activityData.date,
+                        grassType: profileFormData.specificGrass || null,
+                        grassName: (profileFormData.specificGrass && GRASS_INFO[profileFormData.specificGrass])
+                            ? GRASS_INFO[profileFormData.specificGrass].name
+                            : null,
+                        zone: profileFormData.zone || null,
+                        lawnSize: profileFormData.lawnSize ? String(profileFormData.lawnSize) : null,
+                        soilType: profileFormData.soilType || null,
                         createdAt: serverTimestamp()
                     });
                 } catch(e) {
