@@ -1414,5 +1414,878 @@ const grassPrograms = {
             { institution: "Texas A&M AgriLife Extension", title: "St. Augustinegrass Management", url: "https://agrilifeextension.tamu.edu/" },
             { institution: "LSU AgCenter", title: "St. Augustinegrass Care", url: "https://www.lsuagcenter.com/topics/lawn_garden/lawns" }
         ]
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // FINE FESCUE — Cool Season
+    // ─────────────────────────────────────────────────────────────────────────
+    fineFescue_zone4: {
+        grassType: "Fine Fescue",
+        zone: 4,
+        description: "Fine fescue program for Zone 4 - cold-hardy and low-input; ideal for shaded and low-maintenance northern lawns",
+        schedule: [
+            {
+                month: "March",
+                tasks: [
+                    "Clean up winter debris once soil thaws",
+                    "Begin mowing when grass reaches 3.5 inches",
+                    "Sharpen mower blade"
+                ]
+            },
+            {
+                month: "April",
+                soilTemp: "50-55°F",
+                tasks: [
+                    "Apply pre-emergent for crabgrass before soil hits 55°F",
+                    "Optional light fertilization: 0.5 lb N per 1,000 sq ft (fine fescue needs very little)",
+                    "Mow at 2.5-3 inches",
+                    "Spot spray broadleaf weeds if present"
+                ]
+            },
+            {
+                month: "May",
+                tasks: [
+                    "Mow weekly at 3 inches",
+                    "Water if dry — fine fescue needs 0.5-1 inch per week",
+                    "Watch for red thread fungus in cool, wet conditions"
+                ]
+            },
+            {
+                month: "June",
+                tasks: [
+                    "Raise mowing height to 3-3.5 inches for summer",
+                    "Fine fescue tolerates drought — reduce irrigation as heat increases",
+                    "Do NOT fertilize in summer heat"
+                ]
+            },
+            {
+                month: "July-August",
+                tasks: [
+                    "Allow lawn to semi-dormant in extreme heat — it will recover in fall",
+                    "Water only during extended drought (2+ weeks without rain)",
+                    "Avoid mowing during dormancy stress"
+                ]
+            },
+            {
+                month: "September",
+                importance: "BEST MONTH",
+                tasks: [
+                    "Primary fertilization: 0.5-1 lb N per 1,000 sq ft (slow-release preferred)",
+                    "Overseed thin or bare areas — ideal germination conditions",
+                    "Core aerate before overseeding if soil is compacted",
+                    "Resume normal mowing at 2.5-3 inches"
+                ]
+            },
+            {
+                month: "October",
+                tasks: [
+                    "Second light fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Continue mowing until growth stops",
+                    "Rake and remove heavy leaf cover"
+                ]
+            },
+            {
+                month: "November-December",
+                tasks: [
+                    "Final mow at 2.5 inches before first hard freeze",
+                    "No fertilization needed",
+                    "Avoid compacting frozen turf"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Penn State Extension", title: "Fine Fescue Lawn Management", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "University of Minnesota Extension", title: "Fine Fescue for Low-Maintenance Lawns", url: "https://extension.umn.edu/lawn-care" },
+            { institution: "Rutgers Cooperative Extension", title: "Fine Fescue Turf Management", url: "https://njaes.rutgers.edu/" }
+        ]
+    },
+
+    fineFescue_zone5: {
+        grassType: "Fine Fescue",
+        zone: 5,
+        description: "Fine fescue program for Zone 5 - excellent low-maintenance cool-season option, especially in shade",
+        schedule: [
+            {
+                month: "March",
+                tasks: [
+                    "Clean up winter debris",
+                    "Begin mowing when grass reaches 3.5 inches",
+                    "Sharpen mower blade"
+                ]
+            },
+            {
+                month: "April",
+                soilTemp: "50-55°F",
+                tasks: [
+                    "Apply pre-emergent for crabgrass",
+                    "Light fertilization optional: 0.5 lb N per 1,000 sq ft",
+                    "Begin regular mowing at 2.5-3 inches"
+                ]
+            },
+            {
+                month: "May",
+                tasks: [
+                    "Mow at 3 inches weekly",
+                    "Water 0.5-1 inch per week if no rain",
+                    "Treat red thread with fungicide only if severe"
+                ]
+            },
+            {
+                month: "June",
+                tasks: [
+                    "Raise to 3-3.5 inches for summer",
+                    "Reduce watering — fine fescue is drought tolerant",
+                    "Do not fertilize"
+                ]
+            },
+            {
+                month: "July-August",
+                tasks: [
+                    "Allow semi-dormancy in heat — normal for fine fescue",
+                    "Water during extreme drought only",
+                    "Minimize foot traffic on stressed turf"
+                ]
+            },
+            {
+                month: "September",
+                importance: "BEST MONTH",
+                tasks: [
+                    "Primary fertilization: 0.5-1 lb N per 1,000 sq ft",
+                    "Overseed thin spots — excellent germination window",
+                    "Core aerate if soil is compacted",
+                    "Resume mowing at 2.5-3 inches"
+                ]
+            },
+            {
+                month: "October",
+                tasks: [
+                    "Second light fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Continue mowing until growth stops",
+                    "Rake leaves to prevent smothering"
+                ]
+            },
+            {
+                month: "November-December",
+                tasks: [
+                    "Final mow before hard freeze",
+                    "No further fertilization",
+                    "Winterize equipment"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Penn State Extension", title: "Fine Fescue Lawn Management", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "University of Minnesota Extension", title: "Fine Fescue for Low-Maintenance Lawns", url: "https://extension.umn.edu/lawn-care" },
+            { institution: "Rutgers Cooperative Extension", title: "Fine Fescue Turf Management", url: "https://njaes.rutgers.edu/" }
+        ]
+    },
+
+    fineFescue_zone6: {
+        grassType: "Fine Fescue",
+        zone: 6,
+        description: "Fine fescue program for Zone 6 - good cool-season option especially in shaded sites; watch for summer stress",
+        schedule: [
+            {
+                month: "March",
+                tasks: [
+                    "Clean up debris; begin mowing when active",
+                    "Sharpen blade and check equipment"
+                ]
+            },
+            {
+                month: "April",
+                soilTemp: "50-55°F",
+                tasks: [
+                    "Apply pre-emergent before soil hits 55°F",
+                    "Light fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Begin mowing at 2.5-3 inches",
+                    "Spot spray broadleaf weeds"
+                ]
+            },
+            {
+                month: "May",
+                tasks: [
+                    "Mow at 3 inches weekly",
+                    "Water 0.5-1 inch per week",
+                    "Monitor for red thread in cool wet weather"
+                ]
+            },
+            {
+                month: "June",
+                tasks: [
+                    "Raise mowing height to 3-3.5 inches",
+                    "Reduce irrigation — allow natural semi-dormancy to begin",
+                    "Do not fertilize"
+                ]
+            },
+            {
+                month: "July-August",
+                tasks: [
+                    "Fine fescue will semi-dormant in Zone 6 heat — this is normal",
+                    "Irrigate only to prevent complete kill (1/2 inch every 2 weeks)",
+                    "Avoid heavy foot traffic"
+                ]
+            },
+            {
+                month: "September",
+                importance: "BEST MONTH",
+                tasks: [
+                    "Primary fertilization: 0.5-1 lb N per 1,000 sq ft",
+                    "Overseed bare and thin spots",
+                    "Core aerate if needed",
+                    "Resume mowing at 2.5-3 inches"
+                ]
+            },
+            {
+                month: "October",
+                tasks: [
+                    "Second fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Continue mowing until frost",
+                    "Mulch or remove leaves"
+                ]
+            },
+            {
+                month: "November-December",
+                tasks: [
+                    "Final mow at 2.5-3 inches before freeze",
+                    "No fertilization"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Penn State Extension", title: "Fine Fescue Lawn Management", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "Rutgers Cooperative Extension", title: "Fine Fescue Turf Management", url: "https://njaes.rutgers.edu/" },
+            { institution: "Virginia Cooperative Extension", title: "Lawn Care Guide for Cool-Season Grasses", url: "https://www.pubs.ext.vt.edu/" }
+        ]
+    },
+
+    fineFescue_zone7: {
+        grassType: "Fine Fescue",
+        zone: 7,
+        description: "Fine fescue program for Zone 7 - challenging; best used in shaded areas where tall fescue struggles",
+        schedule: [
+            {
+                month: "March",
+                tasks: [
+                    "Begin mowing as soon as active growth starts",
+                    "Clean up winter debris"
+                ]
+            },
+            {
+                month: "April",
+                soilTemp: "50-55°F",
+                tasks: [
+                    "Apply pre-emergent before soil warms",
+                    "Light fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Spot treat broadleaf weeds"
+                ]
+            },
+            {
+                month: "May",
+                tasks: [
+                    "Mow at 3-3.5 inches",
+                    "Water 0.75-1 inch per week",
+                    "Fine fescue works best in shaded areas — monitor sun-exposed spots for stress"
+                ]
+            },
+            {
+                month: "June-August",
+                tasks: [
+                    "Fine fescue will go dormant in Zone 7 heat — especially in full sun",
+                    "Provide deep watering every 2 weeks to prevent permanent damage in shaded areas",
+                    "Do not fertilize during dormancy",
+                    "Consider overseeding stressed areas with tall fescue in fall"
+                ]
+            },
+            {
+                month: "September",
+                importance: "BEST MONTH",
+                tasks: [
+                    "Primary fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Overseed any areas lost to summer stress",
+                    "Core aerate if soil is compacted"
+                ]
+            },
+            {
+                month: "October",
+                tasks: [
+                    "Second light fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Mow at 2.5-3 inches until growth stops"
+                ]
+            },
+            {
+                month: "November-December",
+                tasks: [
+                    "Final mow before frost",
+                    "No further fertilization"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Penn State Extension", title: "Fine Fescue Lawn Management", url: "https://extension.psu.edu/lawn-care" },
+            { institution: "NC State Extension", title: "Carolina Lawns - Cool Season Grasses", url: "https://content.ces.ncsu.edu/carolina-lawns" },
+            { institution: "Virginia Cooperative Extension", title: "Lawn Care Guide for the Transition Zone", url: "https://www.pubs.ext.vt.edu/" }
+        ]
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CENTIPEDEGRASS — Warm Season
+    // ─────────────────────────────────────────────────────────────────────────
+    centipede_zone7: {
+        grassType: "Centipedegrass",
+        zone: 7,
+        description: "Centipedegrass program for Zone 7 - marginal zone; protect from freeze and avoid over-managing",
+        schedule: [
+            {
+                month: "March-April",
+                soilTemp: "65°F+",
+                tasks: [
+                    "Wait for full green-up before any activity (soil must reach 65°F)",
+                    "Apply pre-emergent once lawn is fully green",
+                    "Do NOT fertilize until fully greened up"
+                ]
+            },
+            {
+                month: "May",
+                importance: "FIRST FERTILIZATION",
+                tasks: [
+                    "First fertilization: 0.5 lb N per 1,000 sq ft — use low-phosphorus fertilizer",
+                    "Begin mowing at 1.5-2 inches",
+                    "Apply iron sulfate if yellowing is present (do not add more nitrogen)"
+                ]
+            },
+            {
+                month: "June-July",
+                tasks: [
+                    "Mow at 1.5-2 inches every 7-10 days",
+                    "Water 1 inch per week — centipede has moderate drought tolerance",
+                    "Watch for large patch disease — avoid excess fertilizer"
+                ]
+            },
+            {
+                month: "August",
+                tasks: [
+                    "Optional second fertilization: 0.5 lb N per 1,000 sq ft (do not exceed 1 lb total for the year)",
+                    "Monitor for thatch — dethatch if over 0.5 inch",
+                    "Water as needed"
+                ]
+            },
+            {
+                month: "September",
+                tasks: [
+                    "Stop fertilizing by September 1 — late feeding increases freeze damage risk",
+                    "Reduce irrigation as temperatures drop",
+                    "Do not core aerate — centipede recovers slowly from disruption"
+                ]
+            },
+            {
+                month: "October-November",
+                tasks: [
+                    "Lawn goes dormant — reduce mowing as growth slows",
+                    "Do not fertilize",
+                    "Protect from early hard freezes if possible with light cover"
+                ]
+            },
+            {
+                month: "December-February",
+                tasks: [
+                    "Dormant — no mowing, no fertilization",
+                    "Zone 7 freeze risk: watch for extended freezes below 20°F",
+                    "Do not walk on frozen turf"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Clemson Cooperative Extension", title: "Centipedegrass Maintenance", url: "https://www.clemson.edu/extension/hgic/" },
+            { institution: "NC State Extension", title: "Centipedegrass in the Southeast", url: "https://content.ces.ncsu.edu/carolina-lawns" },
+            { institution: "UGA Extension", title: "Centipedegrass Management", url: "https://extension.uga.edu/publications/lawn-garden.html" }
+        ]
+    },
+
+    centipede_zone8: {
+        grassType: "Centipedegrass",
+        zone: 8,
+        description: "Centipedegrass program for Zone 8 - prime centipede territory; low-input management is key",
+        schedule: [
+            {
+                month: "February-March",
+                soilTemp: "65°F+",
+                tasks: [
+                    "Apply pre-emergent once soil reaches 65°F (late February to early March in Zone 8)",
+                    "Do NOT fertilize until lawn is fully green"
+                ]
+            },
+            {
+                month: "April",
+                importance: "FIRST FERTILIZATION",
+                tasks: [
+                    "First fertilization once fully green: 0.5-1 lb N per 1,000 sq ft",
+                    "Use a low-phosphorus, iron-enhanced fertilizer",
+                    "Begin mowing at 1.5-2 inches",
+                    "Apply iron sulfate if chlorosis (yellowing) appears"
+                ]
+            },
+            {
+                month: "May-June",
+                tasks: [
+                    "Mow at 1.5-2 inches every 7-10 days",
+                    "Water 1 inch per week",
+                    "Watch for large patch — fungicide if needed"
+                ]
+            },
+            {
+                month: "July-August",
+                tasks: [
+                    "Optional second fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Total annual nitrogen should not exceed 1-2 lbs per 1,000 sq ft",
+                    "Continue watering and mowing",
+                    "Iron supplement if yellowing occurs"
+                ]
+            },
+            {
+                month: "September",
+                tasks: [
+                    "Final fertilization no later than early September",
+                    "Reduce irrigation as growth slows",
+                    "Monitor for thatch — dethatch in spring if needed"
+                ]
+            },
+            {
+                month: "October-November",
+                tasks: [
+                    "Lawn enters dormancy — reduce mowing",
+                    "No fertilization",
+                    "Apply a winterizer only if soil test indicates low potassium"
+                ]
+            },
+            {
+                month: "December-January",
+                tasks: [
+                    "Dormant — no action needed",
+                    "Avoid foot traffic on frozen or frost-covered turf"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Clemson Cooperative Extension", title: "Centipedegrass Maintenance", url: "https://www.clemson.edu/extension/hgic/" },
+            { institution: "NC State Extension", title: "Centipedegrass in the Southeast", url: "https://content.ces.ncsu.edu/carolina-lawns" },
+            { institution: "UGA Extension", title: "Centipedegrass Management", url: "https://extension.uga.edu/publications/lawn-garden.html" }
+        ]
+    },
+
+    centipede_zone9: {
+        grassType: "Centipedegrass",
+        zone: 9,
+        description: "Centipedegrass program for Zone 9 - near year-round growing season; discipline in low fertilization is critical",
+        schedule: [
+            {
+                month: "February",
+                soilTemp: "65°F+",
+                tasks: [
+                    "Apply pre-emergent by mid-February — soil warms early in Zone 9",
+                    "Lawn may begin showing growth; do not fertilize until fully green"
+                ]
+            },
+            {
+                month: "March-April",
+                importance: "FIRST FERTILIZATION",
+                tasks: [
+                    "First fertilization: 0.5-1 lb N per 1,000 sq ft with low-phosphorus formula",
+                    "Begin mowing at 1.5-2 inches",
+                    "Apply iron if any yellowing is present"
+                ]
+            },
+            {
+                month: "May-August",
+                tasks: [
+                    "Mow every 7-10 days at 1.5-2 inches during peak season",
+                    "Water 1 inch per week — reduce during rainy periods",
+                    "Second fertilization (July): 0.5 lb N per 1,000 sq ft",
+                    "Total annual N must not exceed 2 lbs per 1,000 sq ft",
+                    "Apply iron supplement as needed for yellowing"
+                ]
+            },
+            {
+                month: "September-October",
+                tasks: [
+                    "Final fertilization no later than September (0.5 lb N per 1,000 sq ft)",
+                    "Reduce irrigation as temperatures begin to drop",
+                    "Watch for large patch as cooler, wetter weather arrives"
+                ]
+            },
+            {
+                month: "November-January",
+                tasks: [
+                    "Lawn slows significantly in Zone 9 winter but may stay partially green",
+                    "No fertilization",
+                    "Mow only if actively growing"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "UF/IFAS Extension", title: "Centipedegrass for Florida Lawns", url: "https://edis.ifas.ufl.edu/" },
+            { institution: "LSU AgCenter", title: "Centipedegrass Lawn Care", url: "https://www.lsuagcenter.com/topics/lawn_garden/lawns" },
+            { institution: "Clemson Cooperative Extension", title: "Centipedegrass Maintenance", url: "https://www.clemson.edu/extension/hgic/" }
+        ]
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // BAHIAGRASS — Warm Season
+    // ─────────────────────────────────────────────────────────────────────────
+    bahia_zone8: {
+        grassType: "Bahiagrass",
+        zone: 8,
+        description: "Bahiagrass program for Zone 8 - low-input warm-season grass; excellent drought tolerance once established",
+        schedule: [
+            {
+                month: "February-March",
+                soilTemp: "65°F+",
+                tasks: [
+                    "Apply pre-emergent once soil reaches 65°F",
+                    "Do not fertilize until lawn is actively growing and green"
+                ]
+            },
+            {
+                month: "April",
+                importance: "FIRST FERTILIZATION",
+                tasks: [
+                    "First fertilization once green: 1 lb N per 1,000 sq ft",
+                    "Begin mowing at 3-4 inches — mow frequently to remove seed heads",
+                    "Spot treat broadleaf weeds"
+                ]
+            },
+            {
+                month: "May-June",
+                tasks: [
+                    "Mow every 7-10 days at 3-4 inches — seed heads will be persistent",
+                    "Second fertilization in June: 1 lb N per 1,000 sq ft",
+                    "Water 0.75-1 inch per week if no rain"
+                ]
+            },
+            {
+                month: "July",
+                tasks: [
+                    "Bahiagrass is at peak growth — mow frequently",
+                    "Apply mole cricket bait if tunneling is visible in turf",
+                    "Deep water during drought periods"
+                ]
+            },
+            {
+                month: "August-September",
+                tasks: [
+                    "Third fertilization (August): 1 lb N per 1,000 sq ft",
+                    "Continue mole cricket monitoring",
+                    "Mow at 3-4 inches to maintain density"
+                ]
+            },
+            {
+                month: "October",
+                tasks: [
+                    "Final fertilization: 0.5-1 lb N per 1,000 sq ft (early October only)",
+                    "Mowing frequency decreases as growth slows",
+                    "Apply pre-emergent for winter weeds"
+                ]
+            },
+            {
+                month: "November-January",
+                tasks: [
+                    "Lawn goes dormant — no fertilization",
+                    "Mow only if actively growing",
+                    "Dormant overseeding with ryegrass optional for winter color"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "UF/IFAS Extension", title: "Bahiagrass for Florida Lawns", url: "https://edis.ifas.ufl.edu/" },
+            { institution: "LSU AgCenter", title: "Bahiagrass Lawn Care", url: "https://www.lsuagcenter.com/topics/lawn_garden/lawns" },
+            { institution: "Texas A&M AgriLife Extension", title: "Bahiagrass Management", url: "https://agrilifeextension.tamu.edu/" }
+        ]
+    },
+
+    bahia_zone9: {
+        grassType: "Bahiagrass",
+        zone: 9,
+        description: "Bahiagrass program for Zone 9 - prime bahia territory; long growing season with excellent natural drought tolerance",
+        schedule: [
+            {
+                month: "February",
+                soilTemp: "65°F+",
+                tasks: [
+                    "Apply pre-emergent by mid-to-late February",
+                    "Lawn begins growing early in Zone 9 — watch for green-up"
+                ]
+            },
+            {
+                month: "March-April",
+                importance: "FIRST FERTILIZATION",
+                tasks: [
+                    "First fertilization once fully green: 1 lb N per 1,000 sq ft",
+                    "Begin mowing at 3-4 inches",
+                    "Spot treat emerging broadleaf weeds"
+                ]
+            },
+            {
+                month: "May-August",
+                importance: "PEAK GROWING SEASON",
+                tasks: [
+                    "Mow every 7-10 days — remove seed heads frequently",
+                    "Fertilize every 6-8 weeks: 1 lb N per 1,000 sq ft",
+                    "Apply mole cricket bait in July-August if needed",
+                    "Water 0.75-1 inch per week during dry spells",
+                    "Treat dollar spot with fungicide if circular brown patches appear"
+                ]
+            },
+            {
+                month: "September-October",
+                tasks: [
+                    "Final fertilization: 1 lb N per 1,000 sq ft (September)",
+                    "Pre-emergent reapplication for winter annuals",
+                    "Mowing slows as temperatures drop"
+                ]
+            },
+            {
+                month: "November-January",
+                tasks: [
+                    "Lawn enters partial dormancy in Zone 9 — stays semi-green",
+                    "No fertilization",
+                    "Optional ryegrass overseeding for winter color"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "UF/IFAS Extension", title: "Bahiagrass for Florida Lawns", url: "https://edis.ifas.ufl.edu/" },
+            { institution: "LSU AgCenter", title: "Bahiagrass Lawn Care", url: "https://www.lsuagcenter.com/topics/lawn_garden/lawns" },
+            { institution: "Texas A&M AgriLife Extension", title: "Bahiagrass Management", url: "https://agrilifeextension.tamu.edu/" }
+        ]
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // BUFFALOGRASS — Native Warm Season
+    // ─────────────────────────────────────────────────────────────────────────
+    buffalograss_zone5: {
+        grassType: "Buffalograss",
+        zone: 5,
+        description: "Buffalograss program for Zone 5 - ultra-low input native grass best suited for dry western climates",
+        schedule: [
+            {
+                month: "March-April",
+                tasks: [
+                    "Remove winter debris",
+                    "Do NOT seed or fertilize until soil reaches 60°F",
+                    "Patience required — buffalograss greens up later than other grasses"
+                ]
+            },
+            {
+                month: "May",
+                soilTemp: "60°F+",
+                tasks: [
+                    "Lawn begins greening up — begin mowing at 2-4 inches",
+                    "First fertilization if needed: 0.5 lb N per 1,000 sq ft (many lawns need none)",
+                    "Best time to seed or plug if establishing new areas"
+                ]
+            },
+            {
+                month: "June-July",
+                importance: "PEAK GROWING SEASON",
+                tasks: [
+                    "Mow at 3-4 inches every 2-3 weeks — buffalograss grows slowly",
+                    "Water only during extended drought: 0.25-0.5 inches per week",
+                    "Do not over-irrigate — promotes crabgrass and broadleaf weed invasion",
+                    "Optional second fertilization: 0.5 lb N per 1,000 sq ft (not required)"
+                ]
+            },
+            {
+                month: "August",
+                tasks: [
+                    "Continue minimal irrigation",
+                    "Spot treat broadleaf weeds with selective herbicide if needed",
+                    "Mow if turf exceeds desired height"
+                ]
+            },
+            {
+                month: "September",
+                tasks: [
+                    "Do NOT fertilize in fall — buffalograss does not benefit from fall feeding",
+                    "Lawn begins preparing for dormancy",
+                    "Final mow before dormancy if needed"
+                ]
+            },
+            {
+                month: "October-April",
+                tasks: [
+                    "Dormant — no mowing, no fertilization, no irrigation needed",
+                    "Buffalograss turns tan/straw during dormancy — this is normal",
+                    "Do not walk on frozen turf"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Kansas State Extension", title: "Buffalograss Lawn Care for the Plains", url: "https://www.bookstore.ksre.ksu.edu/" },
+            { institution: "University of Nebraska Extension", title: "Buffalograss for Low-Maintenance Lawns", url: "https://extension.unl.edu/" },
+            { institution: "Texas A&M AgriLife Extension", title: "Buffalograss Management", url: "https://agrilifeextension.tamu.edu/" }
+        ]
+    },
+
+    buffalograss_zone6: {
+        grassType: "Buffalograss",
+        zone: 6,
+        description: "Buffalograss program for Zone 6 - good in dry western areas; not recommended for humid eastern Zone 6",
+        schedule: [
+            {
+                month: "March-April",
+                tasks: [
+                    "Remove winter debris",
+                    "Wait for consistent soil temps of 60°F before any action",
+                    "Buffalograss greens up late — do not rush"
+                ]
+            },
+            {
+                month: "May",
+                soilTemp: "60°F+",
+                tasks: [
+                    "Lawn greens up — begin mowing at 2-4 inches",
+                    "Optional first fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Plant seed or plugs in bare areas"
+                ]
+            },
+            {
+                month: "June-August",
+                importance: "PEAK GROWING SEASON",
+                tasks: [
+                    "Mow every 2-3 weeks at 3-4 inches",
+                    "Irrigate only during drought: 0.25-0.5 inches per week maximum",
+                    "Spot spray broadleaf weeds as needed",
+                    "Second fertilization optional: 0.5 lb N per 1,000 sq ft"
+                ]
+            },
+            {
+                month: "September",
+                tasks: [
+                    "Lawn begins slowing — no fertilization",
+                    "Final mow before dormancy"
+                ]
+            },
+            {
+                month: "October-April",
+                tasks: [
+                    "Dormant and tan — normal seasonal appearance",
+                    "No maintenance needed during dormancy"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Kansas State Extension", title: "Buffalograss Lawn Care for the Plains", url: "https://www.bookstore.ksre.ksu.edu/" },
+            { institution: "University of Nebraska Extension", title: "Buffalograss for Low-Maintenance Lawns", url: "https://extension.unl.edu/" },
+            { institution: "Texas A&M AgriLife Extension", title: "Buffalograss Management", url: "https://agrilifeextension.tamu.edu/" }
+        ]
+    },
+
+    buffalograss_zone7: {
+        grassType: "Buffalograss",
+        zone: 7,
+        description: "Buffalograss program for Zone 7 - excellent in dry regions of the Great Plains and western states",
+        schedule: [
+            {
+                month: "March",
+                tasks: [
+                    "Clean up winter debris",
+                    "Wait for soil temps to reach 60°F before any activity"
+                ]
+            },
+            {
+                month: "April-May",
+                soilTemp: "60°F+",
+                tasks: [
+                    "Lawn greens up — begin mowing at 2-4 inches",
+                    "First fertilization if desired: 0.5 lb N per 1,000 sq ft",
+                    "Apply pre-emergent to control crabgrass"
+                ]
+            },
+            {
+                month: "June-August",
+                importance: "PEAK GROWING SEASON",
+                tasks: [
+                    "Mow every 2-3 weeks at 3-4 inches",
+                    "Minimal irrigation — 0.25-0.5 inches per week only if no rain",
+                    "Spot treat broadleaf weeds",
+                    "Second fertilization optional (0.5 lb N) in early June only"
+                ]
+            },
+            {
+                month: "September",
+                tasks: [
+                    "Growth slows — reduce mowing",
+                    "No fertilization in fall",
+                    "Final mow at 3 inches before dormancy"
+                ]
+            },
+            {
+                month: "October-March",
+                tasks: [
+                    "Dormant — minimal care needed",
+                    "Turf appears tan/straw — completely normal"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Kansas State Extension", title: "Buffalograss Lawn Care for the Plains", url: "https://www.bookstore.ksre.ksu.edu/" },
+            { institution: "Texas A&M AgriLife Extension", title: "Buffalograss Management", url: "https://agrilifeextension.tamu.edu/" },
+            { institution: "University of Nebraska Extension", title: "Buffalograss for Low-Maintenance Lawns", url: "https://extension.unl.edu/" }
+        ]
+    },
+
+    buffalograss_zone8: {
+        grassType: "Buffalograss",
+        zone: 8,
+        description: "Buffalograss program for Zone 8 - works in dry western Zone 8; bermuda or zoysia often better in humid areas",
+        schedule: [
+            {
+                month: "February-March",
+                soilTemp: "60°F+",
+                tasks: [
+                    "Buffalograss greens up early in Zone 8",
+                    "Apply pre-emergent for warm-season weeds",
+                    "Begin mowing once actively growing"
+                ]
+            },
+            {
+                month: "April-May",
+                tasks: [
+                    "First fertilization: 0.5 lb N per 1,000 sq ft",
+                    "Mow at 3-4 inches every 2-3 weeks",
+                    "Spot treat broadleaf weeds"
+                ]
+            },
+            {
+                month: "June-August",
+                importance: "PEAK GROWING SEASON",
+                tasks: [
+                    "Irrigate minimally — 0.25-0.5 inches per week in dry periods",
+                    "Do not over-water — this promotes bermuda weed invasion",
+                    "Mow at 3-4 inches every 2-3 weeks",
+                    "Second fertilization optional: 0.5 lb N per 1,000 sq ft"
+                ]
+            },
+            {
+                month: "September",
+                tasks: [
+                    "Lawn begins slowing",
+                    "No fall fertilization",
+                    "Final mow at 3 inches"
+                ]
+            },
+            {
+                month: "October-February",
+                tasks: [
+                    "Dormant — minimal to no maintenance",
+                    "Lawn appearance is tan/straw — normal"
+                ]
+            }
+        ],
+        sources: [
+            { institution: "Texas A&M AgriLife Extension", title: "Buffalograss Management", url: "https://agrilifeextension.tamu.edu/" },
+            { institution: "Kansas State Extension", title: "Buffalograss Lawn Care for the Plains", url: "https://www.bookstore.ksre.ksu.edu/" },
+            { institution: "University of Nebraska Extension", title: "Buffalograss for Low-Maintenance Lawns", url: "https://extension.unl.edu/" }
+        ]
     }
 };

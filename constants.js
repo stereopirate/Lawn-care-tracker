@@ -272,9 +272,13 @@ var GRASS_KEY_MAP = {
     'tall-fescue': 'tallFescue',
     'kentucky-bluegrass': 'kentuckyBluegrass',
     'perennial-ryegrass': 'perennialRyegrass',
+    'fine-fescue': 'fineFescue',
     'bermuda': 'bermuda',
     'zoysia': 'zoysia',
-    'st-augustine': 'stAugustine'
+    'st-augustine': 'stAugustine',
+    'centipede': 'centipede',
+    'bahia': 'bahia',
+    'buffalograss': 'buffalograss'
 };
 
 var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -357,6 +361,58 @@ var GRASS_INFO = {
         keyTips: ['Must be established by sod or plugs - no viable seed available', 'Keep mowing height high (3.5-4") for healthiest lawn', 'Watch closely for chinch bug damage in hot, dry periods', 'Do not over-fertilize with nitrogen - increases disease risk'],
         zoneNotes: { '4': 'Not viable.', '5': 'Not viable.', '6': 'Not viable - no cold tolerance.', '7': 'Very risky - freeze damage likely.', '8': 'Good in southern Zone 8. Protect from hard freezes.', '9': 'Excellent - ideal climate for st. augustine.' },
         sources: [{ name: 'UF/IFAS Extension', url: 'https://edis.ifas.ufl.edu/topic-st-augustinegrass', topic: 'St. Augustinegrass for Florida Lawns' }, { name: 'Texas A&M AgriLife', url: 'https://agrilifeextension.tamu.edu/st-augustinegrass/', topic: 'St. Augustinegrass Management' }, { name: 'LSU AgCenter', url: 'https://www.lsuagcenter.com/topics/lawn_garden/lawns', topic: 'St. Augustinegrass Care' }]
+    },
+    'fine-fescue': {
+        name: 'Fine Fescue', season: 'Cool Season',
+        mowHeight: '2.5 - 3.5 inches', mowHeightSummer: '3 - 3.5 inches',
+        waterPerWeek: '0.5 - 1 inch', idealSoilPH: '5.5 - 6.5',
+        idealSoilTemp: '50 - 65°F for growth', sunNeeds: 'Shade-tolerant (as little as 2-3 hours direct sun)',
+        fertPerYear: '1 - 2 lbs N per 1,000 sq ft', peakGrowth: 'Spring & Fall',
+        dormancy: 'Semi-dormant in hot, dry summers — recovers in fall',
+        bestFeature: 'Best shade tolerance of all cool-season grasses — grows where others fail',
+        commonIssues: ['Red thread disease', 'Dollar spot', 'Thins in heavy foot traffic', 'Summer heat stress in humid regions'],
+        keyTips: ['Includes creeping red, chewings, hard, and sheep fescue varieties', 'Requires far less fertilizer than bluegrass or tall fescue — do not over-feed', 'Very drought tolerant once established — allow to go semi-dormant in dry summers', 'Best choice for shaded areas, low-maintenance lawns, or low-input landscapes'],
+        zoneNotes: { '4': 'Excellent choice — very cold hardy, ideal for shaded northern lawns.', '5': 'Excellent performance in shade and low-maintenance settings.', '6': 'Good to excellent. Watch for heat stress in humid summers.', '7': 'Best used in shade only. Struggles in full sun in transition zone heat.', '8': 'Not recommended — heat and humidity cause rapid decline.', '9': 'Not viable.' },
+        sources: [{ name: 'Penn State Extension', url: 'https://extension.psu.edu/lawn-care', topic: 'Fine Fescue Lawn Management' }, { name: 'University of Minnesota Extension', url: 'https://extension.umn.edu/lawn-care/fine-fescue', topic: 'Fine Fescue for Low-Maintenance Lawns' }, { name: 'Rutgers Cooperative Extension', url: 'https://njaes.rutgers.edu/', topic: 'Fine Fescue Turf Management' }]
+    },
+    'centipede': {
+        name: 'Centipedegrass', season: 'Warm Season',
+        mowHeight: '1.5 - 2 inches', mowHeightSummer: '1.5 - 2 inches',
+        waterPerWeek: '1 inch', idealSoilPH: '5.0 - 6.0',
+        idealSoilTemp: '65°F+ for active growth', sunNeeds: 'Full sun to light shade (4+ hours)',
+        fertPerYear: '1 - 2 lbs N per 1,000 sq ft', peakGrowth: 'Summer',
+        dormancy: 'Goes dormant below 55°F — turns tan/brown',
+        bestFeature: 'Lowest maintenance warm-season grass — slow growth means less mowing and fertilizing',
+        commonIssues: ['Iron deficiency (chlorosis — yellowing)', 'Centipede decline', 'Large patch disease', 'Thatch buildup from excess fertilizer'],
+        keyTips: ['Do NOT over-fertilize — excess nitrogen damages centipede and causes decline', 'Prefers acidic soil (pH 5.0–6.0); do not lime unless a soil test confirms need', 'Apply iron sulfate if yellowing occurs — do not add extra nitrogen', 'Rarely needs more than 1–2 light fertilizations per year'],
+        zoneNotes: { '4': 'Not viable — too cold.', '5': 'Not viable.', '6': 'Not viable.', '7': 'Marginal in warmer parts of Zone 7b only.', '8': 'Excellent — centipede country. Thrives in the Southeast.', '9': 'Good performance, especially in acidic soils.' },
+        sources: [{ name: 'Clemson Cooperative Extension', url: 'https://www.clemson.edu/extension/hgic/plants/landscape/lawns/hgic1216.html', topic: 'Centipedegrass Maintenance' }, { name: 'NC State Extension', url: 'https://content.ces.ncsu.edu/carolina-lawns', topic: 'Centipedegrass in the Southeast' }, { name: 'UGA Extension', url: 'https://extension.uga.edu/publications/lawn-garden.html', topic: 'Centipedegrass Management' }]
+    },
+    'bahia': {
+        name: 'Bahiagrass', season: 'Warm Season',
+        mowHeight: '3 - 4 inches', mowHeightSummer: '3 - 4 inches',
+        waterPerWeek: '0.75 - 1 inch', idealSoilPH: '5.5 - 6.5',
+        idealSoilTemp: '65°F+ for active growth', sunNeeds: 'Full sun required (6+ hours)',
+        fertPerYear: '2 - 4 lbs N per 1,000 sq ft', peakGrowth: 'Summer',
+        dormancy: 'Goes dormant below 55°F — turns light tan/brown',
+        bestFeature: 'Extremely deep root system — exceptional drought and traffic tolerance for low-input lawns',
+        commonIssues: ['Mole crickets (major pest in Florida)', 'Dollar spot', 'Persistent seed heads requiring frequent mowing', 'Poor cold tolerance'],
+        keyTips: ['Produces Y-shaped seed heads frequently — mow often to remove them', 'Extremely drought tolerant once established — needs little irrigation', 'Apply mole cricket bait in late summer if tunneling is visible', 'Argentine and Pensacola are the most common and cold-tolerant varieties'],
+        zoneNotes: { '4': 'Not viable.', '5': 'Not viable.', '6': 'Not viable.', '7': 'Not recommended — cold sensitivity causes winter damage.', '8': 'Good in southern areas, especially Florida and Gulf Coast.', '9': 'Excellent — prime bahia territory.' },
+        sources: [{ name: 'UF/IFAS Extension', url: 'https://edis.ifas.ufl.edu/topic-bahiagrass', topic: 'Bahiagrass for Florida Lawns' }, { name: 'LSU AgCenter', url: 'https://www.lsuagcenter.com/topics/lawn_garden/lawns', topic: 'Bahiagrass Lawn Care' }, { name: 'Texas A&M AgriLife', url: 'https://agrilifeextension.tamu.edu/', topic: 'Bahiagrass Management' }]
+    },
+    'buffalograss': {
+        name: 'Buffalograss', season: 'Native Warm Season',
+        mowHeight: '2 - 4 inches', mowHeightSummer: '3 - 4 inches',
+        waterPerWeek: '0.25 - 0.5 inches', idealSoilPH: '6.5 - 7.5',
+        idealSoilTemp: '60°F+ for active growth', sunNeeds: 'Full sun required (8+ hours) — no shade tolerance',
+        fertPerYear: '0.5 - 2 lbs N per 1,000 sq ft', peakGrowth: 'Late Spring - Summer',
+        dormancy: 'Goes dormant below 50°F and in drought — turns tan/straw',
+        bestFeature: 'Native North American prairie grass — ultra-low water and fertilizer needs; ideal for sustainable lawns',
+        commonIssues: ['Broadleaf weeds invade thinned turf easily', 'Thins and dies in shade', 'Slow to establish from seed or plugs', 'Declines in humid climates'],
+        keyTips: ['Requires up to 75% less water than Kentucky bluegrass — do not over-irrigate', 'Do not over-fertilize — promotes weed invasion and disease', 'Performs best in clay soils of the Great Plains and western regions', 'Avoid in humid southeastern climates — bermuda or zoysia perform far better there'],
+        zoneNotes: { '4': 'Marginal — can winterkill in extreme cold. Works in protected sites in dry climates.', '5': 'Good in dry western climates. Struggles in humid eastern states.', '6': 'Good in western and central states. Poor choice in humid southeast.', '7': 'Good where heat and drought dominate. Not suited for humid Gulf regions.', '8': 'Works in dry western areas, but bermuda or zoysia outperform in most Zone 8 conditions.', '9': 'Not recommended — too much humidity and competition from other grasses.' },
+        sources: [{ name: 'Kansas State Extension', url: 'https://www.bookstore.ksre.ksu.edu/', topic: 'Buffalograss Lawn Care for the Plains' }, { name: 'Texas A&M AgriLife', url: 'https://agrilifeextension.tamu.edu/', topic: 'Buffalograss Management' }, { name: 'University of Nebraska Extension', url: 'https://extension.unl.edu/', topic: 'Buffalograss for Low-Maintenance Lawns' }]
     }
 };
 

@@ -2440,8 +2440,9 @@ window.ResearchSourcesPage = () => (
                             <label className="block text-sm font-medium mb-2">Grass Type</label>
                             <select value={localForm.specificGrass} onChange={(e) => setLocalForm({...localForm, specificGrass: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg">
                                 <option value="">Select...</option>
-                                <optgroup label="Cool Season"><option value="tall-fescue">Tall Fescue</option><option value="kentucky-bluegrass">Kentucky Bluegrass</option><option value="perennial-ryegrass">Perennial Ryegrass</option></optgroup>
-                                <optgroup label="Warm Season"><option value="bermuda">Bermudagrass</option><option value="zoysia">Zoysia</option><option value="st-augustine">St. Augustine</option></optgroup>
+                                <optgroup label="Cool Season"><option value="tall-fescue">Tall Fescue</option><option value="kentucky-bluegrass">Kentucky Bluegrass</option><option value="perennial-ryegrass">Perennial Ryegrass</option><option value="fine-fescue">Fine Fescue</option></optgroup>
+                                <optgroup label="Warm Season"><option value="bermuda">Bermudagrass</option><option value="zoysia">Zoysiagrass</option><option value="st-augustine">St. Augustinegrass</option><option value="centipede">Centipedegrass</option><option value="bahia">Bahiagrass</option></optgroup>
+                                <optgroup label="Native / Low-Input"><option value="buffalograss">Buffalograss</option></optgroup>
                             </select>
                         </div>
                         <button onClick={save} className="w-full py-4 bg-[#367C2B] text-white rounded-xl font-bold text-lg">💾 Save Profile</button>
