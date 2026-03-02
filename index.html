@@ -3430,16 +3430,41 @@ window.ResearchSourcesPage = () => (
         const store = useDataStore(currentUser);
 
         // ── Listen for Firebase auth state ──────────────────────────────────────
+        // Firebase is loaded via <script type="module"> with async imports, so it
+        // may not be ready when React first mounts. We check if window.__FIREBASE__
+        // is already set; if not, we wait for the 'firebase-ready' event before
+        // attaching the auth state listener. This prevents the refresh-logout bug
+        // where the effect would see fb.configured === false and immediately mark
+        // authReady=true, causing the app to run in local-only mode.
         useEffect(() => {
-            if (!fb.configured) {
-                setAuthReady(true);
-                return;
+            const setupAuth = () => {
+                const firebase = window.__FIREBASE__ || {};
+                if (!firebase.configured) {
+                    setAuthReady(true);
+                    return () => {};
+                }
+                const unsub = firebase.onAuthStateChanged(firebase.auth, (user) => {
+                    setCurrentUser(user);
+                    setAuthReady(true);
+                });
+                return unsub;
+            };
+
+            if (window.__FIREBASE__ !== undefined) {
+                // Firebase already initialized before React mounted
+                return setupAuth();
             }
-            const unsub = fb.onAuthStateChanged(fb.auth, (user) => {
-                setCurrentUser(user);
-                setAuthReady(true);
-            });
-            return unsub;
+
+            // Firebase module still loading — wait for it
+            let cleanupAuth = () => {};
+            const onFirebaseReady = () => {
+                cleanupAuth = setupAuth() || (() => {});
+            };
+            window.addEventListener('firebase-ready', onFirebaseReady, { once: true });
+            return () => {
+                window.removeEventListener('firebase-ready', onFirebaseReady);
+                cleanupAuth();
+            };
         }, []);
 
         // ── Load data whenever auth state settles or user changes ───────────────
