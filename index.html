@@ -18,10 +18,10 @@
     <meta name="twitter:description" content="Free lawn care tracker for DIY homeowners. Personalized schedules by grass type &amp; zone, activity logging, and season-by-season guidance.">
     <meta name="twitter:image" content="https://stereopirate.github.io/Lawn-care-tracker/logo.png">
     <title>Yardstick - Research-Backed Lawn Care</title>
-    <!-- ── Brand Fonts — Bitter + Cabin + Courier Prime ── -->
+    <!-- ── Brand Fonts — Bitter + Cabin ── -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,600;0,700;0,900;1,600;1,700&family=Cabin:wght@400;500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;900&family=Cabin:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -127,7 +127,7 @@ window.compressImage = function(file, maxDim, quality) {
 </script>
 
 </head>
-<body class="bg-white" style="background-color: #EDE8DE !important;">
+<body style="background-color: var(--ys-canvas);">
     <style>
         /* ── Brand CSS Custom Properties ── */
         :root {
@@ -140,7 +140,8 @@ window.compressImage = function(file, maxDim, quality) {
             --ys-green-200: #C4E8BC;
             --ys-green-100: #EBF5E6;
             --ys-green-50:  #F4FAF2;
-            --ys-yellow:    #F5C842;
+            --ys-yellow:      #F5C842;
+            --ys-yellow-dark: #E8BA2A;
             --ys-gold-500:  #D4A843;
             --ys-gold-400:  #D4A833;
             --ys-gold-300:  #E2C46A;
@@ -151,11 +152,9 @@ window.compressImage = function(file, maxDim, quality) {
             --ys-soil-200:  #D4B896;
             --ys-cream:     #F7F3EC;
             --ys-canvas:    #EDE8DE;
-            --ys-stone:     #6B6560;
             --ys-stone-light: #B8B2AC;
             --ys-font-body:    'Cabin', system-ui, -apple-system, sans-serif;
             --ys-font-display: 'Bitter', Georgia, serif;
-            --ys-font-mono:    'Courier Prime', monospace;
         }
         body, button, input, select, textarea {
             font-family: var(--ys-font-body);
@@ -281,7 +280,7 @@ window.compressImage = function(file, maxDim, quality) {
             transition: background 0.15s ease, transform 0.1s ease;
             box-shadow: 0 3px 12px rgba(245,200,66,0.35);
         }
-        .ys-btn-primary:active { background: #E8BA2A; transform: scale(0.97); }
+        .ys-btn-primary:active { background: var(--ys-yellow-dark); transform: scale(0.97); }
 
         /* ── Phase 2: Card base ── */
         .ys-card {
