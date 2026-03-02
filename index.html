@@ -1619,11 +1619,11 @@ window.ResearchSourcesPage = () => (
     };
 
     // ─── Sync Status Banner ─────────────────────────────────────────────────────
-    const SyncBanner = ({ isCloud, currentUser, onSignOut, firebaseConfigured }) => {
+    const SyncBanner = ({ isCloud, currentUser, userName, onSignOut, firebaseConfigured }) => {
         if (!firebaseConfigured) return null; // Hide if Firebase not set up yet
 
         if (isCloud && currentUser) {
-            const name = currentUser.displayName || currentUser.email || 'Account';
+            const name = userName || currentUser.displayName || currentUser.email || 'Account';
             return (
                 <div className="bg-[#e8f5e9] border-b border-[#367C2B]/20 px-4 py-2">
                     <div className="max-w-5xl mx-auto flex items-center justify-between">
@@ -3920,6 +3920,7 @@ window.ResearchSourcesPage = () => (
                 <SyncBanner
                     isCloud={store.isCloud}
                     currentUser={currentUser}
+                    userName={userName}
                     onSignIn={() => setShowAuthModal(true)}
                     onSignOut={handleSignOut}
                     firebaseConfigured={fb.configured}
