@@ -106,36 +106,36 @@ var TREATMENT_PRODUCTS = {
         { id: 'f5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', timing: '', notes: 'Custom product' }
     ],
     preemergent: [
-        { id: 'pre1', name: 'Prodiamine 65 WDG (Yard Mastery)', brand: 'Yard Mastery', activeIngredient: 'Prodiamine 65%', rate: '0.5 oz per 1,000 sq ft', timing: 'When soil hits 50-55°F', notes: 'Premium WDG formulation' },
-        { id: 'pre2', name: 'Barricade 4FL', brand: 'Syngenta', activeIngredient: 'Prodiamine 41.7%', rate: '0.5 fl oz per 1,000 sq ft', timing: 'Early spring & fall', notes: 'Liquid concentrate' },
-        { id: 'pre3', name: 'Dimension 2EW', brand: 'Dow', activeIngredient: 'Dithiopyr 23.3%', rate: '0.5 fl oz per 1,000 sq ft', timing: 'Pre & early post-emergent', notes: 'Works on young crabgrass' },
-        { id: 'pre4', name: 'Scotts Halts', brand: 'Scotts', activeIngredient: 'Pendimethalin', rate: '2.9 lbs per 1,000 sq ft', timing: 'Early spring', notes: 'Granular, easy application' },
+        { id: 'pre1', name: 'Prodiamine 65 WDG (Yard Mastery)', brand: 'Yard Mastery', activeIngredient: 'Prodiamine 65%', rate: '0.5 oz per 1,000 sq ft', rateValue: 0.5, rateUnit: 'oz', ratePer: 1000, timing: 'When soil hits 50-55°F', notes: 'Premium WDG formulation' },
+        { id: 'pre2', name: 'Barricade 4FL', brand: 'Syngenta', activeIngredient: 'Prodiamine 41.7%', rate: '0.5 fl oz per 1,000 sq ft', rateValue: 0.5, rateUnit: 'fl oz', ratePer: 1000, timing: 'Early spring & fall', notes: 'Liquid concentrate' },
+        { id: 'pre3', name: 'Dimension 2EW', brand: 'Dow', activeIngredient: 'Dithiopyr 23.3%', rate: '0.5 fl oz per 1,000 sq ft', rateValue: 0.5, rateUnit: 'fl oz', ratePer: 1000, timing: 'Pre & early post-emergent', notes: 'Works on young crabgrass' },
+        { id: 'pre4', name: 'Scotts Halts', brand: 'Scotts', activeIngredient: 'Pendimethalin', rate: '2.9 lbs per 1,000 sq ft', rateValue: 2.9, rateUnit: 'lbs', ratePer: 1000, timing: 'Early spring', notes: 'Granular, easy application' },
         { id: 'pre5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', timing: '', notes: 'Custom product' }
     ],
     postemergent: [
-        { id: 'post1', name: 'Tenacity', brand: 'Syngenta', activeIngredient: 'Mesotrione 40%', rate: '0.25 oz per 1,000 sq ft', target: 'Crabgrass, broadleaf weeds', notes: 'Safe for seeding' },
+        { id: 'post1', name: 'Tenacity', brand: 'Syngenta', activeIngredient: 'Mesotrione 40%', rate: '0.25 oz per 1,000 sq ft', rateValue: 0.25, rateUnit: 'oz', ratePer: 1000, target: 'Crabgrass, broadleaf weeds', notes: 'Safe for seeding' },
         { id: 'post2', name: 'Ortho Weed B Gon', brand: 'Ortho', activeIngredient: '2,4-D + Quinclorac', rate: 'Per label', target: 'Broadleaf & grassy weeds', notes: 'Ready-to-spray' },
-        { id: 'post3', name: 'Speedzone', brand: 'PBI Gordon', activeIngredient: '2,4-D + others', rate: '1.5 fl oz per 1,000 sq ft', target: 'Fast-acting broadleaf', notes: 'Works in cool temps' },
-        { id: 'post4', name: 'Quinclorac 75DF', brand: 'Various', activeIngredient: 'Quinclorac 75%', rate: '0.25 oz per 1,000 sq ft', target: 'Crabgrass, clover', notes: 'Selective herbicide' },
+        { id: 'post3', name: 'Speedzone', brand: 'PBI Gordon', activeIngredient: '2,4-D + others', rate: '1.5 fl oz per 1,000 sq ft', rateValue: 1.5, rateUnit: 'fl oz', ratePer: 1000, target: 'Fast-acting broadleaf', notes: 'Works in cool temps' },
+        { id: 'post4', name: 'Quinclorac 75DF', brand: 'Various', activeIngredient: 'Quinclorac 75%', rate: '0.25 oz per 1,000 sq ft', rateValue: 0.25, rateUnit: 'oz', ratePer: 1000, target: 'Crabgrass, clover', notes: 'Selective herbicide' },
         { id: 'post5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', target: '', notes: 'Custom product' }
     ],
     fungicide: [
-        { id: 'fung1', name: 'Disease Ex (Scotts)', brand: 'Scotts', activeIngredient: 'Azoxystrobin 0.31%', rate: '3 lbs per 1,000 sq ft', target: 'Brown patch, dollar spot', notes: 'Granular, preventative' },
-        { id: 'fung2', name: 'Azoxystrobin 0.31G', brand: 'Various', activeIngredient: 'Azoxystrobin 0.31%', rate: '3 lbs per 1,000 sq ft', target: 'Broad spectrum', notes: 'Generic Disease Ex' },
-        { id: 'fung3', name: 'Propiconazole 14.3', brand: 'Various', activeIngredient: 'Propiconazole 14.3%', rate: '1 fl oz per 1,000 sq ft', target: 'Systemic fungicide', notes: 'Liquid concentrate' },
+        { id: 'fung1', name: 'Disease Ex (Scotts)', brand: 'Scotts', activeIngredient: 'Azoxystrobin 0.31%', rate: '3 lbs per 1,000 sq ft', rateValue: 3, rateUnit: 'lbs', ratePer: 1000, target: 'Brown patch, dollar spot', notes: 'Granular, preventative' },
+        { id: 'fung2', name: 'Azoxystrobin 0.31G', brand: 'Various', activeIngredient: 'Azoxystrobin 0.31%', rate: '3 lbs per 1,000 sq ft', rateValue: 3, rateUnit: 'lbs', ratePer: 1000, target: 'Broad spectrum', notes: 'Generic Disease Ex' },
+        { id: 'fung3', name: 'Propiconazole 14.3', brand: 'Various', activeIngredient: 'Propiconazole 14.3%', rate: '1 fl oz per 1,000 sq ft', rateValue: 1, rateUnit: 'fl oz', ratePer: 1000, target: 'Systemic fungicide', notes: 'Liquid concentrate' },
         { id: 'fung5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', target: '', notes: 'Custom product' }
     ],
     insecticide: [
-        { id: 'ins1', name: 'GrubEx (Scotts)', brand: 'Scotts', activeIngredient: 'Chlorantraniliprole', rate: '2.87 lbs per 1,000 sq ft', target: 'Grubs (preventative)', notes: 'Apply late spring/early summer' },
-        { id: 'ins2', name: 'BioAdvanced Grub Killer', brand: 'BioAdvanced', activeIngredient: 'Imidacloprid', rate: '3 lbs per 1,000 sq ft', target: 'Grubs, mole crickets', notes: 'Season-long control' },
-        { id: 'ins3', name: 'Dylox 6.2G', brand: 'Bayer', activeIngredient: 'Trichlorfon 6.2%', rate: '3 lbs per 1,000 sq ft', target: 'Active grubs', notes: '24-hour curative' },
+        { id: 'ins1', name: 'GrubEx (Scotts)', brand: 'Scotts', activeIngredient: 'Chlorantraniliprole', rate: '2.87 lbs per 1,000 sq ft', rateValue: 2.87, rateUnit: 'lbs', ratePer: 1000, target: 'Grubs (preventative)', notes: 'Apply late spring/early summer' },
+        { id: 'ins2', name: 'BioAdvanced Grub Killer', brand: 'BioAdvanced', activeIngredient: 'Imidacloprid', rate: '3 lbs per 1,000 sq ft', rateValue: 3, rateUnit: 'lbs', ratePer: 1000, target: 'Grubs, mole crickets', notes: 'Season-long control' },
+        { id: 'ins3', name: 'Dylox 6.2G', brand: 'Bayer', activeIngredient: 'Trichlorfon 6.2%', rate: '3 lbs per 1,000 sq ft', rateValue: 3, rateUnit: 'lbs', ratePer: 1000, target: 'Active grubs', notes: '24-hour curative' },
         { id: 'ins5', name: 'Other (specify)', brand: 'Various', activeIngredient: '', rate: 'See label', target: '', notes: 'Custom product' }
     ],
     soilAmendment: [
-        { id: 'soil1', name: 'Pelletized Lime', brand: 'Various', type: 'pH Increase', rate: '50 lbs per 1,000 sq ft', effect: 'Raises pH by ~0.5', notes: 'For acidic soils (pH <6.5)' },
-        { id: 'soil2', name: 'Elemental Sulfur', brand: 'Various', type: 'pH Decrease', rate: '5-10 lbs per 1,000 sq ft', effect: 'Lowers pH by ~0.5', notes: 'For alkaline soils (pH >7.0)' },
-        { id: 'soil3', name: 'Gypsum', brand: 'Various', type: 'Soil Structure', rate: '40 lbs per 1,000 sq ft', effect: 'Improves clay soil', notes: 'Does not change pH' },
-        { id: 'soil4', name: 'Humic Acid', brand: 'Various', type: 'Soil Health', rate: '3 fl oz per 1,000 sq ft', effect: 'Improves nutrient uptake', notes: 'Liquid application' },
+        { id: 'soil1', name: 'Pelletized Lime', brand: 'Various', type: 'pH Increase', rate: '50 lbs per 1,000 sq ft', rateValue: 50, rateUnit: 'lbs', ratePer: 1000, effect: 'Raises pH by ~0.5', notes: 'For acidic soils (pH <6.5)' },
+        { id: 'soil2', name: 'Elemental Sulfur', brand: 'Various', type: 'pH Decrease', rate: '5–10 lbs per 1,000 sq ft', rateValue: 5, rateMax: 10, rateUnit: 'lbs', ratePer: 1000, effect: 'Lowers pH by ~0.5', notes: 'For alkaline soils (pH >7.0)' },
+        { id: 'soil3', name: 'Gypsum', brand: 'Various', type: 'Soil Structure', rate: '40 lbs per 1,000 sq ft', rateValue: 40, rateUnit: 'lbs', ratePer: 1000, effect: 'Improves clay soil', notes: 'Does not change pH' },
+        { id: 'soil4', name: 'Humic Acid', brand: 'Various', type: 'Soil Health', rate: '3 fl oz per 1,000 sq ft', rateValue: 3, rateUnit: 'fl oz', ratePer: 1000, effect: 'Improves nutrient uptake', notes: 'Liquid application' },
         { id: 'soil5', name: 'Other (specify)', brand: 'Various', type: '', rate: 'See label', effect: '', notes: 'Custom product' }
     ]
 };
