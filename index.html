@@ -3266,7 +3266,14 @@ window.ResearchSourcesPage = () => (
                 }
             } catch (e) {
                 console.error('AdminSubmissionsPage fetch error:', e);
-                setError('Failed to load submissions.');
+                const code = e.code || '';
+                if (code === 'permission-denied') {
+                    setError('Failed to load submissions: permission-denied. Firestore security rules are blocking admin reads on the "feedback" collection. Update rules in the Firebase Console to allow reads when request.auth.token.email == ADMIN_EMAIL.');
+                } else if (code === 'failed-precondition') {
+                    setError('Failed to load submissions: failed-precondition. A Firestore index may be missing. Check the browser console for the index creation link.');
+                } else {
+                    setError(`Failed to load submissions${code ? ` (${code})` : ''}. See browser console for details.`);
+                }
             } finally {
                 setLoading(false);
             }
