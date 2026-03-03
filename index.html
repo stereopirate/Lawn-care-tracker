@@ -4613,18 +4613,18 @@ window.ResearchSourcesPage = () => (
                                         {view === item.key && <span className={`w-1.5 h-5 rounded-full bg-[#367C2B] flex-shrink-0 ${!item.pro ? 'ml-auto' : ''}`} />}
                                     </button>
                                 ))}
+                                {currentUser?.email === ADMIN_EMAIL && (
+                                    <button
+                                        onClick={() => { setView('admin'); setSelectedActivityType(null); setMobileMenuOpen(false); }}
+                                        className={`w-full text-left px-4 py-3.5 rounded-xl flex items-center gap-3 ${view === 'admin' ? 'bg-[#367C2B]/10 text-[#367C2B]' : 'hover:bg-gray-50'}`}
+                                    >
+                                        <span className="text-xl w-7 text-center">🛠️</span>
+                                        <span className="text-base font-semibold text-gray-800">Submissions</span>
+                                        {view === 'admin' && <span className="ml-auto w-1.5 h-5 rounded-full bg-[#367C2B]" />}
+                                    </button>
+                                )}
                                 {/* Auth row */}
                                 <div className="border-t border-gray-100 mt-2 pt-2 pb-2">
-                                    {currentUser?.email === ADMIN_EMAIL && (
-                                        <button
-                                            onClick={() => { setView('admin'); setSelectedActivityType(null); setMobileMenuOpen(false); }}
-                                            className={`w-full text-left px-4 py-3.5 rounded-xl flex items-center gap-3 ${view === 'admin' ? 'bg-[#367C2B]/10 text-[#367C2B]' : 'hover:bg-gray-50'}`}
-                                        >
-                                            <span className="text-xl w-7 text-center">🛠️</span>
-                                            <span className="text-base font-semibold text-gray-800">Submissions</span>
-                                            {view === 'admin' && <span className="ml-auto w-1.5 h-5 rounded-full bg-[#367C2B]" />}
-                                        </button>
-                                    )}
                                     <button
                                         onClick={() => {
                                             if (!currentUser) { setView(null); setMobileMenuOpen(false); setShowAuthModal(true); }
@@ -4734,7 +4734,6 @@ window.ResearchSourcesPage = () => (
                                 {item.pro && <span className="text-xs font-bold px-1 py-0.5 rounded-full flex-shrink-0" style={{background:'var(--ys-gold-100)', color:'var(--ys-gold-500)', border:'1px solid var(--ys-gold-300)'}}>PRO</span>}
                             </button>
                         ))}
-                        {/* Admin-only nav item */}
                         {currentUser?.email === ADMIN_EMAIL && (
                             <button
                                 onClick={() => { setView('admin'); setSelectedActivityType(null); }}
