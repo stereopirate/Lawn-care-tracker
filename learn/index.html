@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Lawn Care Guides | Research-Backed Articles | Yardstick</title>
+  <meta name="description" content="University-sourced lawn care guides for every grass type and USDA zone. Fertilizing, overseeding, pre-emergent timing, aeration, and more — grounded in extension research, not product marketing.">
+  <link rel="canonical" href="https://yardstick.diy/learn">
+
+  <!-- Open Graph -->
+
+  <meta property="og:title" content="Lawn Care Guides — Research-Backed, Zone-Specific">
+  <meta property="og:description" content="University-sourced lawn care guides for every grass type and USDA zone. Grounded in extension research, not product marketing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yardstick.diy/learn">
+  <meta property="og:site_name" content="Yardstick">
+
+  <!-- Structured Data — CollectionPage -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Lawn Care Guides | Yardstick",
+    "description": "University-sourced lawn care guides for every grass type and USDA zone.",
+    "url": "https://yardstick.diy/learn",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Yardstick",
+      "url": "https://yardstick.diy"
+    }
+  }
+  </script>
+
+  <!-- Fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,600;0,700;0,900;1,700&family=Cabin:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --ff-display: 'Bitter', Georgia, serif;
+      --ff-body: 'Cabin', sans-serif;
+      --ff-mono: 'Courier Prime', monospace;
+      --green: #367C2B;
+      --green-dark: #1E4D18;
+      --green-light: #4E9E40;
+      --yellow: #F5C842;
+      --straw: #D4A843;
+      --clay: #C05A2C;
+      --cream: #F7F3EC;
+      --bg: #EDE8DE;
+      --white: #FFFFFF;
+      --soil: #1E1A14;
+      --stone: #6B6560;
+      --stone-light: #B8B2AC;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--ff-body);
+      background: var(--bg);
+      color: var(--soil);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--green); text-decoration: none; }
+    a:hover { color: var(--green-dark); }
+
+    /* ── Site Header ── */
+    .site-header {
+      background: var(--green-dark);
+      background-image: radial-gradient(ellipse at 100% 0%, rgba(78,158,64,0.18), transparent 60%);
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(30,26,20,0.18);
+    }
+    .site-header-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .site-nav { display: flex; align-items: center; gap: 6px; }
+    .nav-link {
+      font-family: var(--ff-body);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(247,243,236,0.75);
+      padding: 6px 10px;
+      border-radius: 3px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover,
+    .nav-link.active { color: var(--cream); background: rgba(247,243,236,0.1); }
+    .nav-cta {
+      background: var(--yellow);
+      color: var(--soil);
+      font-family: var(--ff-body);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 3px;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .nav-cta:hover { background: #E8BA2A; transform: translateY(-1px); color: var(--soil); }
+    .nav-desktop { display: none; }
+    @media (min-width: 640px) { .nav-desktop { display: block; } }
+
+    /* ── Page wrap ── */
+    .page-wrap { max-width: 1040px; margin: 0 auto; padding: 0 14px; }
+
+    /* ── Hero ── */
+    .learn-hero {
+      background: var(--green-dark);
+      background-image:
+        radial-gradient(ellipse at 80% 0%, rgba(78,158,64,0.22), transparent 55%),
+        radial-gradient(ellipse at 20% 100%, rgba(30,77,24,0.4), transparent 50%);
+      padding: 40px 16px 48px;
+      margin-bottom: 0;
+    }
+    .learn-hero-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .hero-headline {
+      font-family: var(--ff-display);
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1.12;
+      margin-bottom: 14px;
+      max-width: 600px;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: var(--yellow);
+    }
+    .hero-sub {
+      font-family: var(--ff-body);
+      font-size: 0.95rem;
+      color: rgba(247,243,236,0.75);
+      max-width: 540px;
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+    .hero-trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .hero-trust-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247,243,236,0.6);
+      background: rgba(247,243,236,0.08);
+      border: 1px solid rgba(247,243,236,0.14);
+      border-radius: 3px;
+      padding: 5px 10px;
+    }
+    .hero-trust-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--yellow);
+      flex-shrink: 0;
+    }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: var(--cream);
+      border-bottom: 1px solid rgba(30,26,20,0.1);
+      padding: 12px 16px;
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+      box-shadow: 0 2px 8px rgba(30,26,20,0.06);
+    }
+    .filter-bar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .filter-bar-inner::-webkit-scrollbar { display: none; }
+    .filter-label {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-right: 2px;
+    }
+    .filter-btn {
+      font-family: var(--ff-body);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--stone);
+      background: transparent;
+      border: 1.5px solid rgba(30,26,20,0.15);
+      border-radius: 3px;
+      padding: 5px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover {
+      border-color: var(--green);
+      color: var(--green-dark);
+      background: rgba(54,124,43,0.05);
+    }
+    .filter-btn.active {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+      color: var(--white);
+    }
+
+    /* ── Main layout ── */
+    .learn-layout {
+      padding: 24px 0 48px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 800px) {
+      .learn-layout {
+        grid-template-columns: minmax(0, 1fr) 260px;
+        align-items: start;
+      }
+    }
+
+    /* ── Section heading ── */
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .section-heading h2 {
+      font-family: var(--ff-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--green-dark);
+    }
+    .section-count {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+    }
+
+    /* ── Featured article (full-width card) ── */
+    .article-featured {
+      background: var(--cream);
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(30,26,20,0.12), 0 3px 14px rgba(30,26,20,0.09);
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 600px) {
+      .article-featured { flex-direction: row; }
+    }
+    .featured-marker {
+      background: var(--green-dark);
+      background-image: radial-gradient(ellipse at 90% 0%, rgba(78,158,64,0.2), transparent 60%);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 200px;
+      flex-shrink: 0;
+    }
+    .featured-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 8px;
+    }
+    .featured-title {
+      font-family: var(--ff-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.25;
+    }
+    .featured-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .featured-desc {
+      font-family: var(--ff-body);
+      font-size: 0.88rem;
+      color: var(--stone);
+      line-height: 1.6;
+    }
+    .featured-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .featured-source {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+    }
+    .featured-link {
+      font-family: var(--ff-body);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--green);
+      transition: color 0.15s;
+    }
+    .featured-link:hover { color: var(--green-dark); }
+
+    /* ── Article grid ── */
+    .article-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 500px) {
+      .article-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── Article card ── */
+    .article-card {
+      background: var(--cream);
+      border-radius: 5px;
+      padding: 16px;
+      box-shadow: inset 0 0 0 1px rgba(30,26,20,0.12), 0 3px 14px rgba(30,26,20,0.07);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.18s, transform 0.18s;
+      text-decoration: none;
+    }
+    .article-card:hover {
+      box-shadow: inset 0 0 0 1px rgba(54,124,43,0.25), 0 6px 20px rgba(30,26,20,0.12);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    .article-card:hover .card-read-link { color: var(--green-dark); }
+
+    .card-tag-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-family: var(--ff-body);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: 1.5px solid;
+      background: transparent;
+    }
+    /* Category tag colors */
+    .tag-weed    { border-color: var(--clay);   color: var(--clay); }
+    .tag-fert    { border-color: var(--straw);  color: #7A5410; }
+    .tag-seed    { border-color: var(--clay);   color: var(--clay); }
+    .tag-aerate  { border-color: var(--stone);  color: var(--stone); }
+    .tag-water   { border-color: #3B82F6;       color: #1D4ED8; }
+    .tag-mow     { border-color: var(--green);  color: var(--green-dark); }
+    .tag-edu     { border-color: var(--stone);  color: var(--stone); }
+    .tag-cal     { border-color: var(--green);  color: var(--green-dark); }
+
+    /* Grass type pill */
+    .card-grass-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--bg);
+      color: var(--stone-light);
+      border: 1px solid rgba(30,26,20,0.1);
+    }
+
+    .card-title {
+      font-family: var(--ff-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      line-height: 1.3;
+      flex: 1;
+    }
+    .card-source {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+    }
+    .card-read-link {
+      font-family: var(--ff-body);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green);
+      transition: color 0.15s;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    /* ── Coming soon card ── */
+    .article-card.coming-soon {
+      opacity: 0.6;
+      cursor: default;
+      pointer-events: none;
+    }
+    .coming-badge {
+      font-family: var(--ff-mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+      background: var(--bg);
+      border: 1px solid rgba(30,26,20,0.1);
+      border-radius: 3px;
+      padding: 2px 7px;
+      display: inline-block;
+    }
+
+    /* ── Category section divider ── */
+    .category-section { margin-bottom: 32px; }
+    .category-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(30,26,20,0.12);
+    }
+    .category-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .category-name {
+      font-family: var(--ff-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green-dark);
+    }
+    .category-article-count {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+      margin-left: auto;
+    }
+
+    /* ── No results ── */
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      display: none;
+    }
+    .no-results.visible { display: block; }
+    .no-results p {
+      font-family: var(--ff-body);
+      font-size: 0.9rem;
+      color: var(--stone);
+    }
+
+    /* ── Sidebar ── */
+    .learn-sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    /* App CTA */
+    .sidebar-cta {
+      background: var(--green-dark);
+      background-image: radial-gradient(ellipse at 90% 0%, rgba(78,158,64,0.2), transparent 60%);
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 3px 14px rgba(30,26,20,0.14);
+    }
+    .sidebar-cta-header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid rgba(245,200,66,0.3);
+    }
+    .sidebar-cta-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 4px;
+    }
+    .sidebar-cta-title {
+      font-family: var(--ff-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.25;
+    }
+    .sidebar-cta-body { padding: 12px 16px 16px; }
+    .sidebar-cta-text {
+      font-family: var(--ff-body);
+      font-size: 0.82rem;
+      color: rgba(247,243,236,0.8);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+    .sidebar-cta-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--ff-body);
+      font-size: 0.78rem;
+      color: rgba(247,243,236,0.7);
+      margin-bottom: 6px;
+    }
+    .sidebar-cta-feature::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--yellow);
+      flex-shrink: 0;
+    }
+    .btn-sidebar-cta {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--yellow);
+      color: var(--soil);
+      font-family: var(--ff-body);
+      font-weight: 700;
+      font-size: 0.86rem;
+      padding: 11px;
+      border-radius: 3px;
+      margin-top: 14px;
+      transition: background 0.15s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(245,200,66,0.3);
+    }
+    .btn-sidebar-cta:hover { background: #E8BA2A; transform: translateY(-1px); color: var(--soil); }
+
+    /* Sources card */
+    .sidebar-sources {
+      background: var(--cream);
+      border-radius: 5px;
+      padding: 16px;
+      box-shadow: inset 0 0 0 1px rgba(30,26,20,0.12), 0 3px 14px rgba(30,26,20,0.07);
+    }
+    .sidebar-sources-label {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+      margin-bottom: 12px;
+    }
+    .source-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(30,26,20,0.06);
+      font-family: var(--ff-body);
+      font-size: 0.78rem;
+      color: var(--stone);
+    }
+    .source-row:last-child { border-bottom: none; }
+    .source-dot-green {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* Grass type nav */
+    .sidebar-grass {
+      background: var(--cream);
+      border-radius: 5px;
+      padding: 16px;
+      box-shadow: inset 0 0 0 1px rgba(30,26,20,0.12), 0 3px 14px rgba(30,26,20,0.07);
+    }
+    .sidebar-grass-label {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+      margin-bottom: 10px;
+    }
+    .grass-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(30,26,20,0.06);
+      cursor: pointer;
+    }
+    .grass-nav-item:last-child { border-bottom: none; }
+    .grass-nav-name {
+      font-family: var(--ff-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green-dark);
+    }
+    .grass-nav-type {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+    }
+    .grass-nav-item:hover .grass-nav-name { color: var(--green); }
+
+    /* ── Bottom CTA band ── */
+    .cta-band {
+      background: var(--green-dark);
+      background-image: radial-gradient(ellipse at 60% 0%, rgba(78,158,64,0.15), transparent 60%);
+      padding: 40px 16px;
+    }
+    .cta-band-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .cta-band-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 10px;
+    }
+    .cta-band-title {
+      font-family: var(--ff-display);
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 900;
+      color: var(--cream);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    .cta-band-text {
+      font-family: var(--ff-body);
+      font-size: 0.9rem;
+      color: rgba(247,243,236,0.75);
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+    .btn-cta-band {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--soil);
+      font-family: var(--ff-body);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 13px 30px;
+      border-radius: 3px;
+      box-shadow: 0 2px 10px rgba(245,200,66,0.35);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .btn-cta-band:hover { background: #E8BA2A; transform: translateY(-2px); color: var(--soil); }
+    .cta-band-note {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(247,243,236,0.35);
+      margin-top: 12px;
+    }
+
+    /* ── Footer ── */
+    .site-footer { background: var(--soil); padding: 32px 16px 24px; }
+    .site-footer-inner { max-width: 1040px; margin: 0 auto; }
+    .footer-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(247,243,236,0.08);
+    }
+    .footer-tagline {
+      font-family: var(--ff-body);
+      font-size: 0.8rem;
+      color: rgba(247,243,236,0.45);
+      margin-top: 8px;
+      max-width: 200px;
+      line-height: 1.5;
+    }
+    .footer-nav-group { display: flex; flex-direction: column; gap: 5px; }
+    .footer-nav-label {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(247,243,236,0.3);
+      margin-bottom: 4px;
+    }
+    .footer-nav-link {
+      font-family: var(--ff-body);
+      font-size: 0.8rem;
+      color: rgba(247,243,236,0.6);
+      transition: color 0.15s;
+    }
+    .footer-nav-link:hover { color: var(--cream); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-legal {
+      font-family: var(--ff-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(247,243,236,0.22);
+    }
+
+    /* ── Hidden filter utility ── */
+    .article-card[data-hidden="true"],
+    .article-featured[data-hidden="true"],
+    .category-section[data-hidden="true"] { display: none; }
+  </style>
+
+</head>
+<body>
+
+<!-- ── Site Header ── -->
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="https://yardstick.diy" aria-label="Yardstick home">
+      <svg viewBox="0 0 200 38" height="28" width="auto" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="30" font-family="Bitter, Georgia, serif" font-weight="900" font-size="32" fill="#F7F3EC" letter-spacing="-0.5">Yardstick</text>
+        <rect x="0" y="33" width="196" height="3.5" rx="1" fill="#F5C842"/>
+        <rect x="22" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="44" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="66" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="88" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="110" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="132" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="154" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+        <rect x="176" y="33" width="1.5" height="3.5" fill="#1E1A14" opacity="0.3"/>
+      </svg>
+    </a>
+    <nav class="site-nav">
+      <a href="/learn" class="nav-link active nav-desktop">Guides</a>
+      <a href="https://yardstick.diy" class="nav-link nav-desktop">App</a>
+      <a href="https://yardstick.diy/#research" class="nav-link nav-desktop">Research</a>
+      <a href="https://yardstick.diy" class="nav-cta">Track my lawn →</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── Hero ── -->
+
+<section class="learn-hero">
+  <div class="learn-hero-inner">
+    <span class="hero-eyebrow">Yardstick · Research Library</span>
+    <h1 class="hero-headline">Lawn care backed by<br><em>university science.</em></h1>
+    <p class="hero-sub">Every guide here is sourced from university extension research — not fertilizer brand marketing. Zone-specific, soil-temp-driven, and written for serious DIY homeowners.</p>
+    <div class="hero-trust-row">
+      <span class="hero-trust-pill"><span class="hero-trust-dot"></span>19 university extension sources</span>
+      <span class="hero-trust-pill"><span class="hero-trust-dot"></span>7 grass types covered</span>
+      <span class="hero-trust-pill"><span class="hero-trust-dot"></span>USDA zones 4–9</span>
+      <span class="hero-trust-pill"><span class="hero-trust-dot"></span>No product promotion</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Filter bar ── -->
+
+<div class="filter-bar" role="navigation" aria-label="Filter guides">
+  <div class="filter-bar-inner">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all" onclick="applyFilter('all', this)">All guides</button>
+    <button class="filter-btn" data-filter="Weed Control" onclick="applyFilter('Weed Control', this)">Weed control</button>
+    <button class="filter-btn" data-filter="Fertilizing" onclick="applyFilter('Fertilizing', this)">Fertilizing</button>
+    <button class="filter-btn" data-filter="Overseeding" onclick="applyFilter('Overseeding', this)">Overseeding</button>
+    <button class="filter-btn" data-filter="Aeration" onclick="applyFilter('Aeration', this)">Aeration</button>
+    <button class="filter-btn" data-filter="Watering" onclick="applyFilter('Watering', this)">Watering</button>
+    <button class="filter-btn" data-filter="Education" onclick="applyFilter('Education', this)">Fundamentals</button>
+    <button class="filter-btn" data-filter="Care Calendar" onclick="applyFilter('Care Calendar', this)">Calendars</button>
+  </div>
+</div>
+
+<!-- ── Main Content ── -->
+
+<main>
+  <div class="page-wrap">
+    <div class="learn-layout">
+
+```
+  <!-- ── Articles column ── -->
+  <div class="learn-articles">
+
+    <!-- Featured article -->
+    <div class="section-heading" style="margin-top: 8px;">
+      <h2>Start here</h2>
+      <span class="section-count">Foundational guides</span>
+    </div>
+
+    <a href="/learn/crabgrass-pre-emergent-timing-by-zone" class="article-featured" data-category="Weed Control" data-grass="All">
+      <div class="featured-marker">
+        <div>
+          <div class="featured-eyebrow">Most important · Spring</div>
+          <div class="featured-title">Crabgrass pre-emergent timing by USDA zone</div>
+        </div>
+      </div>
+      <div class="featured-body">
+        <p class="featured-desc">Soil temperature — not the calendar — determines when to apply pre-emergent. This zone-by-zone guide gives you the exact soil temp thresholds and timing windows sourced from university extension research across zones 4–9.</p>
+        <div class="featured-meta">
+          <span class="featured-source">Iowa State Ext · Rutgers · Penn State</span>
+          <span class="featured-link">Read guide →</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="/learn/soil-temperature-lawn-care-guide" class="article-featured" data-category="Education" data-grass="All">
+      <div class="featured-marker">
+        <div>
+          <div class="featured-eyebrow">Foundational · All zones</div>
+          <div class="featured-title">Soil temperature guide for lawn care</div>
+        </div>
+      </div>
+      <div class="featured-body">
+        <p class="featured-desc">Every key lawn care timing decision — seeding, pre-emergent, fertilizing, aeration — is driven by soil temperature, not air temperature. This hub guide explains the thresholds that matter and how to track them for your yard.</p>
+        <div class="featured-meta">
+          <span class="featured-source">Multiple university sources</span>
+          <span class="featured-link">Read guide →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── Weed Control ── -->
+    <div class="category-section" data-category-section="Weed Control">
+      <div class="category-divider">
+        <span class="category-icon">🛡️</span>
+        <span class="category-name">Weed control</span>
+        <span class="category-article-count">3 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/pre-emergent-bermuda-grass" class="article-card" data-category="Weed Control" data-grass="Bermudagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-weed">Weed Control</span>
+            <span class="card-grass-pill">Bermuda</span>
+          </div>
+          <div class="card-title">When to apply pre-emergent for Bermuda grass</div>
+          <span class="card-source">Univ. of Georgia · Clemson Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/pre-emergent-cool-season-grass" class="article-card" data-category="Weed Control" data-grass="Tall Fescue">
+          <div class="card-tag-row">
+            <span class="card-tag tag-weed">Weed Control</span>
+            <span class="card-grass-pill">Tall Fescue · KBG</span>
+          </div>
+          <div class="card-title">Pre-emergent timing for Tall Fescue and Kentucky Bluegrass</div>
+          <span class="card-source">Penn State Ext. · Univ. of Kentucky</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Fertilizing ── -->
+    <div class="category-section" data-category-section="Fertilizing">
+      <div class="category-divider">
+        <span class="category-icon">🌱</span>
+        <span class="category-name">Fertilizing</span>
+        <span class="category-article-count">6 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/bermuda-grass-fertilizer-schedule" class="article-card" data-category="Fertilizing" data-grass="Bermudagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-fert">Fertilizing</span>
+            <span class="card-grass-pill">Bermuda · Zones 7–9</span>
+          </div>
+          <div class="card-title">Bermuda grass fertilizer schedule by month</div>
+          <span class="card-source">Univ. of Georgia · NC State TurfFiles</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/tall-fescue-fertilizer-schedule" class="article-card" data-category="Fertilizing" data-grass="Tall Fescue">
+          <div class="card-tag-row">
+            <span class="card-tag tag-fert">Fertilizing</span>
+            <span class="card-grass-pill">Tall Fescue · Zones 5–7</span>
+          </div>
+          <div class="card-title">Tall Fescue fertilizer schedule: zones 5–7 by month</div>
+          <span class="card-source">Penn State Ext. · Univ. of Maryland</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/kentucky-bluegrass-fertilizer-schedule" class="article-card" data-category="Fertilizing" data-grass="Kentucky Bluegrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-fert">Fertilizing</span>
+            <span class="card-grass-pill">Kentucky Bluegrass</span>
+          </div>
+          <div class="card-title">Kentucky Bluegrass fertilizer schedule and timing by zone</div>
+          <span class="card-source">Univ. of Minnesota · Penn State Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/zoysia-grass-fertilizer-schedule" class="article-card" data-category="Fertilizing" data-grass="Zoysiagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-fert">Fertilizing</span>
+            <span class="card-grass-pill">Zoysia · Zones 6–9</span>
+          </div>
+          <div class="card-title">Zoysia grass fertilizer schedule: when and how much</div>
+          <span class="card-source">Clemson Ext. · NC State TurfFiles</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/st-augustine-fertilizer-schedule" class="article-card" data-category="Fertilizing" data-grass="St. Augustinegrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-fert">Fertilizing</span>
+            <span class="card-grass-pill">St. Augustine · Zones 8–9</span>
+          </div>
+          <div class="card-title">St. Augustinegrass fertilizer schedule (zones 8–9)</div>
+          <span class="card-source">Texas A&amp;M AgriLife · Univ. of Florida IFAS</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/fall-fertilizer-timing-guide" class="article-card" data-category="Fertilizing" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-fert">Fertilizing</span>
+            <span class="card-grass-pill">Cool-season · Zones 4–7</span>
+          </div>
+          <div class="card-title">Fall fertilizer timing: the most important lawn feeding of the year</div>
+          <span class="card-source">Penn State Ext. · Univ. of Kentucky</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Overseeding ── -->
+    <div class="category-section" data-category-section="Overseeding">
+      <div class="category-divider">
+        <span class="category-icon">🌾</span>
+        <span class="category-name">Overseeding</span>
+        <span class="category-article-count">5 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/overseed-tall-fescue-zone-6b" class="article-card" data-category="Overseeding" data-grass="Tall Fescue">
+          <div class="card-tag-row">
+            <span class="card-tag tag-seed">Overseeding</span>
+            <span class="card-grass-pill">Tall Fescue · Zone 6b</span>
+          </div>
+          <div class="card-title">When to overseed Tall Fescue in Zone 6b</div>
+          <span class="card-source">Penn State Ext. · NC State TurfFiles</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/kentucky-bluegrass-overseeding-guide" class="article-card" data-category="Overseeding" data-grass="Kentucky Bluegrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-seed">Overseeding</span>
+            <span class="card-grass-pill">Kentucky Bluegrass</span>
+          </div>
+          <div class="card-title">Kentucky Bluegrass overseeding guide: timing, rates, and recovery</div>
+          <span class="card-source">Univ. of Minnesota · Penn State Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/overseed-bermuda-ryegrass-winter" class="article-card" data-category="Overseeding" data-grass="Bermudagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-seed">Overseeding</span>
+            <span class="card-grass-pill">Bermuda · Winter color</span>
+          </div>
+          <div class="card-title">When to overseed Bermuda grass with ryegrass for winter color</div>
+          <span class="card-source">Univ. of Georgia · Clemson Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/bermuda-grass-overseeding-guide" class="article-card" data-category="Overseeding" data-grass="Bermudagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-seed">Overseeding</span>
+            <span class="card-grass-pill">Bermuda · Spring</span>
+          </div>
+          <div class="card-title">Bermuda grass overseeding: when, how, and seeding rates</div>
+          <span class="card-source">Univ. of Georgia · Clemson Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/zoysia-grass-overseeding-guide" class="article-card" data-category="Overseeding" data-grass="Zoysiagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-seed">Overseeding</span>
+            <span class="card-grass-pill">Zoysiagrass</span>
+          </div>
+          <div class="card-title">Zoysia grass overseeding: should you — and when to do it</div>
+          <span class="card-source">NC State TurfFiles · Clemson Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Aeration ── -->
+    <div class="category-section" data-category-section="Aeration">
+      <div class="category-divider">
+        <span class="category-icon">⊕</span>
+        <span class="category-name">Aeration</span>
+        <span class="category-article-count">2 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/aeration-timing-cool-season-grass" class="article-card" data-category="Aeration" data-grass="Tall Fescue">
+          <div class="card-tag-row">
+            <span class="card-tag tag-aerate">Aeration</span>
+            <span class="card-grass-pill">Tall Fescue · KBG · Rye</span>
+          </div>
+          <div class="card-title">Core aeration timing for cool-season grasses: zone-by-zone guide</div>
+          <span class="card-source">Penn State Ext. · Purdue Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/aeration-timing-warm-season-grass" class="article-card" data-category="Aeration" data-grass="Bermudagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-aerate">Aeration</span>
+            <span class="card-grass-pill">Bermuda · Zoysia</span>
+          </div>
+          <div class="card-title">When to aerate Bermuda and Zoysia: warm-season timing guide</div>
+          <span class="card-source">Univ. of Georgia · NC State TurfFiles</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Watering ── -->
+    <div class="category-section" data-category-section="Watering">
+      <div class="category-divider">
+        <span class="category-icon">💧</span>
+        <span class="category-name">Watering</span>
+        <span class="category-article-count">3 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/watering-bermuda-grass-guide" class="article-card" data-category="Watering" data-grass="Bermudagrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-water">Watering</span>
+            <span class="card-grass-pill">Bermuda</span>
+          </div>
+          <div class="card-title">How often to water Bermuda grass by season and zone</div>
+          <span class="card-source">Texas A&amp;M AgriLife · Univ. of Florida IFAS</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/watering-tall-fescue-guide" class="article-card" data-category="Watering" data-grass="Tall Fescue">
+          <div class="card-tag-row">
+            <span class="card-tag tag-water">Watering</span>
+            <span class="card-grass-pill">Tall Fescue</span>
+          </div>
+          <div class="card-title">Tall Fescue watering guide: how much and how often by zone</div>
+          <span class="card-source">Penn State Ext. · NC State TurfFiles</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/watering-st-augustine-grass-guide" class="article-card" data-category="Watering" data-grass="St. Augustinegrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-water">Watering</span>
+            <span class="card-grass-pill">St. Augustine</span>
+          </div>
+          <div class="card-title">St. Augustinegrass watering guide: preventing chinch bug damage</div>
+          <span class="card-source">Univ. of Florida IFAS · Texas A&amp;M AgriLife</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Fundamentals ── -->
+    <div class="category-section" data-category-section="Education">
+      <div class="category-divider">
+        <span class="category-icon">📋</span>
+        <span class="category-name">Fundamentals</span>
+        <span class="category-article-count">4 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/how-to-read-fertilizer-label-npk" class="article-card" data-category="Education" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-edu">Fundamentals</span>
+            <span class="card-grass-pill">All grass types</span>
+          </div>
+          <div class="card-title">How to read a fertilizer label: NPK ratios explained for DIYers</div>
+          <span class="card-source">Purdue Ext. · Penn State Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/usda-hardiness-zones-lawn-care-guide" class="article-card" data-category="Education" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-edu">Fundamentals</span>
+            <span class="card-grass-pill">All zones</span>
+          </div>
+          <div class="card-title">USDA hardiness zones explained: find your zone by zip code</div>
+          <span class="card-source">USDA ARS · Penn State Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/how-to-check-soil-temperature-lawn" class="article-card" data-category="Education" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-edu">Fundamentals</span>
+            <span class="card-grass-pill">All grass types</span>
+          </div>
+          <div class="card-title">What is soil temperature and how to check it in your yard</div>
+          <span class="card-source">Multiple university sources</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/mowing-height-by-grass-type-guide" class="article-card" data-category="Education" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-mow">Mowing</span>
+            <span class="card-grass-pill">All grass types</span>
+          </div>
+          <div class="card-title">Mowing height by grass type: the research-backed guide</div>
+          <span class="card-source">Multiple university sources</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ── Care Calendars ── -->
+    <div class="category-section" data-category-section="Care Calendar">
+      <div class="category-divider">
+        <span class="category-icon">📅</span>
+        <span class="category-name">Zone care calendars</span>
+        <span class="category-article-count">4 guides</span>
+      </div>
+      <div class="article-grid">
+
+        <a href="/learn/perennial-ryegrass-care-calendar" class="article-card" data-category="Care Calendar" data-grass="Perennial Ryegrass">
+          <div class="card-tag-row">
+            <span class="card-tag tag-cal">Care Calendar</span>
+            <span class="card-grass-pill">Perennial Ryegrass</span>
+          </div>
+          <div class="card-title">Perennial Ryegrass care calendar: seed, feed, and mow by zone</div>
+          <span class="card-source">Oregon State Ext. · Iowa State Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/lawn-care-calendar-zone-5" class="article-card" data-category="Care Calendar" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-cal">Care Calendar</span>
+            <span class="card-grass-pill">Zone 5</span>
+          </div>
+          <div class="card-title">Lawn care for zone 5: month-by-month calendar</div>
+          <span class="card-source">Univ. of Minnesota Ext. · Iowa State Ext.</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/lawn-care-calendar-zone-7" class="article-card" data-category="Care Calendar" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-cal">Care Calendar</span>
+            <span class="card-grass-pill">Zone 7</span>
+          </div>
+          <div class="card-title">Lawn care for zone 7: month-by-month calendar</div>
+          <span class="card-source">Univ. of Georgia · NC State · Univ. of Maryland</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+        <a href="/learn/lawn-care-calendar-zone-9" class="article-card" data-category="Care Calendar" data-grass="All">
+          <div class="card-tag-row">
+            <span class="card-tag tag-cal">Care Calendar</span>
+            <span class="card-grass-pill">Zone 9</span>
+          </div>
+          <div class="card-title">Lawn care for zone 9: month-by-month calendar</div>
+          <span class="card-source">Univ. of Florida IFAS · Texas A&amp;M AgriLife</span>
+          <span class="card-read-link">Read guide →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="no-results" id="no-results">
+      <p>No guides match that filter yet — more are being added each week.</p>
+    </div>
+
+  </div><!-- end learn-articles -->
+
+  <!-- ── Sidebar ── -->
+  <aside class="learn-sidebar">
+
+    <!-- App CTA -->
+    <div class="sidebar-cta">
+      <div class="sidebar-cta-header">
+        <div class="sidebar-cta-eyebrow">Put it into practice</div>
+        <div class="sidebar-cta-title">Track your lawn while you learn</div>
+      </div>
+      <div class="sidebar-cta-body">
+        <p class="sidebar-cta-text">Yardstick monitors soil temp daily for your zip code and tells you when your timing windows open — so the research actually lands in your yard.</p>
+        <div class="sidebar-cta-feature">Live soil temp by zip code</div>
+        <div class="sidebar-cta-feature">Zone-specific care programs</div>
+        <div class="sidebar-cta-feature">Activity log and reminders</div>
+        <div class="sidebar-cta-feature">Free — no account required</div>
+        <a href="https://yardstick.diy" class="btn-sidebar-cta">Open the app — free →</a>
+      </div>
+    </div>
+
+    <!-- Grass type quick nav -->
+    <div class="sidebar-grass">
+      <div class="sidebar-grass-label">Browse by grass type</div>
+      <div class="grass-nav-item" onclick="applyFilter('Bermudagrass', null)">
+        <span class="grass-nav-name">Bermudagrass</span>
+        <span class="grass-nav-type">Warm-season</span>
+      </div>
+      <div class="grass-nav-item" onclick="applyFilter('Tall Fescue', null)">
+        <span class="grass-nav-name">Tall Fescue</span>
+        <span class="grass-nav-type">Cool-season</span>
+      </div>
+      <div class="grass-nav-item" onclick="applyFilter('Kentucky Bluegrass', null)">
+        <span class="grass-nav-name">Kentucky Bluegrass</span>
+        <span class="grass-nav-type">Cool-season</span>
+      </div>
+      <div class="grass-nav-item" onclick="applyFilter('Zoysiagrass', null)">
+        <span class="grass-nav-name">Zoysiagrass</span>
+        <span class="grass-nav-type">Warm-season</span>
+      </div>
+      <div class="grass-nav-item" onclick="applyFilter('St. Augustinegrass', null)">
+        <span class="grass-nav-name">St. Augustinegrass</span>
+        <span class="grass-nav-type">Warm-season</span>
+      </div>
+      <div class="grass-nav-item" onclick="applyFilter('Perennial Ryegrass', null)">
+        <span class="grass-nav-name">Perennial Ryegrass</span>
+        <span class="grass-nav-type">Cool-season</span>
+      </div>
+      <div class="grass-nav-item" onclick="applyFilter('all', null)">
+        <span class="grass-nav-name" style="color: var(--stone);">Show all guides</span>
+        <span class="grass-nav-type"></span>
+      </div>
+    </div>
+
+    <!-- Research sources -->
+    <div class="sidebar-sources">
+      <div class="sidebar-sources-label">Research sources</div>
+      <div class="source-row"><span class="source-dot-green"></span>Penn State Extension</div>
+      <div class="source-row"><span class="source-dot-green"></span>NC State TurfFiles</div>
+      <div class="source-row"><span class="source-dot-green"></span>Univ. of Georgia Ext.</div>
+      <div class="source-row"><span class="source-dot-green"></span>Texas A&amp;M AgriLife</div>
+      <div class="source-row"><span class="source-dot-green"></span>Univ. of Florida IFAS</div>
+      <div class="source-row"><span class="source-dot-green"></span>Univ. of Minnesota Ext.</div>
+      <div class="source-row"><span class="source-dot-green"></span>Clemson Cooperative Ext.</div>
+      <div class="source-row"><span class="source-dot-green"></span>Iowa State Ext.</div>
+      <div class="source-row"><span class="source-dot-green"></span>Purdue Ext.</div>
+      <div class="source-row"><span class="source-dot-green"></span>Oregon State Ext.</div>
+      <a href="https://yardstick.diy/#research" style="font-family: var(--ff-body); font-size: 0.78rem; font-weight: 700; color: var(--green); display: block; margin-top: 10px;">View all 19 sources →</a>
+    </div>
+
+  </aside>
+
+</div><!-- end learn-layout -->
+```
+
+  </div><!-- end page-wrap -->
+
+  <!-- ── Bottom CTA band ── -->
+
+  <div class="cta-band">
+    <div class="cta-band-inner">
+      <div class="cta-band-eyebrow">Yardstick · Free companion app</div>
+      <h2 class="cta-band-title">Reading about it is step one.<br>Tracking it is step two.</h2>
+      <p class="cta-band-text">Yardstick logs your activities, monitors your soil temp, and follows your care program — built from the same university research behind these guides.</p>
+      <a href="https://yardstick.diy" class="btn-cta-band">Start tracking my lawn →</a>
+      <div class="cta-band-note">Free · No account required · No ads · No product promotion</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Footer ── -->
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-top">
+      <div>
+        <svg viewBox="0 0 160 34" height="24" width="auto" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="26" font-family="Bitter, Georgia, serif" font-weight="900" font-size="26" fill="#F7F3EC" letter-spacing="-0.5">Yardstick</text>
+          <rect x="0" y="30" width="156" height="3" rx="1" fill="#F5C842"/>
+          <rect x="18" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="36" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="54" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="72" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="90" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="108" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="126" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+          <rect x="144" y="30" width="1" height="3" fill="#1E1A14" opacity="0.3"/>
+        </svg>
+        <p class="footer-tagline">Lawn care backed by science. Built for your yard.</p>
+      </div>
+      <div class="footer-nav-group">
+        <div class="footer-nav-label">App</div>
+        <a href="https://yardstick.diy" class="footer-nav-link">Track my lawn</a>
+        <a href="https://yardstick.diy/#schedules" class="footer-nav-link">My Yard</a>
+        <a href="https://yardstick.diy/#garage" class="footer-nav-link">My Garage</a>
+      </div>
+      <div class="footer-nav-group">
+        <div class="footer-nav-label">Guides</div>
+        <a href="/learn" class="footer-nav-link">All guides</a>
+        <a href="/learn#Weed Control" class="footer-nav-link">Weed control</a>
+        <a href="/learn#Fertilizing" class="footer-nav-link">Fertilizing</a>
+        <a href="/learn#Overseeding" class="footer-nav-link">Overseeding</a>
+      </div>
+      <div class="footer-nav-group">
+        <div class="footer-nav-label">Research</div>
+        <a href="https://yardstick.diy/#research" class="footer-nav-link">University sources</a>
+        <a href="https://yardstick.diy/#research" class="footer-nav-link">19 extensions cited</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-legal">© 2025 Yardstick · Yardstick.diy</div>
+      <div class="footer-legal">No ads · No tracking · No product promotion</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Filter logic ─────────────────────────────────────────────────────────
+  function applyFilter(filter, btn) {
+    // Update button states
+    if (btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    const cards = document.querySelectorAll('.article-card, .article-featured');
+    const sections = document.querySelectorAll('[data-category-section]');
+    let anyVisible = false;
+
+    if (filter === 'all') {
+      cards.forEach(c => c.removeAttribute('data-hidden'));
+      sections.forEach(s => s.removeAttribute('data-hidden'));
+      anyVisible = true;
+    } else {
+      // Check if it's a grass type filter or category filter
+      const isGrass = ['Bermudagrass','Tall Fescue','Kentucky Bluegrass',
+                       'Zoysiagrass','St. Augustinegrass','Perennial Ryegrass'].includes(filter);
+
+      cards.forEach(card => {
+        const match = isGrass
+          ? (card.dataset.grass || '').includes(filter)
+          : (card.dataset.category || '') === filter;
+
+        if (match) {
+          card.removeAttribute('data-hidden');
+          anyVisible = true;
+        } else {
+          card.setAttribute('data-hidden', 'true');
+        }
+      });
+
+      // Hide empty category sections
+      sections.forEach(section => {
+        const visibleCards = section.querySelectorAll('.article-card:not([data-hidden="true"])');
+        if (visibleCards.length === 0) {
+          section.setAttribute('data-hidden', 'true');
+        } else {
+          section.removeAttribute('data-hidden');
+        }
+      });
+    }
+
+    const noResults = document.getElementById('no-results');
+    if (anyVisible) {
+      noResults.classList.remove('visible');
+    } else {
+      noResults.classList.add('visible');
+    }
+
+    // Scroll to top of article area smoothly
+    document.querySelector('.learn-articles').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Grass nav items update filter buttons too ─────────────────────────
+  document.querySelectorAll('.grass-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const filter = item.querySelector('.grass-nav-name').textContent.trim();
+      if (filter === 'Show all guides') {
+        const allBtn = document.querySelector('[data-filter="all"]');
+        applyFilter('all', allBtn);
+      } else {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        applyFilter(filter, null);
+      }
+    });
+  });
+
+  // ── Hash-based deep linking (e.g. /learn#Fertilizing) ────────────────
+  if (window.location.hash) {
+    const hashFilter = decodeURIComponent(window.location.hash.slice(1));
+    const matchBtn = document.querySelector(`[data-filter="${hashFilter}"]`);
+    if (matchBtn) {
+      applyFilter(hashFilter, matchBtn);
+    }
+  }
+</script>
+
+</body>
+</html>
