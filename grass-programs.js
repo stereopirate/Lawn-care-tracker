@@ -768,7 +768,8 @@ const grassPrograms = {
                 tasks: [
                     "Overseed bermuda/zoysia when going dormant: 5-10 lbs per 1,000 sq ft",
                     "Scalp warm-season grass low (0.5-1\") before overseeding",
-                    "Keep moist until germination (5-10 days)"
+                    "Keep moist until germination (5-10 days)",
+                    "Get a soil test"
                 ]
             },
             {
@@ -833,7 +834,8 @@ const grassPrograms = {
                 month: "September",
                 tasks: [
                     "Last fertilization: 0.5-0.75 lb N (early September — stop 6 weeks before first frost)",
-                    "Avoid late fertilization to prevent winterkill risk"
+                    "Avoid late fertilization to prevent winterkill risk",
+                    "Get a soil test"
                 ]
             },
             {
@@ -898,7 +900,8 @@ const grassPrograms = {
                 tasks: [
                     "Last heavy fertilization: 0.75-1 lb N (early September)",
                     "Stop fertilizing by mid-September to avoid winterkill",
-                    "Optional: overseed with perennial ryegrass for winter color"
+                    "Optional: overseed with perennial ryegrass for winter color",
+                    "Get a soil test"
                 ]
             },
             {
@@ -969,7 +972,8 @@ const grassPrograms = {
                 tasks: [
                     "Last main fertilization: 0.75-1 lb N (early September)",
                     "Apply potassium to improve cold hardiness",
-                    "Optional: overseed with ryegrass for winter color"
+                    "Optional: overseed with ryegrass for winter color",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1024,7 +1028,8 @@ const grassPrograms = {
                     "Core aerate in April or May",
                     "Dethatch as needed — bermuda builds thatch fast in Zone 9",
                     "Post-emergent weed control as needed",
-                    "Mow every 5-7 days at 0.5-2 inches"
+                    "Mow every 5-7 days at 0.5-2 inches",
+                    "Get a soil test (late summer)"
                 ]
             },
             {
@@ -1088,7 +1093,8 @@ const grassPrograms = {
                 month: "September",
                 tasks: [
                     "Final fertilization: 0.5-0.75 lb N (early September ONLY — stop by Sept 15)",
-                    "Late fertilization delays dormancy and increases winterkill risk"
+                    "Late fertilization delays dormancy and increases winterkill risk",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1144,7 +1150,8 @@ const grassPrograms = {
                 tasks: [
                     "Final fertilization: 0.5-0.75 lb N per 1,000 sq ft (early Sept only — stop by Sept 15)",
                     "Late fertilization increases winterkill risk",
-                    "Optional: overseed with ryegrass for winter color"
+                    "Optional: overseed with ryegrass for winter color",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1207,7 +1214,8 @@ const grassPrograms = {
                 month: "September",
                 tasks: [
                     "Final fertilization: 0.75 lb N (early September)",
-                    "Stop fertilizing by mid-September to prepare for dormancy"
+                    "Stop fertilizing by mid-September to prepare for dormancy",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1261,7 +1269,8 @@ const grassPrograms = {
                     "Core aerate in April or May",
                     "Dethatch regularly — zoysia builds heavy thatch",
                     "Post-emergent weed control as needed",
-                    "Mow at 1-2 inches every 7-10 days"
+                    "Mow at 1-2 inches every 7-10 days",
+                    "Get a soil test (late summer)"
                 ]
             },
             {
@@ -1335,7 +1344,8 @@ const grassPrograms = {
                 month: "September",
                 tasks: [
                     "Final fertilization: 0.75-1 lb N per 1,000 sq ft (early September)",
-                    "Stop fertilizing 6-8 weeks before expected first frost"
+                    "Stop fertilizing 6-8 weeks before expected first frost",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1389,7 +1399,8 @@ const grassPrograms = {
                     "Chinch bug monitoring from April through September — treat if spotted",
                     "Watch for gray leaf spot after heavy rain; apply fungicide if needed",
                     "Apply iron supplement if yellowing occurs",
-                    "Mow at 3.5-4 inches every 7-10 days — never scalp"
+                    "Mow at 3.5-4 inches every 7-10 days — never scalp",
+                    "Get a soil test (late summer)"
                 ]
             },
             {
@@ -1473,7 +1484,8 @@ const grassPrograms = {
                     "Primary fertilization: 0.5-1 lb N per 1,000 sq ft (slow-release preferred)",
                     "Overseed thin or bare areas — ideal germination conditions",
                     "Core aerate before overseeding if soil is compacted",
-                    "Resume normal mowing at 2.5-3 inches"
+                    "Resume normal mowing at 2.5-3 inches",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1553,7 +1565,8 @@ const grassPrograms = {
                     "Primary fertilization: 0.5-1 lb N per 1,000 sq ft",
                     "Overseed thin spots — excellent germination window",
                     "Core aerate if soil is compacted",
-                    "Resume mowing at 2.5-3 inches"
+                    "Resume mowing at 2.5-3 inches",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1633,7 +1646,8 @@ const grassPrograms = {
                     "Primary fertilization: 0.5-1 lb N per 1,000 sq ft",
                     "Overseed bare and thin spots",
                     "Core aerate if needed",
-                    "Resume mowing at 2.5-3 inches"
+                    "Resume mowing at 2.5-3 inches",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1703,7 +1717,8 @@ const grassPrograms = {
                 tasks: [
                     "Primary fertilization: 0.5 lb N per 1,000 sq ft",
                     "Overseed any areas lost to summer stress",
-                    "Core aerate if soil is compacted"
+                    "Core aerate if soil is compacted",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1775,7 +1790,8 @@ const grassPrograms = {
                 tasks: [
                     "Stop fertilizing by September 1 — late feeding increases freeze damage risk",
                     "Reduce irrigation as temperatures drop",
-                    "Do not core aerate — centipede recovers slowly from disruption"
+                    "Do not core aerate — centipede recovers slowly from disruption",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1847,7 +1863,8 @@ const grassPrograms = {
                 tasks: [
                     "Final fertilization no later than early September",
                     "Reduce irrigation as growth slows",
-                    "Monitor for thatch — dethatch in spring if needed"
+                    "Monitor for thatch — dethatch in spring if needed",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1910,7 +1927,8 @@ const grassPrograms = {
                 tasks: [
                     "Final fertilization no later than September (0.5 lb N per 1,000 sq ft)",
                     "Reduce irrigation as temperatures begin to drop",
-                    "Watch for large patch as cooler, wetter weather arrives"
+                    "Watch for large patch as cooler, wetter weather arrives",
+                    "Get a soil test"
                 ]
             },
             {
@@ -1975,7 +1993,8 @@ const grassPrograms = {
                 tasks: [
                     "Third fertilization (August): 1 lb N per 1,000 sq ft",
                     "Continue mole cricket monitoring",
-                    "Mow at 3-4 inches to maintain density"
+                    "Mow at 3-4 inches to maintain density",
+                    "Get a soil test"
                 ]
             },
             {
@@ -2040,7 +2059,8 @@ const grassPrograms = {
                 tasks: [
                     "Final fertilization: 1 lb N per 1,000 sq ft (September)",
                     "Pre-emergent reapplication for winter annuals",
-                    "Mowing slows as temperatures drop"
+                    "Mowing slows as temperatures drop",
+                    "Get a soil test"
                 ]
             },
             {
@@ -2107,7 +2127,8 @@ const grassPrograms = {
                 tasks: [
                     "Do NOT fertilize in fall — buffalograss does not benefit from fall feeding",
                     "Lawn begins preparing for dormancy",
-                    "Final mow before dormancy if needed"
+                    "Final mow before dormancy if needed",
+                    "Get a soil test"
                 ]
             },
             {
@@ -2162,7 +2183,8 @@ const grassPrograms = {
                 month: "September",
                 tasks: [
                     "Lawn begins slowing — no fertilization",
-                    "Final mow before dormancy"
+                    "Final mow before dormancy",
+                    "Get a soil test"
                 ]
             },
             {
@@ -2216,7 +2238,8 @@ const grassPrograms = {
                 tasks: [
                     "Growth slows — reduce mowing",
                     "No fertilization in fall",
-                    "Final mow at 3 inches before dormancy"
+                    "Final mow at 3 inches before dormancy",
+                    "Get a soil test"
                 ]
             },
             {
@@ -2271,7 +2294,8 @@ const grassPrograms = {
                 tasks: [
                     "Lawn begins slowing",
                     "No fall fertilization",
-                    "Final mow at 3 inches"
+                    "Final mow at 3 inches",
+                    "Get a soil test"
                 ]
             },
             {
@@ -2302,7 +2326,7 @@ const grassPrograms = {
             { month: "April", soilTemp: "50-55°F", tasks: ["Apply pre-emergent before soil hits 55°F", "First fertilization: 0.75 lb N per 1,000 sq ft", "Mow weekly at 3-3.5 inches", "Water 1-1.25 inches per week if dry"] },
             { month: "May", tasks: ["Second fertilization: 0.75 lb N per 1,000 sq ft", "Continue mowing at 3-3.5 inches", "Spot spray broadleaf weeds if needed"] },
             { month: "June-August", tasks: ["Raise mowing height to 3.5-4 inches for summer", "Minimal fertilization during heat — skip if stressed", "Water 1-1.25 inches per week; shade areas need less", "Accept KBG-component summer thinning — it recovers in fall"] },
-            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft", "Core aerate if needed", "Overseed thin areas with matching sun/shade blend: 4-6 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches"] },
+            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft", "Core aerate if needed", "Overseed thin areas with matching sun/shade blend: 4-6 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches", "Get a soil test"] },
             { month: "October", tasks: ["Second fall fertilization: 0.75 lb N per 1,000 sq ft", "Apply lime if soil pH below 6.0", "Continue mowing until growth stops"] },
             { month: "November", tasks: ["Final fertilization: 0.75 lb N per 1,000 sq ft (early Nov)", "Final mowing at 2.5-3 inches", "Clean up leaves"] },
             { month: "December-February", tasks: ["No maintenance needed", "Stay off frozen grass", "Plan spring program"] }
@@ -2321,7 +2345,7 @@ const grassPrograms = {
             { month: "March-April", soilTemp: "50-55°F", tasks: ["Clean up winter debris", "Apply pre-emergent when soil hits 50-55°F", "First fertilization: 0.75 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches"] },
             { month: "May", tasks: ["Second fertilization: 0.75 lb N per 1,000 sq ft", "Mow weekly", "Spot spray broadleaf weeds if needed"] },
             { month: "June-August", tasks: ["Raise mowing to 3.5-4 inches for summer heat", "Water 1-1.25 inches per week (shade areas need less)", "Hold fertilization during heat; 0.5 lb N max if lawn looks healthy", "Accept some summer thinning in sunny areas — normal for KBG component"] },
-            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft", "Core aerate", "Overseed with matching sun/shade blend: 4-6 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches"] },
+            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft", "Core aerate", "Overseed with matching sun/shade blend: 4-6 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Two fall fertilizations: 0.75 lb N each", "Apply lime if pH below 6.0", "Continue mowing until growth stops", "Final mow at 2.5-3 inches"] }
         ],
         sources: [
@@ -2338,7 +2362,7 @@ const grassPrograms = {
             { month: "March-April", soilTemp: "55°F", tasks: ["Apply pre-emergent when soil reaches 55°F", "First fertilization: 0.75 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches"] },
             { month: "May", tasks: ["Second fertilization: 0.75 lb N per 1,000 sq ft", "Mow weekly at 3-3.5 inches"] },
             { month: "June-August", tasks: ["Raise mowing to 3.5-4 inches for heat", "Water 1-1.25 inches per week", "Reduce or skip fertilization (0.5 lb N max)", "Watch for brown patch in humid weeks", "Accept thinning in full-sun areas — overseed in fall"] },
-            { month: "September", importance: "PRIMARY FEEDING SEASON", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft", "Core aerate", "Overseed thin and full-sun areas with matching blend: 5-7 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches"] },
+            { month: "September", importance: "PRIMARY FEEDING SEASON", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft", "Core aerate", "Overseed thin and full-sun areas with matching blend: 5-7 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Fall fertilization: 0.75 lb N per 1,000 sq ft", "Continue mowing until growth stops", "Final mow at 2.5-3 inches"] }
         ],
         sources: [
@@ -2355,7 +2379,7 @@ const grassPrograms = {
             { month: "February-March", soilTemp: "55°F", tasks: ["Apply pre-emergent early (soil warms faster here)", "First fertilization: 0.75 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches"] },
             { month: "April-May", tasks: ["Second fertilization: 0.75 lb N per 1,000 sq ft", "Mow weekly", "Water as needed — 1-1.25 inches per week"] },
             { month: "June-August", tasks: ["Raise mowing to 4 inches for heat stress management", "Water deeply 1.25 inches per week — increase if very hot", "NO fertilization in peak summer heat", "Expect significant thinning in full-sun areas — plan fall overseeding", "Shaded areas will look better than sun-exposed areas"] },
-            { month: "September", importance: "CRITICAL — RECOVER SUMMER DAMAGE", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft (early Sept)", "Core aerate all thinned areas", "Overseed aggressively with matching blend: 6-8 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches"] },
+            { month: "September", importance: "CRITICAL — RECOVER SUMMER DAMAGE", tasks: ["Heavy fertilization: 1 lb N per 1,000 sq ft (early Sept)", "Core aerate all thinned areas", "Overseed aggressively with matching blend: 6-8 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Fall fertilization: 0.75 lb N per 1,000 sq ft", "Mow until growth stops", "Final mow at 3 inches"] }
         ],
         sources: [
@@ -2377,7 +2401,7 @@ const grassPrograms = {
             { month: "April", tasks: ["Light fertilization: 0.5 lb N per 1,000 sq ft (slow-release preferred)", "Mow at 3-3.5 inches — do not mow shorter", "Water only if very dry (shade reduces evaporation)"] },
             { month: "May", tasks: ["Mow weekly as needed", "Spot spray weeds carefully — fine fescue is sensitive to some herbicides", "No additional fertilization needed"] },
             { month: "June-August", tasks: ["Raise mowing to 3.5-4 inches in summer", "NO fertilization — over-feeding fine fescue causes surge growth and disease", "Water only if extended dry spell (1-2 weeks without rain)", "Lawn may semi-dormant and look tired — this is normal"] },
-            { month: "September", tasks: ["Light overseeding with matching dense shade blend if areas are thin: 3-5 lbs per 1,000 sq ft", "Optional very light fertilization: 0.5 lb N per 1,000 sq ft", "Core aerate only if severely compacted — fine fescue is slow to recover"] },
+            { month: "September", tasks: ["Light overseeding with matching dense shade blend if areas are thin: 3-5 lbs per 1,000 sq ft", "Optional very light fertilization: 0.5 lb N per 1,000 sq ft", "Core aerate only if severely compacted — fine fescue is slow to recover", "Get a soil test"] },
             { month: "October", tasks: ["Second light fertilization: 0.5 lb N per 1,000 sq ft", "Continue mowing until growth stops"] },
             { month: "November", tasks: ["Final mow at 3 inches", "Leaf cleanup — leaves smother fine fescue if left over winter"] },
             { month: "December-February", tasks: ["No maintenance needed", "Stay off frozen grass"] }
@@ -2396,7 +2420,7 @@ const grassPrograms = {
             { month: "March-April", tasks: ["Gentle cleanup — avoid aggressive raking", "Light fertilization: 0.5 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches when grass reaches 4 inches"] },
             { month: "May-June", tasks: ["Mow as needed (shade slows growth)", "No additional fertilizer", "Water only if 2+ weeks without rain"] },
             { month: "July-August", tasks: ["Raise mowing to 3.5-4 inches", "NO fertilization", "Allow semi-dormancy if hot and dry — fine fescue recovers in fall", "Keep leaves and debris cleared for air circulation"] },
-            { month: "September", tasks: ["Overseed thin areas with matching shade blend: 3-5 lbs per 1,000 sq ft", "Light fertilization: 0.5 lb N per 1,000 sq ft", "Aerate only if severely compacted"] },
+            { month: "September", tasks: ["Overseed thin areas with matching shade blend: 3-5 lbs per 1,000 sq ft", "Light fertilization: 0.5 lb N per 1,000 sq ft", "Aerate only if severely compacted", "Get a soil test"] },
             { month: "October-November", tasks: ["Second light fertilization: 0.5 lb N per 1,000 sq ft", "Mow until growth stops", "Final mow at 3 inches; clear fallen leaves promptly"] }
         ],
         sources: [
@@ -2413,7 +2437,7 @@ const grassPrograms = {
             { month: "March-April", tasks: ["Light cleanup; begin mowing at 3-3.5 inches", "Light fertilization: 0.5 lb N per 1,000 sq ft"] },
             { month: "May", tasks: ["Mow as needed in shade — growth is slower than sun areas", "No additional fertilizer"] },
             { month: "June-August", tasks: ["Raise mowing to 3.5-4 inches", "NO fertilization — risk of disease surge in summer heat", "Water minimally — shade retains moisture; water only after 10+ dry days", "Watch for dollar spot and red thread; improve air circulation if possible"] },
-            { month: "September", importance: "PRIMARY RECOVERY MONTH", tasks: ["Overseed thin areas with matching shade blend: 3-5 lbs per 1,000 sq ft", "Light fertilization: 0.5 lb N per 1,000 sq ft", "Aerate only if truly compacted"] },
+            { month: "September", importance: "PRIMARY RECOVERY MONTH", tasks: ["Overseed thin areas with matching shade blend: 3-5 lbs per 1,000 sq ft", "Light fertilization: 0.5 lb N per 1,000 sq ft", "Aerate only if truly compacted", "Get a soil test"] },
             { month: "October-November", tasks: ["Light fertilization: 0.5 lb N per 1,000 sq ft", "Mow until growth stops; clear fallen leaves — critical in shaded areas", "Final mow at 3 inches"] }
         ],
         sources: [
@@ -2430,7 +2454,7 @@ const grassPrograms = {
             { month: "February-March", tasks: ["Light cleanup", "Light fertilization: 0.5 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches"] },
             { month: "April-May", tasks: ["Mow lightly as needed", "No additional fertilization"] },
             { month: "June-August", tasks: ["Raise mowing to 4 inches", "NO fertilization — fine fescue under Zone 7 heat is already stressed", "Water only if 10+ days without rain", "Significant thinning and semi-dormancy is normal and expected", "Do not over-irrigate — this promotes fungal disease in shade"] },
-            { month: "September", importance: "CRITICAL RECOVERY WINDOW", tasks: ["Overseed with matching dense shade blend: 4-6 lbs per 1,000 sq ft", "Light fertilization: 0.5 lb N per 1,000 sq ft only", "Lower mowing back to 3-3.5 inches"] },
+            { month: "September", importance: "CRITICAL RECOVERY WINDOW", tasks: ["Overseed with matching dense shade blend: 4-6 lbs per 1,000 sq ft", "Light fertilization: 0.5 lb N per 1,000 sq ft only", "Lower mowing back to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["One additional light fertilization: 0.5 lb N per 1,000 sq ft", "Mow until growth stops", "Clear leaves promptly to prevent smothering"] }
         ],
         sources: [
@@ -2453,7 +2477,7 @@ const grassPrograms = {
             { month: "May", tasks: ["Second fertilization: 1 lb N per 1,000 sq ft", "Continue mowing at 3-3.5 inches", "Spot spray broadleaf weeds if needed"] },
             { month: "June", tasks: ["Raise mowing height to 3.5-4 inches for summer", "Light fertilization: 0.5 lb N per 1,000 sq ft (optional)", "Water deeply: 1-1.5 inches per week"] },
             { month: "July-August", tasks: ["NO fertilization", "Maintain 3.5-4 inch mowing height", "Water 1-1.5 inches per week", "Accept some summer thinning — KBG component will help fill in fall"] },
-            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft", "Core aerate", "Overseed with matching tall fescue blend seed: 5-7 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches"] },
+            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft", "Core aerate", "Overseed with matching tall fescue blend seed: 5-7 lbs per 1,000 sq ft", "Lower mowing back to 3-3.5 inches", "Get a soil test"] },
             { month: "October", tasks: ["Second fall fertilization: 1 lb N per 1,000 sq ft", "Apply lime if pH below 6.0", "Continue mowing"] },
             { month: "November", tasks: ["Final fertilization: 1 lb N per 1,000 sq ft (early Nov)", "Final mowing at 2.5-3 inches", "Clean up leaves"] },
             { month: "December-February", tasks: ["No maintenance needed", "Stay off frozen grass"] }
@@ -2472,7 +2496,7 @@ const grassPrograms = {
             { month: "March-April", soilTemp: "50-55°F", tasks: ["Clean up winter debris", "Apply pre-emergent when soil hits 50-55°F", "First fertilization: 1 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches"] },
             { month: "May", tasks: ["Second fertilization: 1 lb N per 1,000 sq ft", "Mow weekly at 3-3.5 inches"] },
             { month: "June-August", tasks: ["Raise mowing to 3.5-4 inches for heat", "Light summer fertilization: 0.5 lb N max (optional)", "Water deeply 1-1.5 inches per week"] },
-            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft", "Core aerate", "Overseed with matching tall fescue blend seed: 5-7 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches"] },
+            { month: "September", importance: "MOST IMPORTANT MONTH", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft", "Core aerate", "Overseed with matching tall fescue blend seed: 5-7 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Fall fertilization: 1 lb N per 1,000 sq ft each month", "Apply lime if needed", "Continue mowing until growth stops", "Final mow at 2.5-3 inches"] }
         ],
         sources: [
@@ -2489,7 +2513,7 @@ const grassPrograms = {
             { month: "March-April", soilTemp: "55°F", tasks: ["Apply pre-emergent when soil reaches 55°F", "First fertilization: 1 lb N per 1,000 sq ft", "Begin regular mowing at 3-3.5 inches"] },
             { month: "May", tasks: ["Second fertilization: 1 lb N per 1,000 sq ft", "Mow weekly", "Water as needed"] },
             { month: "June-August", tasks: ["Raise mowing to 3.5-4 inches for heat", "Reduce fertilization (0.5 lb N max in summer)", "Water 1-1.5 inches per week", "Watch for brown patch disease in humid weeks"] },
-            { month: "September", importance: "PRIMARY FEEDING SEASON", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft", "Core aerate", "Overseed thin areas with matching tall fescue blend: 5-7 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches"] },
+            { month: "September", importance: "PRIMARY FEEDING SEASON", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft", "Core aerate", "Overseed thin areas with matching tall fescue blend: 5-7 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Fall fertilization: 1 lb N per 1,000 sq ft", "Continue mowing until growth stops", "Final mow at 2.5-3 inches"] }
         ],
         sources: [
@@ -2506,7 +2530,7 @@ const grassPrograms = {
             { month: "February-March", soilTemp: "55°F", tasks: ["Apply pre-emergent early (soil warms faster)", "First fertilization: 1 lb N per 1,000 sq ft", "Begin mowing at 3-3.5 inches"] },
             { month: "April-May", tasks: ["Second fertilization: 1 lb N per 1,000 sq ft", "Mow weekly", "Water 1-1.5 inches per week"] },
             { month: "June-August", tasks: ["Raise mowing to 4 inches for heat stress management", "NO or minimal fertilization (0.5 lb N max)", "Water deeply 1-1.5 inches per week — critical for survival", "Watch for brown patch; apply fungicide if needed", "Expect thinning in hot spots — KBG repairs; overseed remainder in fall"] },
-            { month: "September", importance: "CRITICAL RECOVERY MONTH", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft (early Sept)", "Core aerate all thinned areas", "Overseed aggressively with heat-tolerant tall fescue blend: 6-8 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches"] },
+            { month: "September", importance: "CRITICAL RECOVERY MONTH", tasks: ["Heavy fertilization: 1-1.5 lb N per 1,000 sq ft (early Sept)", "Core aerate all thinned areas", "Overseed aggressively with heat-tolerant tall fescue blend: 6-8 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Fall fertilization: 1 lb N per 1,000 sq ft", "Mow until growth stops", "Final mow at 3 inches"] }
         ],
         sources: [
@@ -2524,7 +2548,7 @@ const grassPrograms = {
             { month: "March-April", tasks: ["Second fertilization: 1 lb N per 1,000 sq ft", "Mow weekly", "Water 1-1.5 inches per week"] },
             { month: "May", tasks: ["Light fertilization: 0.5 lb N (may be last safe feeding until fall)", "Raise mowing to 3.5-4 inches as heat arrives"] },
             { month: "June-August", tasks: ["NO fertilization — lawn is heat-stressed", "Maintain 4 inch mowing height — never go shorter", "Water deeply and consistently: 1.5 inches per week minimum", "Accept significant thinning and browning — tall fescue struggles in Zone 8 summer", "Apply fungicide preventively if brown patch has been an issue"] },
-            { month: "September", importance: "MAKE OR BREAK MONTH", tasks: ["Heavy fertilization: 1.5 lb N per 1,000 sq ft as soon as heat breaks", "Core aerate all thinned and damaged areas", "Overseed heavily with matching tall fescue blend: 8-10 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches"] },
+            { month: "September", importance: "MAKE OR BREAK MONTH", tasks: ["Heavy fertilization: 1.5 lb N per 1,000 sq ft as soon as heat breaks", "Core aerate all thinned and damaged areas", "Overseed heavily with matching tall fescue blend: 8-10 lbs per 1,000 sq ft", "Lower mowing to 3-3.5 inches", "Get a soil test"] },
             { month: "October-November", tasks: ["Fall fertilization: 1 lb N per 1,000 sq ft", "Mow until growth stops", "Final mow at 3 inches"] }
         ],
         sources: [

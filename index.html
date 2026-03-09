@@ -1761,7 +1761,7 @@ window.ResearchSourcesPage = () => (
         return { status: 'ideal', label: 'Ideal', action: null, color: 'green' };
     };
 
-    const generateAdvisories = (w, lawnProfile) => {
+    const generateAdvisories = (w, lawnProfile, activities) => {
         if (!w) return [];
         const candidates = [];
         const rain24 = w.rainNext24h || 0;
@@ -1824,13 +1824,55 @@ window.ResearchSourcesPage = () => (
                 }
             }
         }
+        // Priority 6b: soil type advisories
+        if (lawnProfile && lawnProfile.soilType && SOIL_TYPES[lawnProfile.soilType]) {
+            const st = SOIL_TYPES[lawnProfile.soilType];
+            if (lawnProfile.soilType === 'clay' || lawnProfile.soilType === 'clay-loam') {
+                // Clay: flag compaction risk, prioritize aeration
+                const month = new Date().getMonth() + 1; // 1-12
+                if (month >= 3 && month <= 5) {
+                    candidates.push({ priority: 6, status: 'caution', icon: '🔧', title: 'Clay soil — compaction season', detail: 'Spring foot traffic on clay compacts soil quickly. Core aerate before fertilizing for best nutrient uptake.' });
+                }
+            } else if (lawnProfile.soilType === 'sandy' || lawnProfile.soilType === 'sandy-loam') {
+                // Sandy: watering and fertilizer leaching warnings
+                if (waterDeficit > weeklyTarget * 0.3 && rain72 < 0.25) {
+                    candidates.push({ priority: 6, status: 'caution', icon: '💧', title: 'Sandy soil — elevated water deficit', detail: `${st.wateringNote}. Increase irrigation frequency rather than volume.` });
+                }
+            }
+        }
+        // Priority 6c: sun/shade advisories
+        if (lawnProfile && lawnProfile.sunExposure === 'heavy-shade') {
+            const month = new Date().getMonth() + 1;
+            if (month >= 8 && month <= 10) {
+                candidates.push({ priority: 6, status: 'caution', icon: '🌑', title: 'Heavy shade — seeding window note', detail: 'Seeding success is significantly reduced under heavy shade. Choose certified shade-tolerant varieties (fine fescue, dense shade mix) and overseed at 1.5× normal rate.' });
+            }
+        }
+        // Priority 7: activity cross-reference
+        if (lawnProfile && activities && activities.length > 0) {
+            const now = new Date();
+            const sixWeeksAgo = new Date(now - 42 * 86400000);
+            const thisYear = now.getFullYear();
+            const growthMonth = new Date().getMonth() + 1;
+            const inGrowingSeason = growthMonth >= 4 && growthMonth <= 10;
+            if (inGrowingSeason) {
+                const recentFert = activities.some(a => a.type === 'fertilizer' && new Date(a.date) >= sixWeeksAgo);
+                if (!recentFert && candidates.length < 3) {
+                    candidates.push({ priority: 7, status: 'caution', icon: '🌾', title: 'No fertilizer logged in 6+ weeks', detail: 'Your activity log shows no fertilizer applied recently. Check your Yearly Gameplan for the recommended next application.' });
+                }
+            }
+            const aerated = activities.some(a => a.type === 'aeration' && new Date(a.date).getFullYear() === thisYear);
+            const soilType = lawnProfile.soilType;
+            if (!aerated && (soilType === 'clay' || soilType === 'clay-loam') && (growthMonth >= 8 && growthMonth <= 10) && candidates.length < 3) {
+                candidates.push({ priority: 7, status: 'caution', icon: '🔧', title: 'No aeration logged this year', detail: 'Clay soil benefits from annual core aeration. Fall is the best window for cool-season grasses; late spring for warm-season.' });
+            }
+        }
 
         candidates.sort((a, b) => a.priority - b.priority);
         return candidates.slice(0, 3);
     };
 
-    const TodayAdvisoryCard = ({ weather, lawnProfile }) => {
-        const advisories = generateAdvisories(weather, lawnProfile);
+    const TodayAdvisoryCard = ({ weather, lawnProfile, activities }) => {
+        const advisories = generateAdvisories(weather, lawnProfile, activities);
         if (!advisories.length) return null;
         const statusStyle = {
             hold:    { bg: '#FEF2F2', badge: '#EF4444', badgeText: '#fff', label: 'HOLD' },
@@ -1903,6 +1945,10 @@ window.ResearchSourcesPage = () => (
                 }
             }
             if (rainNext48 > 0.5) return { status: 'caution', reason: `Moderate rain (${rainNext48}") in 48h — watch for runoff on slopes`, window: null };
+            // Sandy soil leaching advisory
+            if (lawnProfile && (lawnProfile.soilType === 'sandy' || lawnProfile.soilType === 'sandy-loam')) {
+                if (rainNext24 > 0.4) return { status: 'caution', reason: `Sandy soil + rain (${rainNext24}") — fertilizer may leach before roots absorb`, window: 'Use slow-release product or wait for drier window' };
+            }
             if (rainNext48 < 0.1 && rainNext72 < 0.1) return { status: 'caution', reason: `No rain in forecast — water in within 24h after granular application to activate`, window: 'Apply early morning, then irrigate lightly' };
             return { status: 'go', reason: `Light rain (${rainNext48}") in forecast — ideal to activate granular fertilizer without leaching`, window: null };
         }
@@ -1913,16 +1959,29 @@ window.ResearchSourcesPage = () => (
         }
         if (isMowing) {
             if (w.precipitation > 0.05 || (w.conditionLabel || '').toLowerCase().includes('rain')) return { status: 'caution', reason: 'Grass is wet — mowing wet spreads disease', window: 'Wait until grass dries' };
+            // Shade-adjusted mowing note
+            if (lawnProfile && lawnProfile.sunExposure === 'heavy-shade') {
+                return { status: 'caution', reason: 'Shaded lawn — mow at the top of your grass type\'s range (3.5–4"). Taller height captures more light in low-sun areas', window: null };
+            }
             return { status: 'go', reason: 'Good conditions for mowing', window: null };
         }
         if (isWatering) {
-            const weeklyTarget = (w.et0Past7 && w.et0Past7 > 0) ? w.et0Past7 : 1.25;
+            const soilMult = (lawnProfile && lawnProfile.soilType && SOIL_TYPES[lawnProfile.soilType]) ? SOIL_TYPES[lawnProfile.soilType].wateringMultiplier : 1.0;
+            const baseTarget = (w.et0Past7 && w.et0Past7 > 0) ? w.et0Past7 : 1.25;
+            const weeklyTarget = Math.round(baseTarget * soilMult * 100) / 100;
             const deficit = weeklyTarget - (w.rainfall || 0) - rainNext48;
             const deficitRounded = Math.round(Math.max(0, deficit) * 100) / 100;
-            const targetLabel = (w.et0Past7 && w.et0Past7 > 0) ? `ET0 need (${weeklyTarget}")` : `est. weekly need (${weeklyTarget}")`;
+            const soilNote = soilMult !== 1.0 ? ` (${soilMult > 1 ? 'increased' : 'reduced'} for ${SOIL_TYPES[lawnProfile.soilType].name} soil)` : '';
+            const targetLabel = (w.et0Past7 && w.et0Past7 > 0) ? `ET0 need (${weeklyTarget}")${soilNote}` : `est. weekly need (${weeklyTarget}")${soilNote}`;
             if (deficit <= 0) return { status: 'hold', reason: `Rain covers ${targetLabel} — skip irrigation this cycle`, window: null };
             if (deficitRounded < 0.25) return { status: 'caution', reason: `Small deficit (~${deficitRounded}") vs ${targetLabel} — monitor before irrigating`, window: null };
             return { status: 'go', reason: `Deficit ~${deficitRounded}" vs ${targetLabel} — supplemental irrigation recommended`, window: null };
+        }
+        if (isAeration) {
+            // Clay soil: elevate aeration to go status when conditions are right
+            if (lawnProfile && (lawnProfile.soilType === 'clay' || lawnProfile.soilType === 'clay-loam')) {
+                if (w.precipitation > 0.1) return { status: 'go', reason: 'Clay soil benefits from aeration — moist soil improves core plug extraction', window: null };
+            }
         }
         return null;
     };
@@ -2538,6 +2597,19 @@ window.ResearchSourcesPage = () => (
         }, [profileFormData.zone]);
         const save = async () => {
             const toSave = {...localForm};
+            // Archive previous soil test to history when a new test date is entered
+            const prevTest = lawnProfile && lawnProfile.soilTest;
+            const prevDate = lawnProfile && lawnProfile.soilTestDate;
+            const newDate = toSave.soilTestDate;
+            if (prevTest && prevTest.pH && newDate && prevDate && newDate !== prevDate) {
+                const prevEntry = { ...prevTest, date: prevDate };
+                const existingHistory = lawnProfile.soilTestHistory || [];
+                // Avoid duplicating the same date
+                const alreadyArchived = existingHistory.some(h => h.date === prevDate);
+                if (!alreadyArchived) {
+                    toSave.soilTestHistory = [prevEntry, ...existingHistory].slice(0, 10); // keep last 10
+                }
+            }
             await onSave(toSave);
         };
         const grassInfo = GRASS_INFO[localForm.specificGrass];
@@ -2615,6 +2687,34 @@ window.ResearchSourcesPage = () => (
                                 </div>
                             )}
                         </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Soil Type</label>
+                                <select value={localForm.soilType || ''} onChange={(e) => setLocalForm({...localForm, soilType: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg text-sm">
+                                    <option value="">Select...</option>
+                                    <option value="sandy">Sandy</option>
+                                    <option value="sandy-loam">Sandy Loam</option>
+                                    <option value="loam">Loam (Ideal)</option>
+                                    <option value="silt">Silt</option>
+                                    <option value="clay-loam">Clay Loam</option>
+                                    <option value="clay">Clay</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Sun Exposure</label>
+                                <select value={localForm.sunExposure || ''} onChange={(e) => setLocalForm({...localForm, sunExposure: e.target.value})} className="w-full px-4 py-3 border-2 rounded-lg text-sm">
+                                    <option value="">Select...</option>
+                                    <option value="full-sun">Full Sun (6+ hrs)</option>
+                                    <option value="part-shade">Part Shade (3–6 hrs)</option>
+                                    <option value="heavy-shade">Heavy Shade (&lt;3 hrs)</option>
+                                </select>
+                            </div>
+                        </div>
+                        {localForm.soilType && SOIL_TYPES[localForm.soilType] && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-800">
+                                <span className="font-semibold">{SOIL_TYPES[localForm.soilType].name}:</span> {SOIL_TYPES[localForm.soilType].description} — {SOIL_TYPES[localForm.soilType].wateringNote}
+                            </div>
+                        )}
                         {/* ── Soil Test Section ── */}
                         <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 bg-amber-50">
                             <div className="flex items-center gap-2 mb-1">
@@ -2690,7 +2790,17 @@ window.ResearchSourcesPage = () => (
                         {zoneInfo && <span> · Zone {localForm.zone} ({zoneInfo.climate}) <CitationBadge sources={[{ name: 'USDA Plant Hardiness Zone Map', url: 'https://planthardiness.ars.usda.gov/', topic: 'Official zone classifications' }]} label="USDA Zone" /></span>}
                         {localForm.lawnSize && <span> · {Number(localForm.lawnSize).toLocaleString()} sq ft</span>}
                     </div>
-                    {grassInfo && <div className="mt-3 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>}
+                    <div className="flex flex-wrap gap-2 mt-3">
+                        {localForm.soilType && SOIL_TYPES[localForm.soilType] && (
+                            <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">🪨 {SOIL_TYPES[localForm.soilType].name} Soil</span>
+                        )}
+                        {localForm.sunExposure && (
+                            <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                                {localForm.sunExposure === 'full-sun' ? '☀️ Full Sun' : localForm.sunExposure === 'part-shade' ? '⛅ Part Shade' : '🌑 Heavy Shade'}
+                            </span>
+                        )}
+                    </div>
+                    {grassInfo && <div className="mt-2 text-sm opacity-90 italic">"{grassInfo.bestFeature}"</div>}
                 </div>
                 {(() => {
                     const zoneNote = grassInfo && grassInfo.zoneNotes && (grassInfo.zoneNotes[localForm.zone] || grassInfo.zoneNotes[getParentZone(localForm.zone)]);
@@ -2808,6 +2918,25 @@ window.ResearchSourcesPage = () => (
                                     )}
                                     {lawnProfile.soilTestDate && (
                                         <div className="text-xs text-gray-400 text-right">Tested: {new Date(lawnProfile.soilTestDate).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</div>
+                                    )}
+                                    {/* ── Soil Test History ── */}
+                                    {lawnProfile.soilTestHistory && lawnProfile.soilTestHistory.length > 0 && (
+                                        <div className="border-t border-gray-100 pt-3 mt-1">
+                                            <div className="text-xs text-gray-500 font-semibold mb-2">📈 Test History</div>
+                                            <div className="space-y-2">
+                                                {lawnProfile.soilTestHistory.map((h, i) => (
+                                                    <div key={i} className="bg-gray-50 rounded-lg px-3 py-2 flex items-center gap-3 text-xs">
+                                                        <div className="text-gray-400 whitespace-nowrap">{h.date ? new Date(h.date).toLocaleDateString('en-US', {month:'short', year:'numeric'}) : 'Unknown date'}</div>
+                                                        {h.pH && <div className="font-bold text-gray-700">pH {h.pH}</div>}
+                                                        <div className="flex gap-1 ml-auto">
+                                                            {['nitrogen','phosphorus','potassium'].map(n => h[n] ? (
+                                                                <span key={n} className={`px-1.5 py-0.5 rounded font-bold ${nutrientColors[h[n]] || 'bg-gray-100 text-gray-600'}`}>{n === 'nitrogen' ? 'N' : n === 'phosphorus' ? 'P' : 'K'}: {h[n]}</span>
+                                                            ) : null)}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -4647,7 +4776,7 @@ window.ResearchSourcesPage = () => (
         const [statsView, setStatsView] = useState('year');
         const [profileFormData, setProfileFormData] = useState(() => {
             const s = localStorage.getItem('lawnProfile');
-            return s ? JSON.parse(s) : { lawnSize: '', zone: '', specificGrass: '', soilType: '', zipCode: '' };
+            return s ? JSON.parse(s) : { lawnSize: '', zone: '', specificGrass: '', soilType: '', sunExposure: '', zipCode: '' };
         });
         const [profileEditing, setProfileEditing] = useState(() => {
             const s = localStorage.getItem('lawnProfile');
@@ -5449,7 +5578,7 @@ window.ResearchSourcesPage = () => (
                                 <SeasonBanner weather={weather} />
                             </div>
                             {/* Today's Advisory card */}
-                            {weather && <TodayAdvisoryCard weather={weather} lawnProfile={lawnProfile} />}
+                            {weather && <TodayAdvisoryCard weather={weather} lawnProfile={lawnProfile} activities={activities} />}
                             {/* Frost countdown banner */}
                             {(() => {
                                 if (!lawnProfile || !lawnProfile.zone) return null;
