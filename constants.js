@@ -496,3 +496,62 @@ var ZONE_INFO = {
     '9a': { temp: '20 to 25°F',   climate: 'Deep South / Gulf', description: 'Very mild winters, long hot summers. Warm-season grasses dominate.',                                           lastFrost: { month: 2, day: 20 }, firstFrost: { month: 12, day: 6  }, growingDays: 289 },
     '9b': { temp: '25 to 30°F',   climate: 'Deep South / Gulf', description: 'Nearly frost-free, intense heat and humidity. Warm-season grasses only.',                                     lastFrost: { month: 2, day: 8  }, firstFrost: { month: 12, day: 16 }, growingDays: 311 }
 };
+
+// ─── Soil Types ─────────────────────────────────────────────────────────────
+// Used for profile form and soil-type-aware recommendations
+var SOIL_TYPES = {
+    sandy: {
+        name: 'Sandy',
+        description: 'Fast-draining, low water retention',
+        wateringNote: 'Water more frequently — sandy soil drains quickly and dries out fast',
+        fertilizerNote: 'Use slow-release fertilizers — nutrients leach through sandy soil faster',
+        aerationNote: 'Less prone to compaction; standard aeration schedule applies',
+        advisoryIcon: '💧',
+        wateringMultiplier: 1.3  // 30% more frequent watering
+    },
+    loam: {
+        name: 'Loam',
+        description: 'Ideal balance of drainage and water retention',
+        wateringNote: 'Balanced drainage — standard watering schedule applies',
+        fertilizerNote: 'Good nutrient retention — standard fertilizer rates apply',
+        aerationNote: 'Standard aeration schedule applies',
+        advisoryIcon: '✅',
+        wateringMultiplier: 1.0
+    },
+    clay: {
+        name: 'Clay',
+        description: 'Slow-draining, compacts easily',
+        wateringNote: 'Water deeply but infrequently — clay holds moisture well but can become waterlogged',
+        fertilizerNote: 'Nutrients bind well, but compaction limits root uptake — correct pH and aerate first',
+        aerationNote: 'Core aeration is critical — clay compacts under foot and mower traffic',
+        advisoryIcon: '🔧',
+        wateringMultiplier: 0.8  // 20% less frequent watering
+    },
+    silt: {
+        name: 'Silt',
+        description: 'Fine particles, good fertility but can compact',
+        wateringNote: 'Moderate drainage — watch for surface crusting that can block water infiltration',
+        fertilizerNote: 'Good nutrient retention — standard fertilizer rates apply',
+        aerationNote: 'Annual aeration recommended to prevent surface compaction',
+        advisoryIcon: '⚠️',
+        wateringMultiplier: 0.9
+    },
+    'sandy-loam': {
+        name: 'Sandy Loam',
+        description: 'Good drainage with moderate water retention',
+        wateringNote: 'Slightly faster drainage than loam — water a bit more frequently in dry spells',
+        fertilizerNote: 'Some leaching risk — use split fertilizer applications for best uptake',
+        aerationNote: 'Standard aeration schedule applies',
+        advisoryIcon: '💧',
+        wateringMultiplier: 1.15
+    },
+    'clay-loam': {
+        name: 'Clay Loam',
+        description: 'Slower drainage, moderate compaction risk',
+        wateringNote: 'Holds moisture well — avoid overwatering and watch for runoff',
+        fertilizerNote: 'Good nutrient holding capacity — avoid heavy single applications',
+        aerationNote: 'Annual core aeration recommended to manage compaction',
+        advisoryIcon: '🔧',
+        wateringMultiplier: 0.85
+    }
+};
