@@ -4850,12 +4850,14 @@ window.ResearchSourcesPage = () => (
             setCurrentUser(null);
         };
 
-        const fetchWeatherData = async (lat, lon, label) => {
+        const fetchWeatherData = async (lat, lon, label, city, state) => {
             if (!lat || !lon) {
                 const stored = localStorage.getItem('lawnProfile');
                 if (stored) {
                     const p = JSON.parse(stored);
                     lat = p.lat; lon = p.lon; label = label || p.zipCode || '';
+                    city = city || p.city || '';
+                    state = state || p.state || '';
                 }
             }
             if (!lat || !lon) { setWeatherLoading(false); return; }
@@ -4924,7 +4926,7 @@ window.ResearchSourcesPage = () => (
                     windSpeed: Math.round(data.current.windspeed_10m), windDirection: getWindDirection(data.current.winddirection_10m),
                     uvIndex: data.daily.uv_index_max?.[7] ?? null,
                     conditionLabel: condition.label, conditionIcon: condition.icon,
-                    location: label ? `Zip ${label}` : 'Your Location',
+                    location: (city && state) ? `${city}, ${state}` : (label ? `Zip ${label}` : 'Your Location'),
                     forecastDays, rainNext24h, rainNext48h, rainNext72h,
                     minTempNext14: Math.min(...dailyLows.slice(7).map(v => v ?? 999)),
                     frostRiskDays, pastAvgSoilTemp, futureAvgSoilTemp, soilTempTrend,
@@ -4945,17 +4947,26 @@ window.ResearchSourcesPage = () => (
             if (!/^\d{5}$/.test(zip)) { setZipLookupError('Enter a valid 5-digit US zip code.'); return; }
             setZipLookupError(''); setZipLookupLoading(true);
             try {
-                const res = await fetch(`https://phzmapi.org/${zip}.json`);
-                if (!res.ok) throw new Error('Not found');
-                const data = await res.json();
+                const [zoneRes, geoRes] = await Promise.all([
+                    fetch(`https://phzmapi.org/${zip}.json`),
+                    fetch(`https://api.zippopotam.us/us/${zip}`).catch(() => null),
+                ]);
+                if (!zoneRes.ok) throw new Error('Not found');
+                const data = await zoneRes.json();
                 const zone = (data.zone || '').toLowerCase().trim();
                 if (zone && ZONE_INFO[zone]) {
                     const lat = parseFloat(data.coordinates?.lat);
                     const lon = parseFloat(data.coordinates?.lon);
-                    setProfileFormData(prev => ({ ...prev, zone, lat, lon, zipCode: zip }));
-                    fetchWeatherData(lat, lon, zip);
+                    let city = '', state = '';
+                    if (geoRes && geoRes.ok) {
+                        const geoData = await geoRes.json();
+                        city = geoData.places?.[0]?.['place name'] || '';
+                        state = geoData.places?.[0]?.['state abbreviation'] || '';
+                    }
+                    setProfileFormData(prev => ({ ...prev, zone, lat, lon, zipCode: zip, city, state }));
+                    fetchWeatherData(lat, lon, zip, city, state);
                     const existing = localStorage.getItem('lawnProfile');
-                    const merged = { ...(existing ? JSON.parse(existing) : {}), zone, lat, lon, zipCode: zip };
+                    const merged = { ...(existing ? JSON.parse(existing) : {}), zone, lat, lon, zipCode: zip, city, state };
                     localStorage.setItem('lawnProfile', JSON.stringify(merged));
                     setLawnProfile(merged);
                 } else {
@@ -5516,7 +5527,19 @@ window.ResearchSourcesPage = () => (
                                         )}
                                         </div>
                                         <div className="text-xl font-bold text-white leading-tight mt-0.5" style={{fontFamily:'var(--ys-font-display)'}}>Your Lawn Dashboard</div>
-                                        {weather && <div className="text-xs mt-1" style={{color:'rgba(255,255,255,0.55)'}}>{weather.location}</div>}
+                                        {(() => {
+                                            const locLabel = weather ? weather.location
+                                                : (lawnProfile?.city && lawnProfile?.state) ? `${lawnProfile.city}, ${lawnProfile.state}`
+                                                : lawnProfile?.zipCode ? `Zip ${lawnProfile.zipCode}` : null;
+                                            return locLabel ? (
+                                                <div className="flex items-center gap-1 mt-1" style={{color:'rgba(255,255,255,0.55)'}}>
+                                                    <svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M4.5 0C2.015 0 0 2.015 0 4.5c0 3.375 4.5 6.5 4.5 6.5S9 7.875 9 4.5C9 2.015 6.985 0 4.5 0zm0 6.125A1.625 1.625 0 1 1 4.5 2.875a1.625 1.625 0 0 1 0 3.25z" fill="currentColor"/>
+                                                    </svg>
+                                                    <span className="text-xs">{locLabel}</span>
+                                                </div>
+                                            ) : null;
+                                        })()}
                                     </div>
                                     <div className="flex flex-col items-end gap-1 flex-shrink-0">
                                         {(() => {

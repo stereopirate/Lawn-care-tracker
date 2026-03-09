@@ -63,7 +63,21 @@ return (
             >
                 ← Back to Home
             </button>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">📊 Dashboard</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-0.5">📊 Dashboard</h2>
+            {(() => {
+                const city = lawnProfile?.city;
+                const state = lawnProfile?.state;
+                const zip = lawnProfile?.zipCode;
+                const locLabel = (city && state) ? `${city}, ${state}` : zip ? `Zip ${zip}` : null;
+                return locLabel ? (
+                    <p className="flex items-center gap-1 text-sm mb-4" style={{color:'var(--ys-green-600)'}}>
+                        <svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.5 0C2.015 0 0 2.015 0 4.5c0 3.375 4.5 6.5 4.5 6.5S9 7.875 9 4.5C9 2.015 6.985 0 4.5 0zm0 6.125A1.625 1.625 0 1 1 4.5 2.875a1.625 1.625 0 0 1 0 3.25z" fill="currentColor"/>
+                        </svg>
+                        {locLabel}
+                    </p>
+                ) : <div className="mb-4" />;
+            })()}
             
             {/* View Toggle */}
             <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
