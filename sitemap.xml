@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- =============================================
+       YARDSTICK.DIY — SITEMAP
+       Last updated: 2026-03-10
+       Update this file whenever a new Learn article
+       goes live. Submit to Google Search Console at:
+       https://search.google.com/search-console
+       ============================================= -->
+
+  <!-- Core App Pages -->
+  <url>
+    <loc>https://yardstick.diy/</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/about.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Learn Hub -->
+  <url>
+    <loc>https://yardstick.diy/learn/</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- =============================================
+       LEARN ARTICLES
+       Add new entries here as articles go live.
+       Priority guide:
+         0.8 = pillar / high-traffic target
+         0.7 = standard article
+         0.6 = supplemental / thin content
+       ============================================= -->
+
+  <!-- Fertilizing Cluster -->
+  <url>
+    <loc>https://yardstick.diy/learn/when-to-fertilize-lawn-by-zone.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/how-to-read-fertilizer-label-npk.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/organic-vs-synthetic-fertilizer.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Pre-Emergent & Weed Control -->
+  <url>
+    <loc>https://yardstick.diy/learn/pre-emergent-timing-by-grass-type.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/crabgrass-control-timing-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Soil & Science -->
+  <url>
+    <loc>https://yardstick.diy/learn/soil-temperature-lawn-care-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/diy-soil-test-what-numbers-mean.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Watering -->
+  <url>
+    <loc>https://yardstick.diy/learn/lawn-watering-schedule-by-season.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Aeration & Overseeding -->
+  <url>
+    <loc>https://yardstick.diy/learn/best-time-to-aerate-cool-vs-warm-season.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/how-to-overseed-thin-lawn.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Grass Type Guides -->
+  <url>
+    <loc>https://yardstick.diy/learn/bermuda-grass-care-calendar.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/zoysia-vs-bermuda-grass-comparison.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/tall-fescue-lawn-care-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/st-augustine-lawn-care-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/kentucky-bluegrass-care-calendar.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Seasonal Care -->
+  <url>
+    <loc>https://yardstick.diy/learn/spring-lawn-prep-checklist.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/fall-lawn-care-overseeding-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/summer-lawn-stress-management.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Problem Solving -->
+  <url>
+    <loc>https://yardstick.diy/learn/yellow-lawn-diagnosis-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/brown-patch-lawn-disease-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yardstick.diy/learn/thatch-buildup-removal-guide.html</loc>
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
