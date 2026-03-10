@@ -225,10 +225,10 @@ All user data is persisted in **browser LocalStorage**. There is no backend, dat
 
 ## PWA / Service Worker
 
-- Cache name: `easy-green-v1`
+- Cache name: `yardstick-v2` (current — increment on every deploy)
 - Caches: `/`, `/index.html`, `/manifest.json`, and all CDN script URLs
 - Strategy: cache-first with network fallback
-- **When updating CDN versions**, bump `CACHE_NAME` in `service-worker.js` to invalidate old caches
+- **Bump `CACHE_NAME` in `service-worker.js` on every deploy** — not just CDN version changes. If you don't bump the version, users' browsers will keep serving the old cached `index.html` indefinitely and won't pick up your changes. Increment sequentially: `yardstick-v2` → `yardstick-v3` → etc.
 
 ---
 
