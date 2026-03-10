@@ -1,0 +1,17 @@
+# robots.txt — yardstick.diy
+
+# Updated: 2026-03-10
+
+User-agent: *
+Allow: /
+
+# Block non-public paths
+
+Disallow: /marketing/
+Disallow: /.git/
+Disallow: /firestore.rules
+Disallow: /firebase-messaging-sw.js
+
+# Sitemap location
+
+Sitemap: https://yardstick.diy/sitemap.xml
