@@ -5133,7 +5133,17 @@ window.ResearchSourcesPage = () => (
                     setProfileEditing(!prof.specificGrass || !prof.zone);
                     fetchWeatherData(prof.lat, prof.lon, prof.zipCode);
                 } else {
-                    fetchWeatherData();
+                    // No cloud profile — check if user completed guest onboarding before signing up
+                    // and migrate their localStorage profile to cloud so it's not lost
+                    const localProf = JSON.parse(localStorage.getItem('lawnProfile') || 'null');
+                    if (localProf && (localProf.zone || localProf.specificGrass) && currentUser) {
+                        store.saveProfile(localProf).catch(() => {});
+                        setLawnProfile(localProf);
+                        setProfileFormData(localProf);
+                        fetchWeatherData(localProf.lat, localProf.lon, localProf.zipCode);
+                    } else {
+                        fetchWeatherData();
+                    }
                 }
                 setDataLoading(false);
             }).catch((e) => {
@@ -5163,6 +5173,7 @@ window.ResearchSourcesPage = () => (
             const fetchKey = `${lat},${lon}`;
             if (weatherFetchKeyRef.current === fetchKey) return;
             weatherFetchKeyRef.current = fetchKey;
+            setWeatherLoading(true);
             try {
                 const response = await fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
