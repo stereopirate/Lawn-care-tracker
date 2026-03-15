@@ -244,6 +244,46 @@
     .footer-text a { color: #9DC897; text-decoration: underline; }
     .footer-divider { border: none; border-top: 1px solid #2D6627; margin: 14px 0; }
 
+    /* Learn section article tags */
+    .article-tag-list {
+      margin: 0 0 20px 0;
+      padding: 0;
+      list-style: none;
+      line-height: 2.2;
+    }
+    .article-tag-list li {
+      display: inline;
+    }
+    .article-tag {
+      display: inline-block;
+      background-color: #FDFAF5;
+      border: 1px solid #C4E8BC;
+      border-radius: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #234D20;
+      text-decoration: none;
+      padding: 5px 12px;
+      margin: 3px 3px 3px 0;
+      white-space: nowrap;
+    }
+
+    /* Secondary CTA (outlined) */
+    .cta-btn-secondary {
+      display: inline-block;
+      background-color: transparent;
+      border: 2px solid #367C2B;
+      color: #367C2B !important;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 13px 32px;
+      border-radius: 8px;
+      letter-spacing: 0.3px;
+    }
+
     /* Mobile */
     @media only screen and (max-width: 480px) {
       .header-block     { padding: 28px 20px 24px; }
@@ -388,8 +428,41 @@
                 </tr>
               </table>
 
+              <!-- ===== LEARN SECTION ===== -->
+              <hr class="section-divider">
+              <p class="section-label">Yardstick Learn</p>
+              <h2 class="section-heading">Answers to your toughest lawn care questions</h2>
+              <p class="body-text" style="font-size:15px; margin-bottom:20px;">
+                Not sure when to apply pre-emergent? Wondering why your lawn has bare patches?
+                Yardstick Learn is a library of in-depth, professionally sourced guides covering
+                every aspect of lawn care — written for real homeowners, backed by university research.
+              </p>
+
+              <ul class="article-tag-list">
+                <li><a href="https://yardstick.diy/learn/crabgrass-pre-emergent-timing.html" class="article-tag">Crabgrass pre-emergent timing</a></li>
+                <li><a href="https://yardstick.diy/learn/soil-temperature-lawn-care-guide.html" class="article-tag">Soil temperature &amp; lawn timing</a></li>
+                <li><a href="https://yardstick.diy/learn/how-to-fix-patchy-lawn.html" class="article-tag">How to fix a patchy lawn</a></li>
+                <li><a href="https://yardstick.diy/learn/lawn-aeration-guide.html" class="article-tag">When &amp; how to aerate</a></li>
+                <li><a href="https://yardstick.diy/learn/when-to-overseed-lawn.html" class="article-tag">When to overseed</a></li>
+                <li><a href="https://yardstick.diy/learn/lawn-mowing-height-guide.html" class="article-tag">Mowing height by grass type</a></li>
+                <li><a href="https://yardstick.diy/learn/cool-season-grass-fertilizer-schedule.html" class="article-tag">Cool-season fertilizer schedule</a></li>
+                <li><a href="https://yardstick.diy/learn/warm-season-grass-fertilizer-schedule.html" class="article-tag">Warm-season fertilizer schedule</a></li>
+                <li><a href="https://yardstick.diy/learn/soil-ph-lawn-care.html" class="article-tag">Soil pH &amp; lawn health</a></li>
+                <li><a href="https://yardstick.diy/learn/lawn-weed-identification-guide.html" class="article-tag">Weed identification guide</a></li>
+                <li><a href="https://yardstick.diy/learn/spring-lawn-care-checklist.html" class="article-tag">Spring lawn care checklist</a></li>
+                <li><a href="https://yardstick.diy/learn/fall-lawn-care-checklist.html" class="article-tag">Fall lawn care checklist</a></li>
+                <li><a href="https://yardstick.diy/learn/how-to-read-fertilizer-bag.html" class="article-tag">How to read a fertilizer bag</a></li>
+                <li><a href="https://yardstick.diy/learn/lawn-grub-control-guide.html" class="article-tag">Grub control guide</a></li>
+                <li><a href="https://yardstick.diy/learn/bermuda-grass-care-guide.html" class="article-tag">Bermuda grass care</a></li>
+                <li><a href="https://yardstick.diy/learn/zoysia-grass-care-guide.html" class="article-tag">Zoysia grass care</a></li>
+                <li><a href="https://yardstick.diy/learn/tall-fescue-care-guide.html" class="article-tag">Tall fescue care</a></li>
+              </ul>
+
+              <div class="cta-wrapper" style="margin-top:8px;">
+                <a href="https://yardstick.diy/learn" class="cta-btn-secondary">Browse All Guides →</a>
+              </div>
+
               <!-- Trust bar -->
-              <div style="height:16px;"></div>
               <div class="trust-bar">
                 <p>
                   <strong>Built on real science, not opinions.</strong><br>
