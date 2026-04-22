@@ -1528,8 +1528,8 @@ window.ActivityDetails = ({ activity }) => {
 window.ResearchSourcesPage = () => (
     <div>
         <h2 className="text-2xl font-bold mb-6">📚 Research Sources</h2>
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
-            <p className="text-sm text-blue-900"><strong>Evidence-Based Recommendations:</strong> All lawn care guidance is based on peer-reviewed research from {RESEARCH_SOURCES.length} university extension programs.</p>
+        <div className="rounded-xl p-4 mb-6" style={{background:'var(--ys-green-50)', border:'2px solid var(--ys-green-200)'}}>
+            <p className="text-sm" style={{color:'var(--ys-green-800)'}}><strong>Evidence-Based Recommendations:</strong> All lawn care guidance is based on peer-reviewed research from {RESEARCH_SOURCES.length} university extension programs.</p>
         </div>
         <div className="rounded-xl p-4 shadow mb-4" style={{background:'var(--ys-cream)'}}>
             <div className="grid grid-cols-2 gap-3">
@@ -1596,8 +1596,8 @@ window.ResearchSourcesPage = () => (
     // Sub-components defined at IIFE level so they get stable references
     const DueChip = ({ sched }) => {
         const d = daysUntil(sched);
-        if (d < 0)   return <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">{Math.abs(d)}d overdue</span>;
-        if (d === 0) return <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">Due today</span>;
+        if (d < 0)   return <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{color:'var(--ys-clay)', background:'rgba(192,90,44,0.1)', border:'1px solid rgba(192,90,44,0.25)'}}>{Math.abs(d)}d overdue</span>;
+        if (d === 0) return <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{color:'#8a5c00', background:'rgba(245,200,66,0.18)', border:'1px solid rgba(245,200,66,0.4)'}}>Due today</span>;
         return <span className="text-xs font-semibold text-gray-400">in {d}d</span>;
     };
 
@@ -7021,7 +7021,18 @@ window.ResearchSourcesPage = () => (
         const lastMow = mowActs[0] || null;
         const daysSinceMow = lastMow ? Math.floor((Date.now() - new Date(lastMow.date)) / 86400000) : null;
         if (daysSinceMow == null || daysSinceMow >= 8) {
-            tasks.push({ id: 'mow-check', type: 'seasonal', name: 'Mow at Recommended Height', why: daysSinceMow ? 'Last mowed ' + daysSinceMow + ' days ago.' : 'No mowing logged yet. Set your first baseline.', urgency: 'soon', badge: 'This Week', effort: '~45 min', done: false });
+            tasks.push({ id: 'mow-check', type: 'seasonal', name: 'Mow at Recommended Height', why: daysSinceMow ? 'Last mowed ' + daysSinceMow + ' days ago — time to mow again.' : 'No mowing logged yet. Set your first baseline.', urgency: daysSinceMow > 12 ? 'urgent' : 'soon', badge: daysSinceMow > 12 ? 'Overdue' : 'This Week', effort: '~45 min', done: false });
+        }
+
+        // 4. Fertilizer check — soil must be active, and no fert in 6+ weeks
+        var fertActsCheck = (activities || []).filter(function(a) { return a.type === 'fertilizer'; }).sort(function(a,b) { return new Date(b.date) - new Date(a.date); });
+        var daysSinceFertCheck = fertActsCheck[0] ? Math.floor((Date.now() - new Date(fertActsCheck[0].date)) / 86400000) : null;
+        var soilActive = soilTempF != null && soilTempF >= 55;
+        if (soilActive && (daysSinceFertCheck == null || daysSinceFertCheck > 42)) {
+            var fertWhy = daysSinceFertCheck != null
+                ? 'Last fertilized ' + daysSinceFertCheck + ' days ago — most programs run every 6–8 weeks during the growing season.'
+                : 'No fertilizer logged yet this season. Soil at ' + soilTempF + '°F is ready for an application.';
+            tasks.push({ id: 'fert-check', type: 'seasonal', name: 'Fertilize', why: fertWhy, urgency: daysSinceFertCheck == null ? 'soon' : 'normal', badge: daysSinceFertCheck == null ? 'Not Yet This Season' : 'Upcoming', effort: '~30 min', done: false });
         }
 
         return tasks.slice(0, 4);
@@ -7048,7 +7059,7 @@ window.ResearchSourcesPage = () => (
     }
 
     // ─── HomeCoachView ───────────────────────────────────────────────────────────
-    function HomeCoachView({ lawnProfile, weather, activities, schedules, setView, currentUser, onShowAuthModal }) {
+    function HomeCoachView({ lawnProfile, weather, activities, schedules, setView, currentUser, userName, onShowAuthModal }) {
         const soilTempC = weather && weather.hourly && weather.hourly.soil_temperature_6cm ? weather.hourly.soil_temperature_6cm[0] : null;
         const soilTempF = soilTempC != null ? Math.round(soilTempC * 9/5 + 32) : null;
         const airTempRaw = weather && weather.current ? weather.current.temperature_2m : null;
@@ -7057,28 +7068,43 @@ window.ResearchSourcesPage = () => (
         const zone = lawnProfile.zone;
         const COOL_SEASON = ['tall-fescue','kentucky-bluegrass','fine-fescue','perennial-ryegrass'];
         const isCoolSeason = COOL_SEASON.includes(lawnProfile.specificGrass);
+        const displayName = userName || (currentUser && (currentUser.displayName || currentUser.email || '').split(/[\s@]/)[0]) || null;
 
-        function getCoachMessage(soilTempF, isCoolSeason) {
-            if (soilTempF == null) return { headline: 'Checking your lawn conditions…', why: 'Loading soil temperature data for your area.', urgency: 'info' };
+        function getCoachMessage(soilTempF, isCoolSeason, grassName, daysSinceMow, daysSinceFert, displayName) {
+            var hi = displayName ? displayName + ', ' : '';
+            var mowCtx = daysSinceMow != null ? ' You mowed ' + daysSinceMow + ' days ago.' : '';
+            var fertCtx = daysSinceFert != null ? ' Last fertilized ' + daysSinceFert + ' days ago.' : ' No fertilizer logged yet this season.';
+            var noFert = daysSinceFert == null || daysSinceFert > 55;
+            if (soilTempF == null) return { headline: hi + 'Checking your lawn conditions…', why: 'Loading local soil temperature data.', urgency: 'info' };
             if (isCoolSeason) {
-                if (soilTempF < 50) return { headline: 'Your lawn is resting. Hold off on treatments.', why: 'Soil at ' + soilTempF + '°F — below the 50°F threshold for active cool-season growth. No fertilizing or seeding until temperatures rise.', urgency: 'info' };
-                if (soilTempF < 55) return { headline: 'Pre-emergent window is approaching.', why: 'Soil at ' + soilTempF + '°F and rising. Crabgrass germinates at 55°F — be ready to apply within the next 7–14 days.', urgency: 'soon' };
-                if (soilTempF < 65) return { headline: 'Apply pre-emergent this weekend.', why: 'Soil hit ' + soilTempF + '°F — the exact threshold where crabgrass germination begins. You have a 7–10 day window.', urgency: 'urgent' };
-                if (soilTempF < 80) return { headline: 'Prime window for weed control and light feeding.', why: 'Soil at ' + soilTempF + '°F — active growth period. Focus on post-emergent weed control and a slow-release nitrogen application if not done this season.', urgency: 'normal' };
-                return { headline: 'Heat stress management. Mow high, water deep.', why: 'Soil at ' + soilTempF + '°F — above the stress threshold for cool-season grasses. Raise mower to 4"+ and water deeply 2–3× per week.', urgency: 'warn' };
+                if (soilTempF < 50) return { headline: hi + 'your lawn is resting. Hold treatments.', why: 'Soil at ' + soilTempF + '°F — below the 50°F threshold for ' + grassName + '. No fertilizing or seeding until temperatures rise.', urgency: 'info' };
+                if (soilTempF < 55) return { headline: 'Pre-emergent window opens in days.', why: 'Soil at ' + soilTempF + '°F and rising. Crabgrass germinates at 55°F — get your spreader ready this week.', urgency: 'soon' };
+                if (soilTempF < 65) return { headline: 'Pre-emergent window is open. Apply this weekend.', why: 'Soil hit ' + soilTempF + '°F — every day you wait reduces effectiveness.', urgency: 'urgent' };
+                if (soilTempF < 75) {
+                    if (noFert) return { headline: 'Good time for your first fertilizer of the season.', why: 'Soil at ' + soilTempF + '°F — ' + grassName + ' is actively growing and ready for nitrogen.' + fertCtx, urgency: 'soon' };
+                    if (daysSinceMow != null && daysSinceMow > 10) return { headline: hi + grassName + ' is growing fast. Time to mow.', why: 'Soil at ' + soilTempF + '°F means active growth.' + mowCtx + ' Mow before it gets ahead of you.', urgency: 'soon' };
+                    return { headline: grassName + ' is in its prime window.', why: 'Soil at ' + soilTempF + '°F — active growing conditions. Keep up with mowing height and watch for summer disease pressure.', urgency: 'normal' };
+                }
+                return { headline: 'Heat stress zone. Mow high, water deep.', why: 'Soil at ' + soilTempF + '°F — above the stress threshold for ' + grassName + '. Raise mower to 4"+ and water deeply 2–3× per week.', urgency: 'warn' };
             } else {
-                if (soilTempF < 60) return { headline: 'Your lawn is still dormant. No treatment yet.', why: 'Soil at ' + soilTempF + '°F — warm-season grasses need 65°F+ to break dormancy. Applying fertilizer now would be wasted.', urgency: 'info' };
-                if (soilTempF < 65) return { headline: 'Dormancy break is close. Get ready.', why: 'Soil at ' + soilTempF + '°F and approaching the 65°F green-up threshold for ' + grassName + '. Prepare spreader and plan first fertilization.', urgency: 'soon' };
-                if (soilTempF < 85) return { headline: 'Active growth. Time for first fertilization.', why: 'Soil at ' + soilTempF + '°F — ' + grassName + ' is actively growing. Apply a nitrogen-forward fertilizer to fuel green-up.', urgency: 'urgent' };
-                return { headline: 'Peak growing season. Keep up with mowing.', why: 'Soil at ' + soilTempF + '°F — prime conditions for ' + grassName + '. Mow at recommended height every 5–7 days.', urgency: 'normal' };
+                if (soilTempF < 60) return { headline: hi + grassName + ' is dormant. No treatment yet.', why: 'Soil at ' + soilTempF + '°F — warm-season grasses need 65°F to break dormancy. Fertilizing now would be wasted.', urgency: 'info' };
+                if (soilTempF < 65) return { headline: grassName + ' is waking up. Get ready.', why: 'Soil at ' + soilTempF + '°F and closing in on the 65°F green-up threshold. Prepare your spreader.', urgency: 'soon' };
+                if (soilTempF < 85) {
+                    if (noFert) return { headline: 'Peak season. Time to feed your ' + grassName + '.', why: daysSinceFert != null ? 'It has been ' + daysSinceFert + ' days since you last fertilized.' : 'No fertilizer logged yet this season. Soil at ' + soilTempF + '°F is prime.', urgency: 'urgent' };
+                    if (daysSinceMow != null && daysSinceMow > 7) return { headline: hi + grassName + ' is growing fast. Mow this week.', why: 'Soil at ' + soilTempF + '°F means peak growth rate.' + mowCtx, urgency: 'soon' };
+                    return { headline: grassName + ' is thriving. Keep the routine going.', why: 'Soil at ' + soilTempF + '°F — prime conditions. Mow on schedule and watch watering during dry spells.', urgency: 'normal' };
+                }
+                return { headline: 'Extreme heat. Irrigation is your priority.', why: 'Soil at ' + soilTempF + '°F — water deeply every 2–3 days. Morning irrigation only to reduce fungal risk.', urgency: 'warn' };
             }
         }
 
-        const coachMsg = getCoachMessage(soilTempF, isCoolSeason);
-        const thisWeekTasks = buildThisWeekTasks({ lawnProfile, weather, activities, schedules, soilTempF });
         const mowActs = (activities || []).filter(function(a) { return a.type === 'mowing'; }).sort(function(a,b) { return new Date(b.date) - new Date(a.date); });
         const lastMow = mowActs[0];
         const daysSinceMow = lastMow ? Math.floor((Date.now() - new Date(lastMow.date)) / 86400000) : null;
+        const fertActs = (activities || []).filter(function(a) { return a.type === 'fertilizer'; }).sort(function(a,b) { return new Date(b.date) - new Date(a.date); });
+        const daysSinceFert = fertActs[0] ? Math.floor((Date.now() - new Date(fertActs[0].date)) / 86400000) : null;
+        const coachMsg = getCoachMessage(soilTempF, isCoolSeason, grassName, daysSinceMow, daysSinceFert, displayName);
+        const thisWeekTasks = buildThisWeekTasks({ lawnProfile, weather, activities, schedules, soilTempF });
         const now = new Date();
         const thisMonthActivities = (activities || []).filter(function(a) { const d = new Date(a.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); });
         const weekRain = weather && weather.daily && weather.daily.precipitation_sum ? weather.daily.precipitation_sum.slice(0,7).reduce(function(acc, v) { return acc + (v || 0); }, 0).toFixed(1) : null;
@@ -8397,7 +8423,7 @@ window.ResearchSourcesPage = () => (
                 <div className="max-w-5xl mx-auto flex">
 
                     {/* ─── Desktop Left Sidebar — hidden for new users until onboarding complete ─── */}
-                    <aside className="ys-sidebar hidden md:flex flex-col" style={(!currentUser && (!onboardingDone || splashJustDone)) ? {display:'none'} : {}}>
+                    <aside className="ys-sidebar hidden md:flex flex-col" style={{display:'none'}}>
                         {/* Log Activity CTA */}
                         <button
                             onClick={() => { setView('add'); setSelectedActivityType(null); }}
@@ -8493,7 +8519,7 @@ window.ResearchSourcesPage = () => (
                     </aside>
 
                     {/* ─── Main Content ─────────────────────────────────────── */}
-                    <main className="flex-1 min-w-0 p-2 md:p-4 pb-6">
+                    <main className="flex-1 min-w-0 p-2 md:p-4 pb-24">
                     {!view && (
                         <div className="space-y-3">
                             {/* Welcome Splash Card — shown to logged-out users who haven't completed onboarding */}
@@ -8551,6 +8577,7 @@ window.ResearchSourcesPage = () => (
                                     schedules={schedules}
                                     setView={setView}
                                     currentUser={currentUser}
+                                    userName={userName}
                                     onShowAuthModal={() => setShowAuthModal(true)}
                                 />
                             )}
@@ -9264,9 +9291,9 @@ window.ResearchSourcesPage = () => (
                     />
                 )}
 
-                {/* ── Bottom nav — mobile (hidden at md) ── */}
+                {/* ── Bottom nav — all viewports ── */}
                 {(onboardingDone && !splashJustDone) && (
-                    <div className="ys-bottom-nav md:hidden">
+                    <div className="ys-bottom-nav">
                         <button className={`ys-nav-btn${view === null ? ' active' : ''}`} onClick={() => { setView(null); setMobileMenuOpen(false); }}>
                             <span className="ys-nav-icon">🏡</span>
                             <span className="ys-nav-label">Home</span>
