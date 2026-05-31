@@ -4178,7 +4178,6 @@ window.ResearchSourcesPage = () => (
                         </div>
                     </div>
                 )}
-                <RecommendedArticlesSection lawnProfile={lawnProfile} setView={setView} />
             </div>
         );
     };
@@ -6856,8 +6855,6 @@ window.ResearchSourcesPage = () => (
                     <button className="ys-ql-sec" onClick={() => setView('gameplan')}>📋 Gameplan</button>
                 </div>
 
-                <LearnPromoStrip setView={setView} showPersonalizePrompt={true} profileComplete={true} />
-
                 {!currentUser && (activities || []).length >= 1 && (
                     <div className="rounded-2xl border px-4 py-3 flex items-center gap-3" style={{margin:'0 14px 14px', background:'var(--ys-green-50)', borderColor:'var(--ys-green-200)'}}>
                         <span className="text-lg flex-shrink-0">☁️</span>
@@ -7101,7 +7098,6 @@ window.ResearchSourcesPage = () => (
                         <button className="ys-setup-btn">Set Up My Yard <span>→</span></button>
                     </div>
                 </div>
-                <LearnPromoStrip setView={setView} showPersonalizePrompt={false} profileComplete={false} />
             </div>
         );
     }
@@ -7150,7 +7146,6 @@ window.ResearchSourcesPage = () => (
                     </div>
                 </div>
                 <HomeUnlockPreview />
-                <LearnPromoStrip setView={setView} showPersonalizePrompt={false} profileComplete={false} />
             </div>
         );
     }
@@ -7184,7 +7179,6 @@ window.ResearchSourcesPage = () => (
                 </div>
                 <div className="ys-locked-actions">
                     <button className="ys-setup-btn" onClick={() => setView('profile')}>Set Up My Yard →</button>
-                    <button className="ys-locked-browse-link" onClick={() => setView('learn')}>Browse lawn tips while you decide</button>
                 </div>
             </div>
         );
@@ -7395,10 +7389,7 @@ window.ResearchSourcesPage = () => (
                 { key: 'calculator', icon: '🧮', label: 'Treatment Calculator' },
                 { key: 'tools',      icon: '🛠️', label: 'Lawn Tools' },
                 { key: 'sources',    icon: '🔬', label: 'Research Sources' },
-            ]},
-            { label: 'Learn', items: [
-                { key: 'learn',   icon: '📚', label: 'Lawn Tips Library' },
-                { key: 'gallery', icon: '📷', label: 'Community Gallery' },
+                { key: 'gallery',    icon: '📷', label: 'Community Gallery' },
             ]},
             { label: 'Account', items: [
                 { key: 'account', icon: '👤', label: currentUser ? 'My Account' : 'Sign In / Create Account' },
@@ -7443,7 +7434,7 @@ window.ResearchSourcesPage = () => (
     const VALID_VIEWS = ['add', 'history', 'gallery', 'garage', 'profile', 'gameplan',
         'schedules', 'dashboard', 'products', 'sources', 'account', 'contact',
         'tools', 'grass-id', 'calculator', 'admin', 'today',
-        'more', 'learn'];
+        'more'];
     function getViewFromHash() {
         const hash = window.location.hash.replace(/^#\//, '');
         return VALID_VIEWS.includes(hash) ? hash : null;
@@ -8697,44 +8688,6 @@ window.ResearchSourcesPage = () => (
                             <div className="rounded-2xl shadow-sm border border-gray-100 overflow-hidden" style={{background:'var(--ys-cream)'}}>
                                 <SeasonBanner weather={weather} />
                             </div>
-                            {/* ── Section: Learn Nudge ── */}
-                            {(() => {
-                                if (getProfileState(lawnProfile) !== 'complete') return null;
-                                const currentMonth = new Date().getMonth();
-                                const article = LEARN_ARTICLES.find(function(a) {
-                                    const grassOk = !a.grassTypes || a.grassTypes.length === 0 || a.grassTypes.includes(lawnProfile.specificGrass);
-                                    const monthOk = a.months && a.months.includes(currentMonth);
-                                    const zoneOk  = !a.zones  || a.zones.includes(String(lawnProfile.zone));
-                                    return grassOk && monthOk && zoneOk;
-                                });
-                                if (!article) return null;
-                                return (
-                                    <button onClick={() => window.open('/learn/' + article.slug, '_blank')}
-                                        style={{display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px',
-                                                background:'var(--ys-cream,#F7F3EC)', border:'1px solid rgba(30,77,24,0.1)',
-                                                borderRadius:'5px', textAlign:'left', cursor:'pointer', width:'100%',
-                                                marginBottom:'4px'}}>
-                                        <div style={{width:'32px', height:'32px', borderRadius:'8px', flexShrink:0,
-                                                     background:article.categoryColor, display:'flex', alignItems:'center',
-                                                     justifyContent:'center', fontSize:'14px', color:'#fff'}}>
-                                            📚
-                                        </div>
-                                        <div style={{flex:1, minWidth:0}}>
-                                            <div style={{fontFamily:'var(--ys-font-body)', fontSize:'11px', fontWeight:700,
-                                                         color:'var(--ys-stone,#6B6560)', textTransform:'uppercase',
-                                                         letterSpacing:'0.4px', marginBottom:'2px'}}>
-                                                Good time to read
-                                            </div>
-                                            <div style={{fontFamily:'var(--ys-font-body)', fontWeight:700, fontSize:'13px',
-                                                         color:'var(--ys-soil-800,#1E1A14)', lineHeight:1.3}}>
-                                                {article.title}
-                                            </div>
-                                        </div>
-                                        <span style={{fontFamily:'var(--ys-font-body)', fontSize:'12px', fontWeight:700,
-                                                      color:'var(--ys-green-600,#2E7A44)', flexShrink:0}}>→</span>
-                                    </button>
-                                );
-                            })()}
                             {/* ── Section: Quick Actions ── */}
                             <div style={{display:'flex',alignItems:'center',gap:'10px',margin:'16px 0 10px'}}>
                                 <span style={{fontFamily:'var(--ys-font-display)',fontWeight:700,fontSize:'13px',color:'var(--ys-green-800)',whiteSpace:'nowrap'}}>
@@ -8933,12 +8886,6 @@ window.ResearchSourcesPage = () => (
                     {view === 'calculator' && <div><button onClick={() => setView('tools')} className="text-[#367C2B] mb-4 btn-press font-semibold">← Tools</button><TreatmentCalculator lawnProfile={lawnProfile} onNavigate={setView} /></div>}
                     {view === 'admin' && <div><button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold">← Back</button><AdminSubmissionsPage currentUser={currentUser} firebaseConfigured={!!fb.configured} /></div>}
                     {view === 'more' && <MoreMenuView setView={setView} currentUser={currentUser} lawnProfile={lawnProfile} />}
-                    {view === 'learn' && (
-                        <div>
-                            <button onClick={() => setView(null)} className="text-[#367C2B] mb-4 btn-press font-semibold" style={{padding:'12px 16px',display:'block'}}>← Back</button>
-                            <LearnLibraryView lawnProfile={lawnProfile} setView={setView} />
-                        </div>
-                    )}
 
                     {/* ─── Feedback Footer ─────────────────────────────────── */}
                     <div className="mt-8 mb-4 rounded-xl border border-[#367C2B]/20 bg-[#367C2B]/5 px-4 py-3 flex items-center gap-3">
