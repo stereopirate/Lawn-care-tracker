@@ -6772,8 +6772,7 @@ window.ResearchSourcesPage = () => (
 
     // ─── HomeCoachView ───────────────────────────────────────────────────────────
     function HomeCoachView({ lawnProfile, weather, activities, schedules, setView, currentUser, onShowAuthModal }) {
-        const soilTempC = weather && weather.hourly && weather.hourly.soil_temperature_6cm ? weather.hourly.soil_temperature_6cm[0] : null;
-        const soilTempF = soilTempC != null ? Math.round(soilTempC * 9/5 + 32) : null;
+        const soilTempF = weather && weather.soilTemp != null ? weather.soilTemp : null;
         const airTempRaw = weather && weather.current ? weather.current.temperature_2m : null;
         const airTempF = airTempRaw != null ? Math.round(airTempRaw * 9/5 + 32) : null;
         const grassName = GRASS_INFO && lawnProfile.specificGrass && GRASS_INFO[lawnProfile.specificGrass] ? GRASS_INFO[lawnProfile.specificGrass].name : lawnProfile.specificGrass;
