@@ -3711,11 +3711,6 @@ window.ResearchSourcesPage = () => (
                                                 {whyText && (
                                                     <div className="text-xs text-gray-500 leading-snug mb-2">{whyText}</div>
                                                 )}
-                                                {(() => {
-                                                    const fd = getFertilizerDetail(task, lawnProfile);
-                                                    if (!fd) return null;
-                                                    return <FertilizerDetailBlock fd={fd} />;
-                                                })()}
                                                 {ws && ws.window && isHold && (
                                                     <div className="text-xs font-semibold mb-2" style={{color:'var(--ys-green-600)'}}>
                                                         → {ws.window}
@@ -6706,131 +6701,6 @@ window.ResearchSourcesPage = () => (
     };
 
     // ─── Hash-based URL routing helpers ─────────────────────────────────────────
-    // ─── getFertilizerDetail ─────────────────────────────────────────────────────
-    function getFertilizerDetail(taskString, lawnProfile) {
-        if (!taskString || !/fertili|lb n|winterizer|feeding/i.test(taskString)) return null;
-
-        const task     = taskString.toLowerCase();
-        const grass    = (lawnProfile && lawnProfile.specificGrass) || '';
-        const sqft     = parseInt((lawnProfile && lawnProfile.lawnSize) || '5000') || 5000;
-        const soilType = (lawnProfile && lawnProfile.soilType) || '';
-        const st       = (lawnProfile && lawnProfile.soilTest) || {};
-
-        const COOL   = ['tall-fescue','kentucky-bluegrass','fine-fescue','perennial-ryegrass','sun-shade-mix','tall-fescue-blend','kentucky-bluegrass-blend'];
-        const WARM   = ['bermuda','zoysia','st-augustine','centipede','bahia','buffalograss'];
-        const LOW_N  = ['fine-fescue','buffalograss','centipede'];
-        const isCool = COOL.includes(grass);
-        const isWarm = WARM.includes(grass);
-        const isLowN = LOW_N.includes(grass);
-
-        const isWinterizer   = /winterizer/i.test(task);
-        const isFallHeavy    = /heavy fertiliz|1[\.\-]5 lb|fall fertiliz|second fall|final fertil/i.test(task) && !isWinterizer;
-        const isSpringFirst  = /first fertili/i.test(task);
-        const isSpringSecond = /second fertili/i.test(task) && !isFallHeavy;
-        const isSummerLight  = /light fertili|0\.5 lb|minimal fertili|optional/i.test(task);
-        const isSummerSkip   = /no fertili|do not fertili|stop fertili|dormant.*no/i.test(task);
-        const isHeavy        = /heavy fertili|1[\-–]1\.5|1\.5 lb/i.test(task);
-
-        if (isSummerSkip) return null;
-
-        const lbsNMatch = task.match(/([\d\.]+)(?:\s*[-–]\s*[\d\.]+)?\s*lb/);
-        const lbsNPerK  = lbsNMatch ? parseFloat(lbsNMatch[1]) : 1.0;
-
-        const pLow  = st.phosphorus === 'low';
-        const pHigh = st.phosphorus === 'high';
-        const kLow  = st.potassium  === 'low';
-        const kHigh = st.potassium  === 'high';
-        const hasSoilTest = !!(st.pH || st.phosphorus || st.potassium);
-
-        let ratio, ratioName, releaseType, releaseWhy;
-
-        if (isSummerLight) {
-            ratio       = pLow ? '20-5-10' : kLow ? '25-0-12' : '30-0-4';
-            ratioName   = 'Low-dose nitrogen maintenance';
-            releaseType = 'Quick-release (½ of recommended rate)';
-            releaseWhy  = 'Summer applications should be minimal — quick-release allows precise dosing and avoids surge growth that stresses turf in heat.';
-        } else if (isWinterizer) {
-            ratio       = kLow ? '10-0-20' : kHigh ? '12-0-6' : '10-0-14';
-            ratioName   = 'Winterizer — low N, high potassium';
-            releaseType = 'Slow-release granular';
-            releaseWhy  = 'Potassium hardens cell walls and improves cold tolerance. High K prepares roots for winter. Avoid excess nitrogen — it pushes late growth vulnerable to frost.';
-        } else if (isCool && isSpringFirst) {
-            ratio       = pLow ? '20-5-10' : pHigh ? '30-0-6' : '24-0-6';
-            ratioName   = 'Spring starter — high nitrogen, minimal phosphorus';
-            releaseType = 'Slow-release granular (50%+ slow-release N)';
-            releaseWhy  = 'Slow-release prevents surge growth and reduces runoff risk in spring rains. Minimal phosphorus because most established lawns have adequate P — confirmed low P from soil test is the only exception.';
-        } else if (isCool && isSpringSecond) {
-            ratio       = pLow ? '20-5-10' : kLow ? '24-0-12' : '25-0-6';
-            ratioName   = 'Spring follow-up — sustained nitrogen';
-            releaseType = 'Slow-release granular';
-            releaseWhy  = 'A second spring application sustains color and density through early summer. Slow-release avoids green surge that increases mowing burden.';
-        } else if (isCool && (isHeavy || isFallHeavy)) {
-            ratio       = pLow ? '22-5-10' : kLow ? '24-0-12' : '24-0-8';
-            ratioName   = 'Fall primary feed — balanced nitrogen + potassium';
-            releaseType = 'Combination: 50% slow-release + 50% quick-release';
-            releaseWhy  = 'Fall is the most important feeding for cool-season grasses. The quick-release fraction drives immediate recovery and color; slow-release sustains feeding through late fall root development.';
-        } else if (isCool) {
-            ratio       = kLow ? '22-0-14' : '24-0-8';
-            ratioName   = 'Fall follow-up — nitrogen with potassium';
-            releaseType = 'Slow-release granular';
-            releaseWhy  = 'Fall follow-up applications build carbohydrate reserves that the grass stores in roots for winter and spring green-up energy.';
-        } else if (isWarm && isSpringFirst) {
-            ratio       = pLow ? '20-4-8' : '28-0-6';
-            ratioName   = 'Spring green-up — high nitrogen';
-            releaseType = 'Slow-release granular (wait for soil 65°F+)';
-            releaseWhy  = 'Warm-season grasses need 65°F soil to use nitrogen efficiently. Applying before green-up wastes fertilizer and can promote early weed germination.';
-        } else if (isWarm && (isHeavy || /monthly|every/i.test(task))) {
-            ratio       = kLow ? '29-0-10' : '34-0-6';
-            ratioName   = 'Active season — high nitrogen, low phosphorus';
-            releaseType = 'Quick or slow-release granular';
-            releaseWhy  = 'Warm-season grasses are heavy nitrogen consumers during peak growing season (June–August). Monthly applications maintain dense, competitive turf that naturally suppresses weeds.';
-        } else if (isWarm && (isFallHeavy || /last|final|early september/i.test(task))) {
-            ratio       = '25-0-12';
-            ratioName   = 'Pre-dormancy — moderate N, higher K';
-            releaseType = 'Slow-release granular';
-            releaseWhy  = 'The last feeding should taper nitrogen and boost potassium to harden the turf against dormancy stress. Do not apply within 6 weeks of first frost.';
-        } else if (isLowN) {
-            ratio       = '10-0-6';
-            ratioName   = 'Low-rate feed (low-maintenance grass type)';
-            releaseType = 'Slow-release granular only';
-            releaseWhy  = 'Fine fescue, buffalograss, and centipede are naturally low-fertility grasses. Over-fertilizing causes surge growth, disease, and rapid thatch. Use half the rate of other grass types.';
-        } else {
-            ratio       = '24-0-8';
-            ratioName   = 'Balanced nitrogen application';
-            releaseType = 'Slow-release granular';
-            releaseWhy  = 'A nitrogen-forward, low-phosphorus product suits most established lawns. Check your soil test for phosphorus and potassium deficiencies to fine-tune.';
-        }
-
-        let soilNote = null;
-        if (soilType === 'clay' || soilType === 'clay-loam') {
-            soilNote = 'Clay soil: nutrients hold well — avoid over-application. Water in with ½ inch within 48 hrs to move granules into the root zone.';
-        } else if (soilType === 'sandy' || soilType === 'sandy-loam') {
-            soilNote = 'Sandy soil: nutrients leach quickly. Use a slow-release or stabilized product and consider splitting this application across two lighter doses 3–4 weeks apart.';
-        } else if (soilType === 'loam') {
-            soilNote = 'Loam soil: ideal for even nutrient distribution. Standard application rates and timing apply.';
-        }
-
-        const nPctMatch  = ratio.match(/^(\d+)/);
-        const nPct       = nPctMatch ? parseInt(nPctMatch[1]) : 20;
-        const targetLbsN = lbsNPerK * (sqft / 1000);
-        const productLbs = (targetLbsN / (nPct / 100)).toFixed(1);
-        const bagRef     = sqft <= 5000  ? 'a 15–18 lb bag covers your lawn'
-                         : sqft <= 10000 ? 'a 30–35 lb bag covers your lawn'
-                         : `you'll need ~${Math.ceil(parseFloat(productLbs) / 15) + 1} standard bags`;
-
-        let soilTestNote = null;
-        if (hasSoilTest) {
-            const notes = [];
-            if (pLow)  notes.push('phosphorus is low → chose a ratio with added P');
-            if (pHigh) notes.push('phosphorus is high → chose a zero-P formula to avoid runoff risk');
-            if (kLow)  notes.push('potassium is low → boosted K in this ratio for root and stress strength');
-            if (kHigh) notes.push('potassium is high → using minimal K to stay in range');
-            if (notes.length) soilTestNote = 'Personalized for your soil test: ' + notes.join('; ') + '.';
-        }
-
-        return { ratio, ratioName, releaseType, releaseWhy, productLbs, bagRef, soilNote, soilTestNote, targetLbsN: targetLbsN.toFixed(2), sqft };
-    }
-
     // ─── buildThisWeekTasks ──────────────────────────────────────────────────────
     function buildThisWeekTasks({ lawnProfile, weather, activities, schedules, soilTempF }) {
         const tasks = [];
@@ -7033,79 +6903,6 @@ window.ResearchSourcesPage = () => (
         );
     }
 
-    // ─── FertilizerDetailBlock ───────────────────────────────────────────────────
-    function FertilizerDetailBlock({ fd }) {
-        const [open, setOpen] = React.useState(false);
-        if (!fd) return null;
-        return (
-            <div style={{marginTop:'6px', marginBottom:'4px', borderRadius:'10px', overflow:'hidden', border:'1px solid rgba(200,142,34,0.3)', background:'rgba(200,142,34,0.05)'}}>
-                <button
-                    onClick={() => setOpen(!open)}
-                    style={{width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 12px', background:'none', border:'none', cursor:'pointer', textAlign:'left'}}>
-                    <span style={{fontFamily:'var(--ff-body)', fontSize:'12px', fontWeight:700, color:'var(--gold)', letterSpacing:'0.01em'}}>
-                        🌾 Fertilizer Guide
-                    </span>
-                    <span style={{fontFamily:'var(--ff-body)', fontSize:'10px', color:'var(--stone)', fontWeight:600}}>
-                        {open ? '▲ less' : '▼ details'}
-                    </span>
-                </button>
-                {open && (
-                    <div style={{padding:'0 12px 12px', display:'flex', flexDirection:'column', gap:'8px'}}>
-                        <div style={{display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap'}}>
-                            <span style={{fontFamily:'var(--ff-body)', fontSize:'15px', fontWeight:700, letterSpacing:'0.04em', color:'var(--soil)', background:'rgba(200,142,34,0.15)', padding:'3px 10px', borderRadius:'6px', border:'1px solid rgba(200,142,34,0.35)'}}>
-                                {fd.ratio}
-                            </span>
-                            <span style={{fontFamily:'var(--ff-body)', fontSize:'12px', color:'var(--stone)', lineHeight:1.3}}>
-                                {fd.ratioName}
-                            </span>
-                        </div>
-                        <div style={{display:'flex', gap:'6px', flexWrap:'wrap'}}>
-                            <span style={{fontFamily:'var(--ff-body)', fontSize:'10px', fontWeight:700, padding:'2px 8px', borderRadius:'4px', background:'rgba(46,122,68,0.1)', color:'var(--green)', border:'1px solid rgba(46,122,68,0.2)'}}>
-                                N-P-K ratio
-                            </span>
-                            <span style={{fontFamily:'var(--ff-body)', fontSize:'10px', fontWeight:600, padding:'2px 8px', borderRadius:'4px', background:'rgba(30,26,20,0.06)', color:'var(--stone)', border:'1px solid rgba(30,26,20,0.1)'}}>
-                                {fd.releaseType}
-                            </span>
-                        </div>
-                        <div style={{fontFamily:'var(--ff-body)', fontSize:'12px', color:'var(--stone)', lineHeight:1.5}}>
-                            {fd.releaseWhy}
-                        </div>
-                        <div style={{background:'rgba(30,26,20,0.04)', borderRadius:'8px', padding:'9px 11px'}}>
-                            <div style={{fontFamily:'var(--ff-body)', fontSize:'11px', fontWeight:700, color:'var(--soil)', marginBottom:'3px', textTransform:'uppercase', letterSpacing:'0.04em'}}>
-                                For your {fd.sqft.toLocaleString()} sq ft lawn
-                            </div>
-                            <div style={{fontFamily:'var(--ff-body)', fontSize:'13px', fontWeight:700, color:'var(--green)'}}>
-                                ~{fd.productLbs} lbs of product
-                            </div>
-                            <div style={{fontFamily:'var(--ff-body)', fontSize:'11px', color:'var(--stone)', marginTop:'2px'}}>
-                                ({fd.bagRef})
-                            </div>
-                        </div>
-                        {fd.soilNote && (
-                            <div style={{fontFamily:'var(--ff-body)', fontSize:'11px', color:'var(--stone)', lineHeight:1.5, paddingTop:'4px', borderTop:'1px dashed rgba(30,26,20,0.1)'}}>
-                                🪨 <strong>Your soil:</strong> {fd.soilNote}
-                            </div>
-                        )}
-                        {fd.soilTestNote && (
-                            <div style={{fontFamily:'var(--ff-body)', fontSize:'11px', lineHeight:1.5, padding:'6px 10px', borderRadius:'6px', background:'rgba(46,122,68,0.08)', color:'var(--green)', border:'1px solid rgba(46,122,68,0.2)'}}>
-                                🧪 {fd.soilTestNote}
-                            </div>
-                        )}
-                        <div style={{fontFamily:'var(--ff-body)', fontSize:'11px', color:'var(--stone)', lineHeight:1.6, paddingTop:'4px', borderTop:'1px dashed rgba(30,26,20,0.1)'}}>
-                            <strong style={{color:'var(--soil)'}}>Application tips:</strong>
-                            <ul style={{paddingLeft:'14px', marginTop:'3px'}}>
-                                <li>Use a broadcast spreader for even coverage — avoid drop spreaders on slopes</li>
-                                <li>Water in within 48 hours with ½ inch of irrigation or rain</li>
-                                <li>Do not apply if heavy rain (&gt;1 inch) is forecast in 24 hours</li>
-                                <li>Keep off treated area until dry — avoid skin contact with granules</li>
-                            </ul>
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-    }
-
     // ─── TaskCard ────────────────────────────────────────────────────────────────
     function TaskCard({ task, lawnProfile, setView, onLog }) {
         const [expanded, setExpanded] = React.useState(task.urgency === 'urgent');
@@ -7136,9 +6933,6 @@ window.ResearchSourcesPage = () => (
                             {task.effort && task.costEst && ' · '}
                             {task.costEst && ('💰 ' + task.costEst + ' estimated')}
                         </div>
-                    )}
-                    {/fertili|lb n|winterizer/i.test(task.name || '') && !task.done && lawnProfile && (
-                        <FertilizerDetailBlock fd={getFertilizerDetail(task.name, lawnProfile)} />
                     )}
                     {task.howTo && !task.done && (
                         <>
